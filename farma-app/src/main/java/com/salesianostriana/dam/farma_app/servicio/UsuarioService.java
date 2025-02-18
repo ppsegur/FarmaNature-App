@@ -28,7 +28,7 @@ public class UsuarioService {
     //y para los usuarios como los clientes podemos hacer el verificado del Qr con 2factor -->
 
 
-    
+
 
 }
 
