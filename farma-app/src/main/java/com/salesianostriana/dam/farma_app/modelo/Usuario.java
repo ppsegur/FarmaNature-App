@@ -2,10 +2,7 @@ package com.salesianostriana.dam.farma_app.modelo;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.NaturalId;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,7 +19,7 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@Builder
 @Inheritance(strategy = InheritanceType.JOINED) //Para gestionar la herencia la haremos tipo joined mucho más facil
 @Table(name = "usuario_entity")
 public abstract class Usuario implements UserDetails {
@@ -38,6 +35,9 @@ public abstract class Usuario implements UserDetails {
     private String passsword;
     private String email;
 
+    private boolean verificado;
+    private String nombre;
+    private String apellidos;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<UserRole> roles;
