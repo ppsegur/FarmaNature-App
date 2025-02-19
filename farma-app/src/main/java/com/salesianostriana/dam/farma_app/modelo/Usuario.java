@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 @Builder
 @Inheritance(strategy = InheritanceType.JOINED) //Para gestionar la herencia la haremos tipo joined mucho más facil
 @Table(name = "usuario_entity")
-public abstract class Usuario implements UserDetails {
+public  class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -32,15 +33,21 @@ public abstract class Usuario implements UserDetails {
     @Column(unique = true, updatable = false)
     private String username ;
 
-    private String passsword;
+    private String password;
     private String email;
 
-    private boolean verificado;
+    private String activationToken;
+
+    @Builder.Default
+    private boolean verificado = false;
     private String nombre;
     private String apellidos;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<UserRole> roles;
+
+    @Builder.Default
+    private Instant createdAt = Instant.now();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){

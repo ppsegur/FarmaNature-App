@@ -14,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -25,7 +24,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class JwtauthentificationFilter  extends OncePerRequestFilter {
+public class JwtAuthentificationFilter extends OncePerRequestFilter {
 
     private final UsuarioRepo usuarioRepo;
     private final JwtService jwtService;
