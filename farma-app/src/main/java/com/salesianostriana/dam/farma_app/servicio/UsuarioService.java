@@ -68,7 +68,7 @@ public class UsuarioService {
                 // Contenido HTML para el email
                 String emailContent = "<h1>Activación de cuenta</h1>"
                         + "<p>Escanea el siguiente código QR para activar tu cuenta:</p>"
-                        + "<img src=\"" + qrImagePath + "\" alt=\"Código QR de activación\"/>";
+                      ;
 
                 // Enviar el correo con la imagen QR como adjunto
                 mailSender.sendMail(createUserRequest.email(), "Activación de cuenta", emailContent, qrImagePath);
