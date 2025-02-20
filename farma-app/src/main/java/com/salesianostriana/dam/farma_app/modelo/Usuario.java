@@ -36,7 +36,13 @@ public  class Usuario implements UserDetails {
     private String password;
     private String email;
 
+    //2FA
+    private String secret;
     private String activationToken;
+
+    public boolean isAccountVerify() {
+        return verificado;
+    }
 
     @Builder.Default
     private boolean verificado = false;
@@ -48,6 +54,7 @@ public  class Usuario implements UserDetails {
 
     @Builder.Default
     private Instant createdAt = Instant.now();
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){

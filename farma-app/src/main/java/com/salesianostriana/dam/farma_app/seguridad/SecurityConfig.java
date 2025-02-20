@@ -3,6 +3,7 @@ package com.salesianostriana.dam.farma_app.seguridad;
 import com.salesianostriana.dam.farma_app.seguridad.access.JwtAuthentificationFilter;
 import com.salesianostriana.dam.farma_app.seguridad.exceptionHandling.JwtAccessDeniedHandler;
 import com.salesianostriana.dam.farma_app.seguridad.exceptionHandling.JwtAuthenticationEntryPoint;
+import com.warrenstrange.googleauth.GoogleAuthenticator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
@@ -29,6 +31,10 @@ public class SecurityConfig {
     private final JwtAuthentificationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
     private final JwtAccessDeniedHandler accessDeniedHandler;
+
+
+    //2FA
+    private AuthenticationSuccessHandler authenticationSuccessHandler;
 
     @Bean
     AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
@@ -66,11 +72,20 @@ public class SecurityConfig {
                 .accessDeniedHandler(accessDeniedHandler)
         );
         http.authorizeHttpRequests(authz -> authz
-                .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login", "/auth/refresh/token", "/error").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login", "/auth/refresh/token", "/error", "/auth/verify-2fa", "/activate/account/").permitAll()
                 .requestMatchers("/me/admin").hasRole("ADMIN")
-                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/h2-console/**","/auth/qr-code/**").permitAll()
                 .anyRequest().authenticated());
 
+        /**
+        http.formLogin()
+                .loginPage("/login")
+                .permitAll()
+                .successHandler(authenticationSuccessHandler);
+
+        http.logout()
+                .permitAll();
+    **/
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -81,4 +96,13 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Bean
+    public GoogleAuthenticator googleAuthenticator() {
+        return new GoogleAuthenticator();
+    }
+/**
+    public void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService);
+    }
+**/
 }
