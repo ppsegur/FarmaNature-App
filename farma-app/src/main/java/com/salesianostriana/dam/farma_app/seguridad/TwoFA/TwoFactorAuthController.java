@@ -3,6 +3,7 @@ package com.salesianostriana.dam.farma_app.seguridad.TwoFA;
 
 import com.salesianostriana.dam.farma_app.modelo.Usuario;
 import com.salesianostriana.dam.farma_app.repositorio.UsuarioRepo;
+import com.salesianostriana.dam.farma_app.util.ResendMailSender;
 import lombok.RequiredArgsConstructor;
 import org.jboss.aerogear.security.otp.Totp;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ public class TwoFactorAuthController {
 
     private final TwoFactorAuthService twoFactorAuthService;
     private final UsuarioRepo usuarioRepo;
+    private final ResendMailSender resendMailSender;
 
     //generar el Qr
     @PostMapping("/setup")
@@ -29,8 +31,9 @@ public class TwoFactorAuthController {
         String qrUrl = twoFactorAuthService.getQRBarcodeURL(usuario.getEmail(), usuario.getSecret());
         String qrImageBase64 = twoFactorAuthService.generateQRCodeImage(qrUrl);
 
-        return ResponseEntity.ok(qrImageBase64);
+        return ResponseEntity.ok("QR enviado a tu correo electrónico.");
     }
+
     //generar el código de 6
     @PostMapping("/verify")
     public ResponseEntity<String> verify2FA(@AuthenticationPrincipal Usuario usuario, @RequestParam String code) {

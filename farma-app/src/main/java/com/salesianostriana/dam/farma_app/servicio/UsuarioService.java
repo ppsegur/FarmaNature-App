@@ -10,6 +10,7 @@ import com.salesianostriana.dam.farma_app.error.ActivationExpiredException;
 import com.salesianostriana.dam.farma_app.modelo.UserRole;
 import com.salesianostriana.dam.farma_app.modelo.Usuario;
 import com.salesianostriana.dam.farma_app.repositorio.UsuarioRepo;
+import com.salesianostriana.dam.farma_app.util.ResendMailSender;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
@@ -25,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
@@ -43,7 +45,7 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final GoogleAuthenticator googleAuthenticator;
    // private final SendGridMailSender mailSender;
-    //private final ResendMailSender mailSender;
+    private final ResendMailSender mailSender;
 
 
     @Value("${activation.duration}")
@@ -54,7 +56,6 @@ public class UsuarioService {
                 .username(createUserRequest.username())
                 .password(passwordEncoder.encode(createUserRequest.password()))
                 .email(createUserRequest.email())
-                .verificado(false)
                 .roles(Set.of(UserRole.USER))
                 .activationToken(generateRandomActivationCode())
                 .build();
@@ -62,9 +63,20 @@ public class UsuarioService {
         try {
             GoogleAuthenticatorKey key = googleAuthenticator.createCredentials();
             user.setSecret(key.getKey());
+            String otpAuthURL = generateQRCodeURL(user);
+            String qrImagePath = generateQRCodeImage(otpAuthURL);
 
-            //mailSender.sendMail(createUserRequest.email(), "Activación de cuenta", user.getActivationToken());
+            // Contenido HTML para el email
+            String emailContent = "<h1>Activación de cuenta</h1>"
+                    + "<p>Escanea el siguiente código QR para activar tu cuenta:</p>"
+                    + "<img src=\"" + qrImagePath + "\" alt=\"Código QR de activación\"/>"
+                    ;
+
+            // Enviar el correo con la imagen QR como adjunto
+            mailSender.sendMail(createUserRequest.email(), "Activación de cuenta", emailContent, qrImagePath);
+
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"Error al enviar el email de activación");
         }
 
@@ -91,14 +103,17 @@ public class UsuarioService {
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             BitMatrix bitMatrix = qrCodeWriter.encode(otpAuthURL, BarcodeFormat.QR_CODE, 300, 300);
 
-            ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
-            MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+            // Ruta donde se guardará el archivo QR (ajusta la ruta según tu estructura)
+            String filePath = "src/main/resources/static/qrcode.png";
+            java.nio.file.Path path = Paths.get(filePath);
+            java.nio.file.Files.createDirectories(path.getParent()); // Crea los directorios si no existen
 
-            return "data:image/png;base64," + Base64.getEncoder().encodeToString(pngOutputStream.toByteArray());
-        } catch (WriterException | IOException e) {
+            // Guardar el QR como archivo PNG
+            MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
+
+            return filePath;
+        } catch (WriterException | java.io.IOException e) {
             throw new RuntimeException("Error al generar el QR", e);
-        } catch (java.io.IOException e) {
-            throw new RuntimeException(e);
         }
     }
     public String generateRandomActivationCode() {
