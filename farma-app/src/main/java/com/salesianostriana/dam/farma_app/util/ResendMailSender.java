@@ -22,7 +22,7 @@ import java.util.Base64;
 
 @Service
 public class ResendMailSender {
-    
+
     @Value("${resend.api.key}")
     private String resendApiKey;
     private static final Logger log = LoggerFactory.getLogger(ResendMailSender.class);

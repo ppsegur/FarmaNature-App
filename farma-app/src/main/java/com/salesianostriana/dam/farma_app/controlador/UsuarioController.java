@@ -12,6 +12,11 @@ import com.salesianostriana.dam.farma_app.seguridad.refresh.RefreshTokenRequest;
 import com.salesianostriana.dam.farma_app.seguridad.refresh.RefreshTokenService;
 import com.salesianostriana.dam.farma_app.servicio.UsuarioService;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +41,16 @@ public class UsuarioController {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
 
+    @Operation(summary = "Registra un nuevo usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Usuario creado con éxito",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Usuario.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "Datos inválidos para registrar el usuario",
+                    content = @Content)
+    })
     @PostMapping("/auth/register")
     public ResponseEntity<?> register(@RequestBody CreateUserRequest createUserRequest) {
         Usuario user = userService.createUser(createUserRequest);
@@ -49,17 +64,16 @@ public class UsuarioController {
                         "user", UserResponse.of(user)));
     }
 
-    @GetMapping("/auth/qr-code/{email}")
-    public ResponseEntity<String> getQrCode(@PathVariable String email) {
-        Usuario user = userService.findByEmail(email);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado.");
-        }
-        String otpAuthURL = userService.generateQRCodeURL(user);
-        String qrCodeBase64 = userService.generateQRCodeImage(otpAuthURL);
-        return ResponseEntity.ok(qrCodeBase64);
-    }
-
+    @Operation(summary = "Logea un usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Usuario logueado con éxito",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Usuario.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "Datos inválidos para loguear al usuario ",
+                    content = @Content)
+    })
     @PostMapping("/auth/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Authentication authentication =
@@ -86,6 +100,16 @@ public class UsuarioController {
 
     }
 
+    @Operation(summary = "Crea una nuevo token de refresco")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "token de refresco creado con éxito",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = RefreshTokenRequest.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "Datos inválidos para crear el nuevo token de refresco ",
+                    content = @Content)
+    })
     @PostMapping("/auth/refresh/token")
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequest req) {
         String token = req.refreshToken();
@@ -94,6 +118,16 @@ public class UsuarioController {
                 .body(refreshTokenService.refreshToken(token));
 
     }
+    @Operation(summary = "Verificado su usuario con exito con el Qr")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Usuario verificado con éxito",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Usuario.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "Datos inválidos para verificar el usuario con el código qr",
+                    content = @Content)
+    })
     @PostMapping("/auth/verify-2fa")
     public ResponseEntity<?> verify2FA(@RequestBody Verify2FARequest request) {
         Usuario user = userService.findByEmail(request.email());
@@ -111,6 +145,7 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Código 2FA incorrecto.");
         }
     }
+    //Deprecated
     @PostMapping("/activate/account/")
     public ResponseEntity<?> activateAccount(@RequestBody ActivateAccountRequest req) {
         String token = req.token();
