@@ -42,11 +42,8 @@ public class SecurityConfig {
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
 
-        AuthenticationManager authenticationManager =
-                authenticationManagerBuilder.authenticationProvider(authenticationProvider())
-                        .build();
-
-        return authenticationManager;
+        return authenticationManagerBuilder.authenticationProvider(authenticationProvider())
+                .build();
     }
 
     @Bean
@@ -72,9 +69,9 @@ public class SecurityConfig {
                 .accessDeniedHandler(accessDeniedHandler)
         );
         http.authorizeHttpRequests(authz -> authz
-                .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login", "/auth/refresh/token", "/error", "/auth/verify-2fa", "/activate/account/").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login","/auth/verify-2fa", "/auth/refresh/token", "/error", "/activate/account/").permitAll()
                 .requestMatchers("/me/admin").hasRole("ADMIN")
-                .requestMatchers("/h2-console/**","/auth/qr-code/**").permitAll()
+                .requestMatchers("/h2-console/**","/auth/qr-code/**","/auth/verify-2fa").permitAll()
                 .anyRequest().authenticated());
 
         /**

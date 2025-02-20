@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -29,22 +30,17 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Base64;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
 
 
-
-
     private final UsuarioRepo userRepository;
     private final PasswordEncoder passwordEncoder;
     private final GoogleAuthenticator googleAuthenticator;
-   // private final SendGridMailSender mailSender;
+    // private final SendGridMailSender mailSender;
     private final ResendMailSender mailSender;
 
 
@@ -52,37 +48,43 @@ public class UsuarioService {
     private int activationDuration;
 
     public Usuario createUser(CreateUserRequest createUserRequest) {
-        Usuario user = Usuario.builder()
-                .username(createUserRequest.username())
-                .password(passwordEncoder.encode(createUserRequest.password()))
-                .email(createUserRequest.email())
-                .roles(Set.of(UserRole.USER))
-                .activationToken(generateRandomActivationCode())
-                .build();
+        if(!Objects.equals(createUserRequest.verifyPassword(), createUserRequest.password())){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Passwords do not match");
+        }   else {
+            Usuario user = Usuario.builder()
+                    .username(createUserRequest.username())
+                    .password(passwordEncoder.encode(createUserRequest.password()))
+                    .email(createUserRequest.email())
+                    .roles(Set.of(UserRole.USER))
+                    .activationToken(generateRandomActivationCode())
+                    .build();
 
-        try {
-            GoogleAuthenticatorKey key = googleAuthenticator.createCredentials();
-            user.setSecret(key.getKey());
-            String otpAuthURL = generateQRCodeURL(user);
-            String qrImagePath = generateQRCodeImage(otpAuthURL);
+            try {
+                GoogleAuthenticatorKey key = googleAuthenticator.createCredentials();
+                user.setSecret(key.getKey());
+                String otpAuthURL = generateQRCodeURL(user);
+                String qrImagePath = generateQRCodeImage(otpAuthURL);
 
-            // Contenido HTML para el email
-            String emailContent = "<h1>Activación de cuenta</h1>"
-                    + "<p>Escanea el siguiente código QR para activar tu cuenta:</p>"
-                    + "<img src=\"" + qrImagePath + "\" alt=\"Código QR de activación\"/>"
-                    ;
+                // Contenido HTML para el email
+                String emailContent = "<h1>Activación de cuenta</h1>"
+                        + "<p>Escanea el siguiente código QR para activar tu cuenta:</p>"
+                        + "<img src=\"" + qrImagePath + "\" alt=\"Código QR de activación\"/>";
 
-            // Enviar el correo con la imagen QR como adjunto
-            mailSender.sendMail(createUserRequest.email(), "Activación de cuenta", emailContent, qrImagePath);
+                // Enviar el correo con la imagen QR como adjunto
+                mailSender.sendMail(createUserRequest.email(), "Activación de cuenta", emailContent, qrImagePath);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"Error al enviar el email de activación");
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al enviar el email de activación");
+            }
+
+
+            return userRepository.save(user);
+        }
         }
 
 
-        return userRepository.save(user);
-    }
+
 
     public String generateQRCodeURL(Usuario user) {
         String issuer = "FarmaNatur-App";

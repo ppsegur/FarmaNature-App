@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Map;
 import java.util.UUID;
@@ -52,7 +54,7 @@ public class UsuarioController {
                     content = @Content)
     })
     @PostMapping("/auth/register")
-    public ResponseEntity<?> register(@RequestBody CreateUserRequest createUserRequest) {
+    public ResponseEntity<?> register(@RequestBody @Valid CreateUserRequest createUserRequest) {
         Usuario user = userService.createUser(createUserRequest);
         String qrCodeUrl = userService.generateQRCodeURL(user);
 
@@ -129,7 +131,7 @@ public class UsuarioController {
                     content = @Content)
     })
     @PostMapping("/auth/verify-2fa")
-    public ResponseEntity<?> verify2FA(@RequestBody Verify2FARequest request) {
+    public ResponseEntity<?> verify2FA(@RequestBody @Valid Verify2FARequest request) {
         Usuario user = userService.findByEmail(request.email());
 
         if (googleAuthenticator.authorize(user.getSecret(), request.code())) {
@@ -141,8 +143,10 @@ public class UsuarioController {
 
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(UserResponse.of(user, accessToken, refreshToken.getToken()));
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Código 2FA incorrecto.");
+        }else
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error al verificar el código 2FA"));
         }
     }
     //Deprecated
