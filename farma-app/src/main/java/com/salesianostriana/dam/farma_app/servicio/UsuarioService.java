@@ -51,7 +51,7 @@ public class UsuarioService {
                 .username(createUserRequest.username())
                 .password(passwordEncoder.encode(createUserRequest.password()))
                 .email(createUserRequest.email())
-                .roles(Set.of(UserRole.USER))
+                .roles(Set.of(UserRole.CLIENTE))
                 .activationToken(generateRandomActivationCode())
                 .build());
 

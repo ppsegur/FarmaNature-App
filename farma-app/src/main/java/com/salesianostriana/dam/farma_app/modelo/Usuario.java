@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-//@Inheritance(strategy = InheritanceType.JOINED) //Para gestionar la herencia la haremos tipo joined mucho más facil
+@Inheritance(strategy = InheritanceType.JOINED) //Para gestionar la herencia la haremos tipo joined mucho más facil
 @Table(name = "usuario_entity")
 @Builder
-public class Usuario implements UserDetails {
+public abstract class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -114,4 +114,6 @@ public class Usuario implements UserDetails {
     public final int hashCode() {
         return Objects.hash(username);
     }
+
+    public abstract String getRole();
 }

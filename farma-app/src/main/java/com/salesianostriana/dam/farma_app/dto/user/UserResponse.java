@@ -16,11 +16,9 @@ public record UserResponse(
         String refreshToken
 
 ) {
-
     public static UserResponse of(Usuario user) {
         return new UserResponse(user.getId(), user.getUsername(), null, null);
     }
-
     public static UserResponse of(Usuario user, String token, String refreshToken) {
         return new UserResponse(user.getId(), user.getUsername(), token, refreshToken);
     }

@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Usuario", description = "El controlador de usuario ")
 public class UsuarioController {
 
 
@@ -160,7 +162,7 @@ public class UsuarioController {
         Usuario user = userService.findByEmail(request.email());
 
 
-        if (googleAuthenticator.authorize(user.getSecret(), request.code())) {
+        if (googleAuthenticator.authorize(user.getSecret(), Integer.parseInt(request.code()))) {
             //user.setVerificado(true);
             userService.upDateVerification(user);
 
@@ -205,7 +207,7 @@ public class UsuarioController {
                     description = "No se han encontrado usuarios"
             )
     })
-    @PreAuthorize("hasRole('Farmaceutico') (returnObject.owner==authentication.name)")
+    @PreAuthorize("hasRole('FARMACEUTICO') (returnObject.owner==authentication.name)")
     @GetMapping
     public ResponseEntity<?> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(GetAllUsuariosDto.fromDto(userService.findallUsuarios()));
