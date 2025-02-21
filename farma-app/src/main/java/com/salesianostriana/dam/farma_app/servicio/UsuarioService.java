@@ -48,9 +48,7 @@ public class UsuarioService {
     private int activationDuration;
 
     public Usuario createUser(CreateUserRequest createUserRequest) {
-        if(!Objects.equals(createUserRequest.verifyPassword(), createUserRequest.password())){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Passwords do not match");
-        }   else {
+
              Usuario user = userRepository.save(Usuario.builder()
                     .username(createUserRequest.username())
                     .password(passwordEncoder.encode(createUserRequest.password()))
@@ -79,7 +77,7 @@ public class UsuarioService {
 
 
             return userRepository.save(user);
-        }
+
         }
 
 

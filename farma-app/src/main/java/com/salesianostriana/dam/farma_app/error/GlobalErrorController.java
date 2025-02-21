@@ -2,8 +2,12 @@ package com.salesianostriana.dam.farma_app.error;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolation;
 import lombok.Builder;
+import org.hibernate.validator.internal.engine.path.NodeImpl;
+
 import lombok.extern.java.Log;
+import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.http.*;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -15,6 +19,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @Log
 @RestControllerAdvice
@@ -42,7 +47,7 @@ public class GlobalErrorController
 
         List<ApiValidationSubError> subErrors =
                 ex.getAllErrors().stream()
-                        .map(ApiValidationSubError::fromError)
+                        .map(ApiValidationSubError::from)
                         .toList();
 
         result.setProperty("invalid-params", subErrors);
@@ -63,10 +68,11 @@ public class GlobalErrorController
     ) {
 
         public ApiValidationSubError(String object, String message) {
+
             this(object, message, null, null);
         }
 
-        public static ApiValidationSubError fromError(ObjectError error) {
+        public static ApiValidationSubError from(ObjectError error) {
 
             ApiValidationSubError result = null;
 
@@ -89,6 +95,19 @@ public class GlobalErrorController
 
         }
 
-
+        public static ApiValidationSubError from(ConstraintViolation v) {
+            return ApiValidationSubError.builder()
+                    .message(v.getMessage())
+                    .rejectedValue(v.getInvalidValue())
+                    .object(v.getRootBean().getClass().getSimpleName())
+                    .field(
+                            Optional.ofNullable(v.getPropertyPath())
+                                    .map(PathImpl.class::cast)
+                                    .map(PathImpl::getLeafNode)
+                                    .map(NodeImpl::asString)
+                                    .orElse("unknown")
+                    )
+                    .build();
+        }
     }
 }
