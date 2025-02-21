@@ -11,4 +11,11 @@ public interface UsuarioRepo extends JpaRepository<Usuario, UUID> {
     //consulta básica para obtener un usuario por el username
     Optional<Usuario> findFirstByUsername(String username);
 
+    Optional<Usuario> findByActivationToken(String activationToken);
+
+    //consulta para 2FA
+    Usuario findByEmail(String email);
+
+    boolean existsByUsername(String username);
+
 }
