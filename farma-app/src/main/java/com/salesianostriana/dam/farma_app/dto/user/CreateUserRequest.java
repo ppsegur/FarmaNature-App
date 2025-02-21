@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.farma_app.dto.user;
 
+import com.salesianostriana.dam.farma_app.modelo.Usuario;
 import com.salesianostriana.dam.farma_app.validation.FieldsValueMatch;
 import com.salesianostriana.dam.farma_app.validation.UniqueUsername;
 import jakarta.validation.constraints.Email;
@@ -42,4 +43,13 @@ public record CreateUserRequest(
 
 
 ) {
+        public static CreateUserRequest of(Usuario u){
+                return new CreateUserRequest(
+                        u.getUsername(),
+                        u.getPassword(),
+                        u.getEmail(),
+                        u.getRole(),
+                        u.getNombre()
+                );
+        }
 }

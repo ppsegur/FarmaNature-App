@@ -15,3 +15,5 @@ createUserRequest.email.invalid="El formato del email no es válido"
 createUserRequest.email.size="El email no puede tener más de 255 caracteres"
 
 verify2FARequest.code.notblank="El código de verificación no puede estar vacío"
+
+editUserDto.role.notblank="El rol no debe estar vacio"

@@ -6,6 +6,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.salesianostriana.dam.farma_app.dto.user.CreateUserRequest;
+import com.salesianostriana.dam.farma_app.dto.user.EditUserDto;
 import com.salesianostriana.dam.farma_app.error.ActivationExpiredException;
 import com.salesianostriana.dam.farma_app.modelo.UserRole;
 import com.salesianostriana.dam.farma_app.modelo.Usuario;
@@ -142,6 +143,24 @@ public class UsuarioService {
     //Deberíamos hacer dos endPoints para crear un cliente o un farmaceútico
     //Podemos plantearlo paara que cuando sea un farmaceutico el correo de verificacion sea al admin de todas para que hasta que este no confiirme su cuenta no esta verificada
     //y para los usuarios como los clientes podemos hacer el verificado del Qr con 2factor -->
+
+    //Métodos de gestión de ROLES
+    //Editar usuario usando el dto
+    public Usuario editUsuario(EditUserDto editUsuarioDto, UUID id) {
+        Optional<Usuario> usuarioOp = userRepository.findById(id);
+        if(usuarioOp.isEmpty()){
+            throw new EntityNotFoundException("No existen usuarios con ese id");
+        }
+        usuarioOp.get().setUsername(editUsuarioDto.username());
+        usuarioOp.get().setPassword(editUsuarioDto.password());
+        usuarioOp.get().setRoles(Collections.singleton(editUsuarioDto.role()));
+        return userRepository.save(usuarioOp.get());
+    }
+
+    //Eliminar usuario
+    public void deleteUsuario(UUID id) {
+        userRepository.deleteById(id);
+    }
 
     public List<Usuario> findallUsuarios() {
         List<Usuario> usuarios = userRepository.findAll();

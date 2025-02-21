@@ -23,17 +23,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -197,21 +194,67 @@ public class UsuarioController {
                                               {
                                                  "username" : "ppsegur",
                                                  "password":"1234",
-                                                 "role": "director/admin",                                           \s
+                                                 "role": "FARMACEUTCO",                                           \s
                                               }
                                             }
-                                           \s"""
+                                           """
                             )}
                     )}),
             @ApiResponse(responseCode = "404",
                     description = "No se han encontrado usuarios"
             )
     })
-    @PreAuthorize("hasRole('FARMACEUTICO') (returnObject.owner==authentication.name)")
+    @PreAuthorize("hasRole('FARMACEUTICO') (returnObject.owner==authentication.role)")
     @GetMapping
     public ResponseEntity<?> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(GetAllUsuariosDto.fromDto(userService.findallUsuarios()));
     }
+
+    @Operation(summary = "Edita un Usuario existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Usuario actualizado con éxito",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = EditUserDto.class)),
+                            examples = {@ExampleObject(
+                                 value = """
+                                            {
+                                              {
+                                                 "username" : "ppsegur",
+                                                 "password":"1234",
+                                                 "role": "farmaceutico",                                          \s
+                                              }
+                                            }
+                                          \s"""
+            )}
+            )}),
+    @ApiResponse(responseCode = "404",
+            description = "No se han encontrado usuarios")
+
+})
+    @PreAuthorize("hasRole('ADMIN') (returnObject.owner==authentication.role)")
+    @PutMapping("{id}")
+    public Usuario edit(@RequestBody EditUserDto editDto,
+                        @PathVariable UUID id) {
+        return userService.editUsuario(editDto, id );
+    }
+
+    @Operation(summary = "Elimina un usuario por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "usuario eliminado con éxito",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha encontrado el usuario con el ID proporcionado",
+                    content = @Content)
+    })
+    @PreAuthorize("hasRole('ADMIN') (returnObject.owner==authentication.role)")
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> delete(@PathVariable UUID id) {
+        userService.deleteUsuario(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
 
 
