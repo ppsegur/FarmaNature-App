@@ -205,7 +205,7 @@ public class UsuarioController {
             )
     })
     @PreAuthorize("hasRole('FARMACEUTICO') (returnObject.owner==authentication.role)")
-    @GetMapping
+    @GetMapping("/auth/todos")
     public ResponseEntity<?> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(GetAllUsuariosDto.fromDto(userService.findallUsuarios()));
     }
@@ -233,7 +233,7 @@ public class UsuarioController {
 
 })
     @PreAuthorize("hasRole('ADMIN') (returnObject.owner==authentication.role)")
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public Usuario edit(@RequestBody EditUserDto editDto,
                         @PathVariable UUID id) {
         return userService.editUsuario(editDto, id );
@@ -249,7 +249,7 @@ public class UsuarioController {
                     content = @Content)
     })
     @PreAuthorize("hasRole('ADMIN') (returnObject.owner==authentication.role)")
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable UUID id) {
         userService.deleteUsuario(id);
         return ResponseEntity.noContent().build();

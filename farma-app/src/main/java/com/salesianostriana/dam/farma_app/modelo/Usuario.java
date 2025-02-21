@@ -2,6 +2,9 @@ package com.salesianostriana.dam.farma_app.modelo;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.NaturalId;
@@ -22,7 +25,7 @@ import java.util.stream.Collectors;
 @Inheritance(strategy = InheritanceType.JOINED) //Para gestionar la herencia la haremos tipo joined mucho más facil
 @Table(name = "usuario_entity")
 @Builder
-public abstract class Usuario implements UserDetails {
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -115,5 +118,8 @@ public abstract class Usuario implements UserDetails {
         return Objects.hash(username);
     }
 
-    public abstract String getRole();
+
+    public String getRole() {
+        return roles.toString();
+    }
 }
