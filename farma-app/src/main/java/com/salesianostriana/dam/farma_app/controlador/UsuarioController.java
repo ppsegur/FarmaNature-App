@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,18 +31,25 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 public class UsuarioController {
 
-    private final GoogleAuthenticator googleAuthenticator;
 
-    private final UsuarioService userService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
-    private final RefreshTokenService refreshTokenService;
+    private final GoogleAuthenticator googleAuthenticator = new GoogleAuthenticator();
+    @Autowired
+    private  UsuarioService userService;
+    @Autowired
+    private  AuthenticationManager authenticationManager;
+    @Autowired
+    private  JwtService jwtService;
+    @Autowired
+    private  RefreshTokenService refreshTokenService ;
+
+
 
     @Operation(summary = "Registra un nuevo usuario")
     @ApiResponses(value = {
@@ -134,8 +142,9 @@ public class UsuarioController {
     public ResponseEntity<?> verify2FA(@RequestBody @Valid Verify2FARequest request) {
         Usuario user = userService.findByEmail(request.email());
 
+
         if (googleAuthenticator.authorize(user.getSecret(), request.code())) {
-            user.setVerificado(true);
+            //user.setVerificado(true);
             userService.upDateVerification(user);
 
             String accessToken = jwtService.generateAccessToken(user);

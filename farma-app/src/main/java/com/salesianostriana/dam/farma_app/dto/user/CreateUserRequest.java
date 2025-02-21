@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+@NotBlank(message = "{createUserRequest.not blank}")
 public record CreateUserRequest(
         @NotBlank(message = "{createUserRequest.username.not blank}")
         @Size(min = 3, max = 50, message = "{createUserRequest.username.size}")

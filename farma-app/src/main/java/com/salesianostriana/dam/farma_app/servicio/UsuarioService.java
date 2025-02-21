@@ -51,14 +51,13 @@ public class UsuarioService {
         if(!Objects.equals(createUserRequest.verifyPassword(), createUserRequest.password())){
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Passwords do not match");
         }   else {
-            Usuario user = Usuario.builder()
+             Usuario user = userRepository.save(Usuario.builder()
                     .username(createUserRequest.username())
                     .password(passwordEncoder.encode(createUserRequest.password()))
                     .email(createUserRequest.email())
                     .roles(Set.of(UserRole.USER))
                     .activationToken(generateRandomActivationCode())
-                    .build();
-
+                    .build());
             try {
                 GoogleAuthenticatorKey key = googleAuthenticator.createCredentials();
                 user.setSecret(key.getKey());
@@ -105,7 +104,6 @@ public class UsuarioService {
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             BitMatrix bitMatrix = qrCodeWriter.encode(otpAuthURL, BarcodeFormat.QR_CODE, 300, 300);
 
-            // Ruta donde se guardará el archivo QR (ajusta la ruta según tu estructura)
             String filePath = "src/main/resources/static/qrcode.png";
             java.nio.file.Path path = Paths.get(filePath);
             java.nio.file.Files.createDirectories(path.getParent()); // Crea los directorios si no existen
@@ -134,6 +132,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new ActivationExpiredException("El código de activación no existe o ha caducado"));
     }
     public void upDateVerification(Usuario user){
+
         user.setVerificado(true);
         userRepository.save(user);
     }
