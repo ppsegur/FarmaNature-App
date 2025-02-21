@@ -10,7 +10,7 @@ import com.salesianostriana.dam.farma_app.error.ActivationExpiredException;
 import com.salesianostriana.dam.farma_app.modelo.UserRole;
 import com.salesianostriana.dam.farma_app.modelo.Usuario;
 import com.salesianostriana.dam.farma_app.repositorio.UsuarioRepo;
-import com.salesianostriana.dam.farma_app.util.ResendMailSender;
+import com.salesianostriana.dam.farma_app.util.MailService;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
@@ -40,47 +40,40 @@ public class UsuarioService {
     private final UsuarioRepo userRepository;
     private final PasswordEncoder passwordEncoder;
     private final GoogleAuthenticator googleAuthenticator;
-    // private final SendGridMailSender mailSender;
-    private final ResendMailSender mailSender;
-
+    private final MailService mailService;
 
     @Value("${activation.duration}")
     private int activationDuration;
 
     public Usuario createUser(CreateUserRequest createUserRequest) {
 
-             Usuario user = userRepository.save(Usuario.builder()
-                    .username(createUserRequest.username())
-                    .password(passwordEncoder.encode(createUserRequest.password()))
-                    .email(createUserRequest.email())
-                    .roles(Set.of(UserRole.USER))
-                    .activationToken(generateRandomActivationCode())
-                    .build());
-            try {
-                GoogleAuthenticatorKey key = googleAuthenticator.createCredentials();
-                user.setSecret(key.getKey());
-                String otpAuthURL = generateQRCodeURL(user);
-                String qrImagePath = generateQRCodeImage(otpAuthURL);
+        Usuario user = userRepository.save(Usuario.builder()
+                .username(createUserRequest.username())
+                .password(passwordEncoder.encode(createUserRequest.password()))
+                .email(createUserRequest.email())
+                .roles(Set.of(UserRole.USER))
+                .activationToken(generateRandomActivationCode())
+                .build());
 
-                // Contenido HTML para el email
-                String emailContent = "<h1>Activación de cuenta</h1>"
-                        + "<p>Escanea el siguiente código QR para activar tu cuenta:</p>"
-                      ;
+        try {
+            GoogleAuthenticatorKey key = googleAuthenticator.createCredentials();
+            user.setSecret(key.getKey());
+            String otpAuthURL = generateQRCodeURL(user);
+            String qrImagePath = generateQRCodeImage(otpAuthURL);
 
-                // Enviar el correo con la imagen QR como adjunto
-                mailSender.sendMail(createUserRequest.email(), "Activación de cuenta", emailContent, qrImagePath);
+            // Enviar el correo con la imagen QR
+            String emailContent = "<h1>Activación de cuenta</h1>"
+                    + "<p>Escanea el siguiente código QR para activar tu cuenta:</p>";
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al enviar el email de activación");
-            }
+            mailService.sendMail(createUserRequest.email(), "Activación de cuenta", emailContent, qrImagePath);
 
-
-            return userRepository.save(user);
-
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al enviar el email de activación");
         }
 
-
+        return userRepository.save(user);
+    }
 
 
     public String generateQRCodeURL(Usuario user) {

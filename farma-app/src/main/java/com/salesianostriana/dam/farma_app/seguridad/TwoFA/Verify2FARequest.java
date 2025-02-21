@@ -6,5 +6,6 @@ public record Verify2FARequest(
         @NotBlank(message = "{createUserRequest.email.not blank}")
         String email,
         @NotBlank(message = "{verify2FARequest.code.not blank}")
-        int code) {
+        String code) {
+
 }

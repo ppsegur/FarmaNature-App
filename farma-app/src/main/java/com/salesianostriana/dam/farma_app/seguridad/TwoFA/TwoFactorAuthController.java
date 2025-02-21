@@ -3,7 +3,6 @@ package com.salesianostriana.dam.farma_app.seguridad.TwoFA;
 
 import com.salesianostriana.dam.farma_app.modelo.Usuario;
 import com.salesianostriana.dam.farma_app.repositorio.UsuarioRepo;
-import com.salesianostriana.dam.farma_app.util.ResendMailSender;
 import lombok.RequiredArgsConstructor;
 import org.jboss.aerogear.security.otp.Totp;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,7 @@ public class TwoFactorAuthController {
 
     private final TwoFactorAuthService twoFactorAuthService;
     private final UsuarioRepo usuarioRepo;
-    private final ResendMailSender resendMailSender;
+
 
     //generar el Qr
     @PostMapping("/setup")

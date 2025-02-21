@@ -8,10 +8,16 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 
+@FieldsValueMatch.List({
         @FieldsValueMatch(
                 field = "password",
                 fieldMatch = "verifyPassword",
-                message = "Los valores de password y verifyPassword no coinciden")
+                message = "Los valores de password y verifyPassword no coinciden"),
+        @FieldsValueMatch(
+                field = "email",
+                fieldMatch = "verifyEmail",
+                message = "Los valores de email y verifyEmail no coinciden")
+})
 public record CreateUserRequest(
         @NotBlank(message = "{createUserRequest.username.notblank}")
         @Size(min = 3, max = 50, message = "{createUserRequest.username.size}")
@@ -27,6 +33,13 @@ public record CreateUserRequest(
         @NotBlank(message = "{createUserRequest.email.notblank}")
         @Email(message = "{createUserRequest.email.invalid}")
         @Size(max = 255, message = "{createUserRequest.email.size}")
-        String email
+        String email,
+
+        @NotBlank(message = "{createUserRequest.email.notblank}")
+        @Email(message = "{createUserRequest.email.invalid}")
+        @Size(max = 255, message = "{createUserRequest.email.size}")
+        String verifyEmail
+
+
 ) {
 }
