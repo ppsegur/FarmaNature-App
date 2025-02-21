@@ -2,9 +2,11 @@ package com.salesianostriana.dam.farma_app.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.salesianostriana.dam.farma_app.modelo.Usuario;
+import lombok.Builder;
 
 import java.util.UUID;
 
+@Builder
 public record UserResponse(
         UUID id,
         String username,

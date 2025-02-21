@@ -16,5 +16,6 @@ public interface UsuarioRepo extends JpaRepository<Usuario, UUID> {
     //consulta para 2FA
     Usuario findByEmail(String email);
 
+    boolean existsByUsername(String username);
 
 }

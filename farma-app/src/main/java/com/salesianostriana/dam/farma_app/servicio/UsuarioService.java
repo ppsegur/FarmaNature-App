@@ -152,6 +152,12 @@ public class UsuarioService {
     //Podemos plantearlo paara que cuando sea un farmaceutico el correo de verificacion sea al admin de todas para que hasta que este no confiirme su cuenta no esta verificada
     //y para los usuarios como los clientes podemos hacer el verificado del Qr con 2factor -->
 
+    public List<Usuario> findallUsuarios() {
+        List<Usuario> usuarios = userRepository.findAll();
+        if(usuarios.isEmpty())
+            throw new EntityNotFoundException("No existen usuarios");
+        return usuarios;
+    }
 
 
 

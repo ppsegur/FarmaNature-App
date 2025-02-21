@@ -1,11 +1,13 @@
-createUserRequest.username.notblank="El nombre de usuario no puede estar vacío"
+createUserRequest.username.not blank="El nombre de usuario no puede estar vacío"
 createUserRequest.username.size="El nombre de usuario debe tener entre 3 y 50 caracteres"
 
-createUserRequest.password.notblank="La contraseña no puede estar vacía"
+createUserRequest.password.not blank="La contraseña no puede estar vacía"
 createUserRequest.password.pattern="La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales"
 
 createUserRequest.verifyPassword.notblank="Debe confirmar la contraseña"
 
-createUserRequest.email.notblank="El email no puede estar vacío"
+createUserRequest.email.not blank="El email no puede estar vacío"
 createUserRequest.email.invalid="El formato del email no es válido"
 createUserRequest.email.size="El email no puede tener más de 255 caracteres"
+
+verify2FARequest.code.not blank="El código de verificación no puede estar vacío"

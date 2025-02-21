@@ -1,9 +1,6 @@
 package com.salesianostriana.dam.farma_app.controlador;
 
-import com.salesianostriana.dam.farma_app.dto.user.ActivateAccountRequest;
-import com.salesianostriana.dam.farma_app.dto.user.CreateUserRequest;
-import com.salesianostriana.dam.farma_app.dto.user.LoginRequest;
-import com.salesianostriana.dam.farma_app.dto.user.UserResponse;
+import com.salesianostriana.dam.farma_app.dto.user.*;
 import com.salesianostriana.dam.farma_app.modelo.Usuario;
 import com.salesianostriana.dam.farma_app.seguridad.TwoFA.Verify2FARequest;
 import com.salesianostriana.dam.farma_app.seguridad.access.JwtService;
@@ -13,7 +10,9 @@ import com.salesianostriana.dam.farma_app.seguridad.refresh.RefreshTokenService;
 import com.salesianostriana.dam.farma_app.servicio.UsuarioService;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -50,16 +51,32 @@ public class UsuarioController {
     private  RefreshTokenService refreshTokenService ;
 
 
-
     @Operation(summary = "Registra un nuevo usuario")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201",
+            @ApiResponse(
+                    responseCode = "201",
                     description = "Usuario creado con éxito",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Usuario.class))}),
-            @ApiResponse(responseCode = "400",
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = CreateUserRequest.class),
+                                    examples = @ExampleObject(value = """
+                                {
+                                    "id": 1,
+                                    "username": "Pepe",
+                                    "password": "1234",
+                                    "verifyPassword": "1234",
+                                    "email": "segura.rojos23@triana.salesianos.edu"
+                                }
+                                """)
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    responseCode = "400",
                     description = "Datos inválidos para registrar el usuario",
-                    content = @Content)
+                    content = @Content
+            )
     })
     @PostMapping("/auth/register")
     public ResponseEntity<?> register(@RequestBody @Valid CreateUserRequest createUserRequest) {
@@ -85,7 +102,7 @@ public class UsuarioController {
                     content = @Content)
     })
     @PostMapping("/auth/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication =
                 authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(
@@ -166,12 +183,43 @@ public class UsuarioController {
                 .body(UserResponse.of(userService.activateAccount(token)));
     }
 
+    @Operation(summary = "Obtiene todos los usuarios")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se han encontrado los usuarios",
+                    content = { @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Usuario.class)),
+                            examples = {@ExampleObject(
+                                    value = """
+                                            {
+                                              {
+                                                 "username" : "ppsegur",
+                                                 "password":"1234",
+                                                 "role": "director/admin",                                           \s
+                                              }
+                                            }
+                                           \s"""
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se han encontrado usuarios"
+            )
+    })
+    @PreAuthorize("hasRole('Farmaceutico') (returnObject.owner==authentication.name)")
+    @GetMapping
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(GetAllUsuariosDto.fromDto(userService.findallUsuarios()));
+    }
+
+
+
 
     @GetMapping("/me")
     public UserResponse me(@AuthenticationPrincipal Usuario user) {
         return UserResponse.of(user);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/me/admin")
     public Usuario adminMe(@AuthenticationPrincipal Usuario user) {
         return user;
