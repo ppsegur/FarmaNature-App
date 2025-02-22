@@ -61,7 +61,6 @@ public class Usuario implements UserDetails {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
-    @Enumerated(EnumType.STRING)
     @Column(name = "roles")
     private Set<UserRole> roles = new HashSet<>();
 

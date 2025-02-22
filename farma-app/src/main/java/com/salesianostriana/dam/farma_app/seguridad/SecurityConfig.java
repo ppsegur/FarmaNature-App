@@ -73,7 +73,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authz -> authz
                 .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login","/auth/verify-2fa", "/auth/refresh/token", "/error", "/activate/account/").permitAll()
                 .requestMatchers("/me/admin").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/auth/all").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/auth/todos").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/auth/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE,"/auth/").hasRole("ADMIN")
                 .requestMatchers("/h2-console","/auth/qr-code/**","/auth/verify-2fa").permitAll()

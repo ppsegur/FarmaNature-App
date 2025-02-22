@@ -12,10 +12,11 @@ import jakarta.validation.constraints.Size;
         fieldMatch = "verifyPassword",
         message = "Los valores de password y verifyPassword no coinciden")
 public record EditUserDto(
-        @NotBlank(message = "{createUserRequest.username.notblank}")
-                          @Size(min = 3, max = 50, message = "{createUserRequest.username.size}")
+       // @NotBlank(message = "{createUserRequest.username.notblank}")
+
+                        /*  @Size(min = 3, max = 50, message = "{createUserRequest.username.size}")
                           @UniqueUsername
-                          String username,
+                          String username,*/
 
                           @NotBlank(message = "{createUserRequest.password.notblank}")
                           String password,

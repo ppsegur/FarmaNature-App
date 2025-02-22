@@ -151,9 +151,12 @@ public class UsuarioService {
         if(usuarioOp.isEmpty()){
             throw new EntityNotFoundException("No existen usuarios con ese id");
         }
-        usuarioOp.get().setUsername(editUsuarioDto.username());
+       // usuarioOp.get().setUsername(editUsuarioDto.username());
         usuarioOp.get().setPassword(editUsuarioDto.password());
-        usuarioOp.get().setRoles(Collections.singleton(editUsuarioDto.role()));
+        UserRole newRole = UserRole.valueOf(String.valueOf(editUsuarioDto.role()));
+
+        usuarioOp.get().setRoles(Collections.singleton(newRole));
+        //usuarioOp.get().setRoles(Collections.singleton(editUsuarioDto.role()));
         return userRepository.save(usuarioOp.get());
     }
 
