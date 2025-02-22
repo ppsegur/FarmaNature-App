@@ -1,12 +1,11 @@
 package com.salesianostriana.dam.farma_app.modelo;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -18,7 +17,11 @@ import lombok.experimental.SuperBuilder;
 public class Farmaceutico extends Usuario{
 
     private String direccionLocal;
-    private String turno;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    @Column(name = "turno")
+    private Set<Turno> turno = new HashSet<>() ;
 
     @Override
     public String getRole() {

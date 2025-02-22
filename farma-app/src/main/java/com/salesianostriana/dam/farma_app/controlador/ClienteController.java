@@ -22,10 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "CLiente", description = "El controlador para los dsitintos roles  ")
-public class RoleController {
+@Tag(name = "CLiente", description = "El controlador para los dsitintos clientes  ")
+public class ClienteController {
 
     private final ClienteService service;
+
 
     //EndPoint al estilo de editar perfil para qe le cliente añadde datos más
     // personales de contacto o para después agregar algun tipo de atributos
@@ -59,4 +60,5 @@ public class RoleController {
                         @PathVariable String username) {
         return service.editCliente(editDto, username );
     }
+
 }

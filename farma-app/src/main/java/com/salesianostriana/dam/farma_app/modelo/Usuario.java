@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED) //Para gestionar la herencia la haremos tipo joined mucho más facil
 @Table(name = "usuario_entity")
-@Builder
+@SuperBuilder
 public class Usuario implements UserDetails {
 
     @Id
