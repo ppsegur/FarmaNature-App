@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 
 public record EditFarmaceuticoDto(@NotBlank(message = "La dirección del local no puede estar vacía")
                                    @Size(max = 255, message = "La dirección no puede tener más de 255 caracteres")
-                                   String direccionLocal,
+                                   String direccion,
 
                                   @NotNull(message = "El turno es obligatorio")
                                   Turno turno  // Usamos el enum Turno para evitar valores inválidos)

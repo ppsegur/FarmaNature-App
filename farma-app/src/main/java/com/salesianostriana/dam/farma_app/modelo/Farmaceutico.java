@@ -14,11 +14,17 @@ import java.util.Set;
 @AllArgsConstructor
 @SuperBuilder
 @Table(name = "farmaceutico")
+@PrimaryKeyJoinColumn(name = "id")
 public class Farmaceutico extends Usuario{
 
-    private String direccionLocal;
+    @Column(name = "direccion")
+    private String direccion;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "farmaceutico_turno",
+            joinColumns = @JoinColumn(name = "usuario_id")
+    )
     @Builder.Default
     @Column(name = "turno")
     private Set<Turno> turno = new HashSet<>() ;

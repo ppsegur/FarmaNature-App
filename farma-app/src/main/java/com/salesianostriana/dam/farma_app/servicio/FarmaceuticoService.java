@@ -23,7 +23,7 @@ public class FarmaceuticoService {
             throw new EntityNotFoundException("No existen farmaceuticos con ese nombre");
         }
         // usuarioOp.get().setUsername(editUsuarioDto.username());
-        usuarioOp.get().setDireccionLocal(editUsuarioDto.direccionLocal());
+        usuarioOp.get().setDireccion(editUsuarioDto.direccion());
         Turno turno = Turno.valueOf(String.valueOf(editUsuarioDto.turno()));
 
         usuarioOp.get().setTurno(Collections.singleton(editUsuarioDto.turno()));
