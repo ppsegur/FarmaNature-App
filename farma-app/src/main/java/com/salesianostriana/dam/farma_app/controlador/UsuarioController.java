@@ -204,7 +204,7 @@ public class UsuarioController {
                     description = "No se han encontrado usuarios"
             )
     })
-    @PreAuthorize("hasRole('FARMACEUTICO') (returnObject.owner==authentication.role)")
+    @PreAuthorize("hasRole('ADMIN') ")
     @GetMapping("/auth/todos")
     public ResponseEntity<?> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(GetAllUsuariosDto.fromDto(userService.findallUsuarios()));
@@ -232,11 +232,11 @@ public class UsuarioController {
             description = "No se han encontrado usuarios")
 
 })
-    @PreAuthorize("hasRole('ADMIN') (returnObject.owner==authentication.role)")
-    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/auth/{username}")
     public Usuario edit(@RequestBody EditUserDto editDto,
-                        @PathVariable UUID id) {
-        return userService.editUsuario(editDto, id );
+                        @PathVariable String username) {
+        return userService.editUsuario(editDto, username );
     }
 
     @Operation(summary = "Elimina un usuario por su ID")
@@ -248,10 +248,10 @@ public class UsuarioController {
                     description = "No se ha encontrado el usuario con el ID proporcionado",
                     content = @Content)
     })
-    @PreAuthorize("hasRole('ADMIN') (returnObject.owner==authentication.role)")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable UUID id) {
-        userService.deleteUsuario(id);
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/auth/{username}")
+    public ResponseEntity<?> delete(@PathVariable String username) {
+        userService.deleteUsuario(username);
         return ResponseEntity.noContent().build();
     }
 

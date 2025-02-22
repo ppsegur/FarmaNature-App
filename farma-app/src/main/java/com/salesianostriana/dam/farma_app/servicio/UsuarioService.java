@@ -146,8 +146,8 @@ public class UsuarioService {
 
     //Métodos de gestión de ROLES
     //Editar usuario usando el dto
-    public Usuario editUsuario(EditUserDto editUsuarioDto, UUID id) {
-        Optional<Usuario> usuarioOp = userRepository.findById(id);
+    public Usuario editUsuario(EditUserDto editUsuarioDto, String username) {
+        Optional<Usuario> usuarioOp = userRepository.findFirstByUsername(username);
         if(usuarioOp.isEmpty()){
             throw new EntityNotFoundException("No existen usuarios con ese id");
         }
@@ -158,8 +158,12 @@ public class UsuarioService {
     }
 
     //Eliminar usuario
-    public void deleteUsuario(UUID id) {
-        userRepository.deleteById(id);
+    public void deleteUsuario(String username) {
+        Optional<Usuario> usuarioAEliminar = userRepository.findFirstByUsername(username);
+        if(!usuarioAEliminar.isEmpty() && !usuarioAEliminar.get().getRoles().equals("ADMIN")){
+            userRepository.deleteById(usuarioAEliminar.get().getId());
+
+        }
     }
 
     public List<Usuario> findallUsuarios() {

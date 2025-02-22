@@ -36,6 +36,7 @@ public class Usuario implements UserDetails {
     private String username ;
 
     private String password;
+    @Column(name = "email")
     private String email;
 
     //2FA
@@ -53,14 +54,19 @@ public class Usuario implements UserDetails {
         return verificado;
     }
 
+    @Column(name = "nombre")
     private String nombre;
+    @Column(name= "apellidos")
     private String apellidos;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "roles")
     private Set<UserRole> roles = new HashSet<>();
 
     @Builder.Default
+    @Column(name = "createdAt")
     private Instant createdAt = Instant.now();
 
 
