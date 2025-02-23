@@ -14,14 +14,14 @@ import com.salesianostriana.dam.farma_app.repositorio.UsuarioRepo;
 import com.salesianostriana.dam.farma_app.util.MailService;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
-import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
-import io.jsonwebtoken.io.IOException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -169,13 +169,30 @@ public class UsuarioService {
         }
     }
 
+    /**
     public List<Usuario> findallUsuarios() {
         List<Usuario> usuarios = userRepository.findAll();
         if(usuarios.isEmpty())
             throw new EntityNotFoundException("No existen usuarios");
         return usuarios;
     }
+    */
+    public Page<Usuario> findAllUsuarios(int page, int size, String[] sort) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findAll(pageable);
+    }
 
+    // Con ordenamiento
+    public Page<Usuario> findAllSorted(int page, int size, String[] sort) {
+        // sort[0] = campo, sort[1] = dirección (asc/desc)
+        Sort.Direction direction = sort[1].equalsIgnoreCase("asc") ?
+                Sort.Direction.ASC : Sort.Direction.DESC;
+
+        Sort ordenamiento = Sort.by(direction, sort[0]);
+        Pageable pageable = PageRequest.of(page, size, ordenamiento);
+
+        return userRepository.findAll(pageable);
+    }
 
 
 }

@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -191,24 +192,29 @@ public class UsuarioController {
                             array = @ArraySchema(schema = @Schema(implementation = Usuario.class)),
                             examples = {@ExampleObject(
                                     value = """
-                                            {
-                                              {
-                                                 "username" : "ppsegur",
-                                                 "password":"1234",
-                                                 "role": "FARMACEUTCO",                                           \s
-                                              }
-                                            }
-                                           """
+                                        {
+                                          {
+                                             "username" : "ppsegur",
+                                             "password":"1234",
+                                             "role": "FARMACEUTICO",                                           \s
+                                          }
+                                        }
+                                       """
                             )}
                     )}),
             @ApiResponse(responseCode = "404",
                     description = "No se han encontrado usuarios"
             )
     })
-    @PostAuthorize("hasRole('ADMIN') ")
+    @PostAuthorize("hasRole('ADMIN')")
     @GetMapping("/auth/todos")
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(GetAllUsuariosDto.fromDto(userService.findallUsuarios()));
+    public ResponseEntity<Page<Usuario>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id,asc") String[] sort) {
+
+        Page<Usuario> usuarios = userService.findAllUsuarios(page, size, sort);
+        return ResponseEntity.status(HttpStatus.OK).body(usuarios);
     }
 
     @Operation(summary = "Edita un Usuario existente")
