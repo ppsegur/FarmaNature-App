@@ -5,6 +5,7 @@ import com.salesianostriana.dam.farma_app.dto.EditProductDto;
 import com.salesianostriana.dam.farma_app.dto.GetProductoDto;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
 import com.salesianostriana.dam.farma_app.modelo.Usuario;
+import com.salesianostriana.dam.farma_app.query.SearchCriteria;
 import com.salesianostriana.dam.farma_app.servicio.ProductoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -17,25 +18,25 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.PagedModel;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.List;
 import java.util.UUID;
 
+@Log
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "producto", description = "El controlador para los distintas productos  ")
@@ -186,5 +187,30 @@ public class ProductoController {
         Producto productoEditado = productoService.edit(editProductDto, id);
         GetProductoDto response = GetProductoDto.of(productoEditado);
         return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/buscar/")
+    public ResponseEntity<List<GetProductoDto>> buscar(@RequestParam(value = "search", required = false) String search) {
+        log.info(search);
+        List<SearchCriteria> params = new ArrayList<>();
+        if (search != null) {
+            Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)([^,]+)");
+            Matcher matcher = pattern.matcher(search);
+            while (matcher.find()) {
+                String key = matcher.group(1);
+                String operation = matcher.group(2);
+                String value = matcher.group(3);
+
+                log.info("Key: " + key);
+                log.info("Operation: " + operation);
+                log.info("Value: " + value);
+
+                params.add(new SearchCriteria(key, operation, value));
+            }
+        }
+
+        List<GetProductoDto> productos = productoService.search(params);
+        return ResponseEntity.ok(productos);
     }
 }

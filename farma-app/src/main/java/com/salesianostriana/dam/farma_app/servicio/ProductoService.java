@@ -7,6 +7,8 @@ import com.salesianostriana.dam.farma_app.error.ProductoNotFoundException;
 import com.salesianostriana.dam.farma_app.modelo.Categoria;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
 import com.salesianostriana.dam.farma_app.modelo.Usuario;
+import com.salesianostriana.dam.farma_app.query.ProductSpecificationBuilder;
+import com.salesianostriana.dam.farma_app.query.SearchCriteria;
 import com.salesianostriana.dam.farma_app.repositorio.CategoriaRepo;
 import com.salesianostriana.dam.farma_app.repositorio.ProductoRepo;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -110,6 +113,19 @@ public Page<Producto> findAllProductos(int page, int size, String[] sort) {
         }
 
         repo.deleteById(id);
+    }
+
+
+
+    //Filtrado
+    public List<GetProductoDto> search(List<SearchCriteria> searchCriteriaList) {
+        ProductSpecificationBuilder builder = new ProductSpecificationBuilder(searchCriteriaList);
+        Specification<Producto> spec = builder.build();
+
+        List<Producto> productos = repo.findAll(spec);
+        return productos.stream()
+                .map(GetProductoDto::of)
+                .collect(Collectors.toList());
     }
 
 
