@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,7 +58,7 @@ public class ClienteController {
     @PreAuthorize("hasRole('CLIENTE')")
     @PutMapping("/cliente/{username}")
     public Usuario edit(@RequestBody EditClienteDto editDto,
-                        @PathVariable String username) {
+                        @AuthenticationPrincipal String username) {
         return service.editCliente(editDto, username );
     }
 

@@ -1,14 +1,11 @@
 package com.salesianostriana.dam.farma_app.modelo;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -26,6 +23,9 @@ public class Cliente extends Usuario{
     private String telefono;
     @Column(name = "edad")
     private int edad;
+
+    @OneToMany(mappedBy = "cliente")
+    private Set<Comentario> comentarios = new HashSet<>();
 
 
 

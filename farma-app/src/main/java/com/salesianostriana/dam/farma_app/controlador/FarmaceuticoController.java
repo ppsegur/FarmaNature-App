@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,7 +50,7 @@ public class FarmaceuticoController {
     @PreAuthorize("hasRole('FARMACEUTICO')")
     @PutMapping("/farmaceutico/{username}")
     public Usuario edit(@RequestBody EditFarmaceuticoDto editDto,
-                        @PathVariable String username) {
+                        @AuthenticationPrincipal String username) {
         return service.editFarmaceutico(editDto, username );
     }
 }

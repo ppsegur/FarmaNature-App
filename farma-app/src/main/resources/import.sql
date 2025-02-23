@@ -20,3 +20,14 @@ INSERT INTO usuario_roles (usuario_id, roles) VALUES
                                                   ('550e8400-e29b-41d4-a716-446655440000', 0),  -- ADMIN
                                                   ('650e8400-e29b-41d4-a716-446655440001', 1),  -- Cliente
                                                   ('650e8400-e29b-41d4-a716-446655440002', 2);  -- FARMACEUTICO
+
+
+-- Insertar categorías
+INSERT INTO categoria (id, nombre) VALUES
+                                       ('550e8400-e29b-41d4-a716-446655440000', 'Medicamentos'),
+                                       ('550e8400-e29b-41d4-a716-446655440001', 'Cuidado Personal');
+
+-- Insertar productos
+INSERT INTO producto (id, nombre, descripcion, precio, stock, fecha_publicacion, imagen, oferta, categoria_id) VALUES
+                                                                                                                   ('550e8400-e29b-41d4-a716-446655440002', 'Paracetamol', 'Analgésico y antipirético', 5.99, 100, '2023-10-01', 'paracetamol.jpg', false, '550e8400-e29b-41d4-a716-446655440000'),
+                                                                                                                   ('550e8400-e29b-41d4-a716-446655440003', 'Jabón de Glicerina', 'Jabón suave para pieles sensibles', 3.49, 50, '2023-10-01', 'jabon_glicerina.jpg', true, '550e8400-e29b-41d4-a716-446655440001');
