@@ -8,6 +8,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.salesianostriana.dam.farma_app.dto.user.CreateUserRequest;
 import com.salesianostriana.dam.farma_app.dto.user.EditUserDto;
 import com.salesianostriana.dam.farma_app.error.ActivationExpiredException;
+import com.salesianostriana.dam.farma_app.error.UsuarioNotFoundException;
 import com.salesianostriana.dam.farma_app.modelo.UserRole;
 import com.salesianostriana.dam.farma_app.modelo.Usuario;
 import com.salesianostriana.dam.farma_app.repositorio.UsuarioRepo;
@@ -149,7 +150,7 @@ public class UsuarioService {
     public Usuario editUsuario(EditUserDto editUsuarioDto, String username) {
         Optional<Usuario> usuarioOp = userRepository.findFirstByUsername(username);
         if(usuarioOp.isEmpty()){
-            throw new EntityNotFoundException("No existen usuarios con ese id");
+            throw new UsuarioNotFoundException("No existen usuarios con ese id");
         }
        // usuarioOp.get().setUsername(editUsuarioDto.username());
         usuarioOp.get().setPassword(editUsuarioDto.password());
@@ -167,6 +168,7 @@ public class UsuarioService {
             userRepository.deleteById(usuarioAEliminar.get().getId());
 
         }
+
     }
 
     /**
