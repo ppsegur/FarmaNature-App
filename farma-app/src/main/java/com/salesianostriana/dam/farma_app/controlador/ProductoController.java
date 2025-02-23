@@ -2,6 +2,7 @@ package com.salesianostriana.dam.farma_app.controlador;
 
 import com.salesianostriana.dam.farma_app.dto.EditCategoriaDto;
 import com.salesianostriana.dam.farma_app.dto.EditProductDto;
+import com.salesianostriana.dam.farma_app.dto.GetProductoDto;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
 import com.salesianostriana.dam.farma_app.modelo.Usuario;
 import com.salesianostriana.dam.farma_app.servicio.ProductoService;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,6 +33,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -109,5 +112,19 @@ public class ProductoController {
                 .map(Producto::getNombre)
                 .toList();
         return ResponseEntity.ok(nombres);
+    }
+    @Operation(summary = "Obtiene un producto por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se ha encontrado la producto",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Producto.class))}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se encontró el producto con el id (id proporcionado)",
+                    content = @Content)
+    })
+    @GetMapping("/producto/{id}")
+    public GetProductoDto findById(@PathVariable UUID id) {
+        return GetProductoDto.of(productoService.findById(id));
     }
 }
