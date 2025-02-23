@@ -18,7 +18,9 @@ public record GetProductoDto(
                              Date fechaPublicacion,
 
                              String imagen,
-                             Boolean oferta) {
+                             Boolean oferta,
+        EditCategoriaDto categoria
+        ) {
 
     public static GetProductoDto of(Producto p){
         return GetProductoDto.builder()

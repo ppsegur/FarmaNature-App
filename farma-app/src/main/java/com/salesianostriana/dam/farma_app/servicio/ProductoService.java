@@ -1,14 +1,16 @@
 package com.salesianostriana.dam.farma_app.servicio;
 
-import com.salesianostriana.dam.farma_app.dto.EditCategoriaDto;
 import com.salesianostriana.dam.farma_app.dto.EditProductDto;
-import com.salesianostriana.dam.farma_app.error.CategoriaNotFoundException;
+import com.salesianostriana.dam.farma_app.dto.GetProductoDto;
 import com.salesianostriana.dam.farma_app.modelo.Categoria;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
 import com.salesianostriana.dam.farma_app.repositorio.CategoriaRepo;
 import com.salesianostriana.dam.farma_app.repositorio.ProductoRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,5 +46,13 @@ public class ProductoService {
         categoria.addProducto(producto);
         return repo.save(producto);
     }
-
+/*
+    public Page<Producto> findAllProducto(int page, int size, String[] sort) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repo.findAll(pageable);
+    }
+*/
+public Page<Producto> findAllProducto(Pageable pageable) {
+    return repo.findAll(pageable);
+}
 }

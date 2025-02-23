@@ -2,10 +2,10 @@ package com.salesianostriana.dam.farma_app.controlador;
 
 import com.salesianostriana.dam.farma_app.dto.EditCategoriaDto;
 import com.salesianostriana.dam.farma_app.dto.EditProductDto;
-import com.salesianostriana.dam.farma_app.modelo.Categoria;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
 import com.salesianostriana.dam.farma_app.servicio.ProductoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,21 +14,29 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/producto")
 @Tag(name = "producto", description = "El controlador para los distintas productos  ")
 public class ProductoController {
-        private final ProductoService productoService;
+    private final ProductoService productoService;
 
-
-
+    
     @Operation(summary = "Registra una nueva categoría ")
     @ApiResponses(value = {
             @ApiResponse(
@@ -39,18 +47,18 @@ public class ProductoController {
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = EditCategoriaDto.class),
                                     examples = @ExampleObject(value = """
-                                {
-                                 
-                                    "nombre": "tés",
-                                    "precio":21,
-                                    "descripcion": "tés básicos set 20 sabores",
-                                    "stock":11,
-                                    "categoria":??,
-                                    "imagen":??
-                                    ""
-                                
-                                }
-                                """)
+                                            {
+                                            
+                                                "nombre": "tés",
+                                                "precio":21,
+                                                "descripcion": "tés básicos set 20 sabores",
+                                                "stock":11,
+                                                "categoria":??,
+                                                "imagen":??
+                                                ""
+                                            
+                                            }
+                                            """)
                             )
                     }
             ),
@@ -61,10 +69,57 @@ public class ProductoController {
             )
     })
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/producto")
-    public ResponseEntity<Producto> addProducto(@RequestBody @Valid EditProductDto nuevo){
+    @PostMapping
+    public ResponseEntity<Producto> addProducto(@RequestBody @Valid EditProductDto nuevo) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(productoService.saveproducto(nuevo));
 
+    }
+
+    @Operation(summary = "Obtiene todos los productos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se han encontrado los productos",
+                    content = {@Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = Producto.class)),
+                            examples = {@ExampleObject(
+                                    value = """
+                                             {
+                                               {
+                                                  "nombre" : "té",                     
+                                                  "categoria": "Medicamentos",                                           \s
+                                               }
+                                             }
+                                            """
+                            )}
+                    )}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se han encontrado productos"
+            )
+    })
+
+    @GetMapping("/")
+    public ResponseEntity<Page<Producto>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id,asc") String[] sort) {
+
+        // Crear el Pageable con la paginación y ordenación
+        Pageable pageable = PageRequest.of(page, size, Sort.by(getSortOrder(sort)));
+
+        // Obtener la página de productos
+        Page<Producto> productosPage = productoService.findAllProducto(pageable);
+
+        // Convertir Page<Producto> en PagedModel<EntityModel<Producto>>
+
+        return ResponseEntity.status(HttpStatus.OK).body(productosPage);
+    }
+    private Sort.Order getSortOrder(String[] sort) {
+        if (sort.length >= 2) {
+            String property = sort[0];
+            String direction = sort[1];
+            return new Sort.Order(Sort.Direction.fromString(direction), property);
+        }
+        return Sort.Order.by("id");
     }
 }
