@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -28,5 +29,16 @@ public class CategoriaService {
         }
         return categorias;
     }
+    public void delete(String nombre) {
+       Categoria categoria = repo.findByNombre(nombre);
+
+        Categoria c = categoria;
+       // c.getProductos().forEach(producto -> producto.removeFromCategorias(c));
+        if(c == null) {
+            throw new CategoriaNotFoundException(nombre);
+        }
+        repo.deleteById(c.getId());
+    }
+
 
 }

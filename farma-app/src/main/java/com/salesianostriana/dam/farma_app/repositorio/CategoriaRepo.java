@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface CategoriaRepo extends
         JpaRepository<Categoria, UUID> {
+     Categoria findByNombre(String nombre);
 }
