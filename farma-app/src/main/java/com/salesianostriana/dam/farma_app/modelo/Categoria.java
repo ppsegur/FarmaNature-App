@@ -1,14 +1,14 @@
 package com.salesianostriana.dam.farma_app.modelo;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.awt.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -27,6 +27,23 @@ public class Categoria {
 
     @Column(name = "nombre")
     private String nombre;
+
+    @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    Set<Producto> cursos = new HashSet<>();
+
+
+    //Metodos helpers PRODUCTO-CATEGORIAS
+    public void addProducto(Producto p) {
+        p.setCategoria(this);
+        cursos.add(p);
+    }
+    public void removeProducto(Producto p) {
+        cursos.remove(p);
+        p.setCategoria(null);
+    }
 
     @Override
     public final boolean equals(Object o) {
