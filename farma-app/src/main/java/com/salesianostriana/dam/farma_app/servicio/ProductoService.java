@@ -78,6 +78,24 @@ public Page<Producto> findAllProductos(int page, int size, String[] sort) {
         return producto.get();
     }
 
+@Transactional
+    public Producto edit(EditProductDto dto, UUID id) {
+        return repo.findById(id)
+                .map(old -> {
+                 old.setNombre(dto.nombre());
+                 old.setDescripcion(dto.descripcion());
+                 old.setPrecio(dto.precio());
+                 old.setStock(dto.stock());
+                 old.setImagen(dto.imagen());
+                 old.setFechaPublicacion(dto.fechaPublicacion());
+                 old.setOferta(dto.oferta());
+                 old.setCategoria(categoriaRepo.findByNombre(dto.categoria().nombre()));
+
+                 return repo.save(old);
+
+                })
+                .orElseThrow(() -> new ProductoNotFoundException("No se encontró la empresa con el id " + id));
+    }
 
     @Transactional
     public void delete(UUID id) {

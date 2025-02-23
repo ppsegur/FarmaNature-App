@@ -29,6 +29,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -143,5 +144,44 @@ public class ProductoController {
         productoService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Producto actualizado con éxito",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GetProductoDto.class),
+                            examples = @ExampleObject(value = """
+                {
+                    "id": "550e8400-e29b-41d4-a716-446655440000",
+                    "nombre": "Paracetamol",
+                    "precio": 5.99,
+                    "descripcion": "Analgésico y antipirético",
+                    "stock": 100,
+                    "categoria": "Medicamentos",
+                    "imagen": "paracetamol.jpg"
+                }
+            """)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Datos inválidos para actualizar el producto",
+                    content = @Content
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "No se encontró el producto con el id proporcionado",
+                    content = @Content
+            )
+    })
+            @PostAuthorize("hasRole('ADMIN')")
+            @PutMapping("/producto/{id}")
+            public ResponseEntity<GetProductoDto> editProducto(
+            @PathVariable UUID id,
+            @RequestBody @Valid EditProductDto editProductDto) {
+        Producto productoEditado = productoService.edit(editProductDto, id);
+        GetProductoDto response = GetProductoDto.of(productoEditado);
+        return ResponseEntity.ok(response);
+    }
 }
