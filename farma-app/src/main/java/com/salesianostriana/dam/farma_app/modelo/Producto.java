@@ -26,7 +26,6 @@ public class Producto {
         @GeneratedValue(strategy = GenerationType.UUID)
         private UUID id;
 
-        @NaturalId
         @Column(name = "nombre")
         private String nombre;
 

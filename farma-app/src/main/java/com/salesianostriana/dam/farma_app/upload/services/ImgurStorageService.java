@@ -5,6 +5,8 @@ import com.salesianostriana.dam.farma_app.upload.dtos.GetImageResponse;
 import com.salesianostriana.dam.farma_app.upload.dtos.NewImageRequest;
 import com.salesianostriana.dam.farma_app.upload.dtos.NewImageResponse;
 import com.salesianostriana.dam.farma_app.upload.error.ImgurBadRequestException;
+import com.salesianostriana.dam.farma_app.upload.error.ImgurImageNotFoundException;
+import com.salesianostriana.dam.farma_app.upload.error.StorageException;
 import io.jsonwebtoken.io.IOException;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
@@ -21,9 +23,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriBuilderFactory;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Base64;
 import java.util.Collections;
+
+import static org.springframework.http.HttpStatus.*;
 
 @Log
 @Service

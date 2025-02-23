@@ -1,27 +1,29 @@
 package com.salesianostriana.dam.farma_app.dto;
 
+import com.salesianostriana.dam.farma_app.modelo.Categoria;
 import jakarta.validation.constraints.*;
 
 import java.util.Date;
 
 public record EditProductDto(
 
-
-
-    @Size(max = 500, message = "La descripción no puede tener más de 500 caracteres")
+        @NotNull(message = "El precio no puede ser nulo")
+        String nombre,
+        @Size(max = 500, message = "La descripción no puede tener más de 500 caracteres")
      String descripcion,
 
-    @NotNull(message = "El precio no puede ser nulo")
+        @NotNull(message = "El precio no puede ser nulo")
     @Positive(message = "El precio debe ser un número positivo")
     Double precio,
 
-    @NotNull(message = "El stock no puede ser nulo")
+        @NotNull(message = "El stock no puede ser nulo")
     @PositiveOrZero(message = "El stock debe ser un número positivo o cero")
     Integer stock,
 
-    @PastOrPresent(message = "La fecha de publicación no puede ser futura")
+        @PastOrPresent(message = "La fecha de publicación no puede ser futura")
     Date fechaPublicacion,
 
-    String imagen,
-    Boolean oferta) {
+        String imagen,
+        Boolean oferta,
+        Categoria categoria) {
 }
