@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.farma_app.modelo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -44,6 +45,7 @@ public class Producto {
 
 
     @OneToMany(mappedBy = "producto",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Set<Comentario> reseñas = new HashSet<>();
 
     @Override

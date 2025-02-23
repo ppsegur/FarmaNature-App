@@ -82,7 +82,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST,"/categoria/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT,"/categoria/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE,"/categoria/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/producto/").permitAll()
+                .requestMatchers(HttpMethod.GET,"/producto/all").permitAll()
 
                 .requestMatchers("/h2-console","/auth/qr-code/**","/auth/verify-2fa").permitAll()
                 .anyRequest().authenticated());

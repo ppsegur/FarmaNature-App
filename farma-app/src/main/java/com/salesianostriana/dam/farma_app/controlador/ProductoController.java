@@ -3,6 +3,7 @@ package com.salesianostriana.dam.farma_app.controlador;
 import com.salesianostriana.dam.farma_app.dto.EditCategoriaDto;
 import com.salesianostriana.dam.farma_app.dto.EditProductDto;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
+import com.salesianostriana.dam.farma_app.modelo.Usuario;
 import com.salesianostriana.dam.farma_app.servicio.ProductoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -31,10 +32,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/producto")
 @Tag(name = "producto", description = "El controlador para los distintas productos  ")
 public class ProductoController {
     private final ProductoService productoService;
+
 
     
     @Operation(summary = "Registra una nueva categoría ")
@@ -69,7 +70,7 @@ public class ProductoController {
             )
     })
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
+    @PostMapping("/producto")
     public ResponseEntity<Producto> addProducto(@RequestBody @Valid EditProductDto nuevo) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(productoService.saveproducto(nuevo));
@@ -97,29 +98,13 @@ public class ProductoController {
                     description = "No se han encontrado productos"
             )
     })
-
-    @GetMapping("/")
-    public ResponseEntity<Page<Producto>> getAll(
+    @GetMapping("/producto/all")
+    public ResponseEntity<?> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id,asc") String[] sort) {
+        Page<Producto> productos = productoService.findAllProductos(page, size, sort);
 
-        // Crear el Pageable con la paginación y ordenación
-        Pageable pageable = PageRequest.of(page, size, Sort.by(getSortOrder(sort)));
-
-        // Obtener la página de productos
-        Page<Producto> productosPage = productoService.findAllProducto(pageable);
-
-        // Convertir Page<Producto> en PagedModel<EntityModel<Producto>>
-
-        return ResponseEntity.status(HttpStatus.OK).body(productosPage);
-    }
-    private Sort.Order getSortOrder(String[] sort) {
-        if (sort.length >= 2) {
-            String property = sort[0];
-            String direction = sort[1];
-            return new Sort.Order(Sort.Direction.fromString(direction), property);
-        }
-        return Sort.Order.by("id");
+        return ResponseEntity.ok(productos.getContent());
     }
 }
