@@ -127,4 +127,21 @@ public class ProductoController {
     public GetProductoDto findById(@PathVariable UUID id) {
         return GetProductoDto.of(productoService.findById(id));
     }
+
+    @Operation(summary = "Elimina un producto buscándola por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Producto eliminada con éxito",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "No se encontró el producto con el id (id proporcionado)",
+                    content = @Content)
+    })
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/producto/{id}")
+    public ResponseEntity<?> delete(@PathVariable UUID id) {
+        productoService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

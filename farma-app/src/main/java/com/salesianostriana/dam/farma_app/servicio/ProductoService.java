@@ -79,5 +79,20 @@ public Page<Producto> findAllProductos(int page, int size, String[] sort) {
     }
 
 
+    @Transactional
+    public void delete(UUID id) {
+        Optional<Producto> productoOptional = repo.findById(id);
+        if(productoOptional.isEmpty()) {
+            throw new ProductoNotFoundException("No se encontró la empresa con el id " + id);
+        }
+        Producto p = productoOptional.get();
+        Categoria categoria = p.getCategoria();
+        if (categoria != null) {
+            categoria.removeProducto(p);
+        }
+
+        repo.deleteById(id);
+    }
+
 
 }

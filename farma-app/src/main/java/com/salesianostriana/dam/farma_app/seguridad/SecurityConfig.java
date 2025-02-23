@@ -84,6 +84,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE,"/categoria/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET,"/producto/all").permitAll()
                 .requestMatchers(HttpMethod.GET ,"/producto/{id}").permitAll()
+                .requestMatchers(HttpMethod.DELETE,"/producto/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT,"/producto/{id}").permitAll()
+
                 .requestMatchers("/h2-console","/auth/qr-code/**","/auth/verify-2fa").permitAll()
                 .anyRequest().authenticated());
 
