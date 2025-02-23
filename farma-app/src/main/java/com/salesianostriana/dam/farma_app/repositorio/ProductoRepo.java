@@ -9,6 +9,6 @@ import java.util.UUID;
 
 public interface ProductoRepo extends
         JpaRepository<Producto, UUID> {
-    Optional<Producto> findFirstByUsername(String name);
+    Optional<Producto> findFirstByNombre(String name);
 
 }

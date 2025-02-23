@@ -69,7 +69,7 @@ public class FileController {
 
     @GetMapping("/download/{id:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String id) {
-        Resource resource = storageService.loadAsResource(id);
+        Resource resource = (Resource) storageService.loadAsResource(id);
 
         String mimeType = mimeTypeDetector.getMimeType(resource);
 

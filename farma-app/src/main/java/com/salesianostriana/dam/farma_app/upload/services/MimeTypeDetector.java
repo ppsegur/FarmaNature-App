@@ -5,4 +5,5 @@ import jakarta.annotation.Resource;
 public interface MimeTypeDetector {
     String getMimeType(Resource resource);
 
+    String getMimeType(org.springframework.core.io.Resource resource);
 }

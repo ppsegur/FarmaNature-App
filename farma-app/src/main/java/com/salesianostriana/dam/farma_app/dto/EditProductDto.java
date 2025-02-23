@@ -25,5 +25,5 @@ public record EditProductDto(
 
         String imagen,
         Boolean oferta,
-        Categoria categoria) {
+        EditCategoriaDto categoria) {
 }

@@ -32,25 +32,22 @@ public class CategoriaService {
     public void delete(String nombre) {
        Categoria categoria = repo.findByNombre(nombre);
 
-        Categoria c = categoria;
-       // c.getProductos().forEach(producto -> producto.removeFromCategorias(c));
-        if(c == null) {
+
+
+        if(categoria == null) {
             throw new CategoriaNotFoundException(nombre);
         }
-        repo.deleteById(c.getId());
+        repo.deleteById(categoria.getId());
     }
 
 
     public Categoria edit(EditCategoriaDto dto, String  nombre) {
-        Optional<Categoria> categoriaOptional = Optional.ofNullable(repo.findByNombre(nombre));
+        Categoria categoria = repo.findByNombre(nombre);
+        if (dto.nombre() != null) {
+            categoria.setNombre(dto.nombre());
+        }
 
-        return categoriaOptional.map(old -> {
-            old.setNombre(dto.nombre());
-
-           // old.setproductosRelacionados(dto.ProdctosRelacionados());
-            return repo.save(old);
-        }).get();
+        return repo.save(categoria);
     }
-
 
 }

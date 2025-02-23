@@ -2,7 +2,6 @@ package com.salesianostriana.dam.farma_app.controlador;
 
 import com.salesianostriana.dam.farma_app.dto.EditCategoriaDto;
 import com.salesianostriana.dam.farma_app.dto.GetCategoriaDto;
-import com.salesianostriana.dam.farma_app.dto.user.CreateUserRequest;
 import com.salesianostriana.dam.farma_app.modelo.Categoria;
 import com.salesianostriana.dam.farma_app.servicio.CategoriaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,13 +16,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -101,7 +97,7 @@ public class CategoriaController {
                     content = @Content)
     })
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/categoria/{id}")
+    @DeleteMapping("/categoria/{nombre}")
     public ResponseEntity<?> delete(@PathVariable String nombre) {
         service.delete(nombre);
         return ResponseEntity.noContent().build();
@@ -118,7 +114,7 @@ public class CategoriaController {
                     content = @Content)
     })
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("{id}")
+    @PutMapping("/categoria/{nombre}")
     public GetCategoriaDto edit(@PathVariable String nombre, @RequestBody EditCategoriaDto categoriaDto) {
         return GetCategoriaDto.of(service.edit(categoriaDto, nombre));
     }

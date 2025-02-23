@@ -16,7 +16,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@Builder
 @Table(name="categoria")
 public class Categoria {
 
@@ -32,16 +32,16 @@ public class Categoria {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @Builder.Default
-    Set<Producto> cursos = new HashSet<>();
+    Set<Producto> productos = new HashSet<>();
 
 
     //Metodos helpers PRODUCTO-CATEGORIAS
     public void addProducto(Producto p) {
         p.setCategoria(this);
-        cursos.add(p);
+        productos.add(p);
     }
     public void removeProducto(Producto p) {
-        cursos.remove(p);
+        productos.remove(p);
         p.setCategoria(null);
     }
 

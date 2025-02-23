@@ -1,8 +1,9 @@
 package com.salesianostriana.dam.farma_app.upload.services;
 
+import com.salesianostriana.dam.farma_app.upload.error.StorageException;
 import io.jsonwebtoken.io.IOException;
-import jakarta.annotation.Resource;
 import org.apache.tika.Tika;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,6 +16,11 @@ public class TikaMimeTypeDetector implements MimeTypeDetector {
     }
 
     @Override
+    public String getMimeType(jakarta.annotation.Resource resource) {
+        return "";
+    }
+
+    @Override
     public String getMimeType(Resource resource) {
         try {
 
@@ -23,8 +29,12 @@ public class TikaMimeTypeDetector implements MimeTypeDetector {
             else
                 return tika.detect(resource.getInputStream());
 
-        } catch (IOException ex) {
+        } catch (IOException | java.io.IOException ex) {
             throw new StorageException("Error trying to get the MIME type", ex);
         }
     }
+
+
+
+
 }
