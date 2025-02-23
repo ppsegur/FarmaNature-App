@@ -1,5 +1,7 @@
 package com.salesianostriana.dam.farma_app.modelo;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -12,7 +14,7 @@ import java.util.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@Builder
 @Table(name="producto")
 public class Producto {
 
@@ -38,10 +40,12 @@ public class Producto {
 
     @ManyToOne
     @JoinColumn(name = "categoria_id")
+    @JsonBackReference
     private Categoria categoria;
 
 
-    @OneToMany(mappedBy = "reseña")
+    @OneToMany(mappedBy = "producto",cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Set<Comentario> reseñas = new HashSet<>();
 
     @Override

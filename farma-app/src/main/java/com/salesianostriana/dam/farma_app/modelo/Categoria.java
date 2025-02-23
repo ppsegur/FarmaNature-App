@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.farma_app.modelo;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -32,6 +33,7 @@ public class Categoria {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @Builder.Default
+    @JsonManagedReference
     Set<Producto> productos = new HashSet<>();
 
 

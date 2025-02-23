@@ -10,10 +10,10 @@ import java.util.UUID;
 public class ComentarioKey implements Serializable {
 
     @Column(name = "cliente_id")
-    UUID cliente_id;
+    UUID clienteId;
 
     @Column(name = "producto_id")
-    UUID producto_id;
+    UUID productoId;
 
 
 }
