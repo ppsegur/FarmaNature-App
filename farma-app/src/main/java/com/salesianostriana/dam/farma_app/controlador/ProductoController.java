@@ -153,14 +153,17 @@ public class ProductoController {
                             schema = @Schema(implementation = GetProductoDto.class),
                             examples = @ExampleObject(value = """
                 {
-                    "id": "550e8400-e29b-41d4-a716-446655440000",
-                    "nombre": "Paracetamol",
-                    "precio": 5.99,
-                    "descripcion": "Analgésico y antipirético",
-                    "stock": 100,
-                    "categoria": "Medicamentos",
-                    "imagen": "paracetamol.jpg"
-                }
+                                            "nombre": "Paracetamol",
+                                            "descripcion": "Analgésico y antipirético",
+                                            "precio": 5.99,
+                                            "stock": 160,
+                                            "fechaPublicacion": "2023-04-12",
+                                            "imagen": "paracetamol.jpg",
+                                            "oferta": false,
+                                            "categoria": {
+                                                "nombre": "Medicamentos"
+                                            }
+                                        }
             """)
                     )
             ),
