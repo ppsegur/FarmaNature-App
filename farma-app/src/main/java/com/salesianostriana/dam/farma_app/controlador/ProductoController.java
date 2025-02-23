@@ -30,6 +30,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "producto", description = "El controlador para los distintas productos  ")
@@ -37,7 +39,6 @@ public class ProductoController {
     private final ProductoService productoService;
 
 
-    
     @Operation(summary = "Registra una nueva categoría ")
     @ApiResponses(value = {
             @ApiResponse(
@@ -104,7 +105,9 @@ public class ProductoController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id,asc") String[] sort) {
         Page<Producto> productos = productoService.findAllProductos(page, size, sort);
-
-        return ResponseEntity.ok(productos.getContent());
+        List<String> nombres = productos.getContent().stream()
+                .map(Producto::getNombre)
+                .toList();
+        return ResponseEntity.ok(nombres);
     }
 }
