@@ -41,4 +41,16 @@ public class CategoriaService {
     }
 
 
+    public Categoria edit(EditCategoriaDto dto, String  nombre) {
+        Optional<Categoria> categoriaOptional = Optional.ofNullable(repo.findByNombre(nombre));
+
+        return categoriaOptional.map(old -> {
+            old.setNombre(dto.nombre());
+
+           // old.setproductosRelacionados(dto.ProdctosRelacionados());
+            return repo.save(old);
+        }).get();
+    }
+
+
 }

@@ -107,4 +107,20 @@ public class CategoriaController {
         service.delete(nombre);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Edita una categoría  existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Categoría actualizada con éxito",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Categoria.class))}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se encontró la categoría con el id (id proporcionado)",
+                    content = @Content)
+    })
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("{id}")
+    public GetCategoriaDto edit(@PathVariable String nombre, @RequestBody EditCategoriaDto categoriaDto) {
+        return GetCategoriaDto.of(service.edit(categoriaDto, nombre));
+    }
 }
