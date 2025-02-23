@@ -1,16 +1,11 @@
 package com.salesianostriana.dam.farma_app.modelo;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.util.Date;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Getter
@@ -46,6 +41,8 @@ public class Producto {
     private Categoria categoria;
 
 
+    @OneToMany(mappedBy = "reseña")
+    private Set<Comentario> reseñas = new HashSet<>();
 
     @Override
     public final boolean equals(Object o) {
