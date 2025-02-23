@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.farma_app.upload.services;
 
+
 import com.salesianostriana.dam.farma_app.upload.FileMetadata;
 import com.salesianostriana.dam.farma_app.upload.dtos.GetImageResponse;
 import com.salesianostriana.dam.farma_app.upload.dtos.NewImageRequest;
@@ -9,14 +10,15 @@ import com.salesianostriana.dam.farma_app.upload.error.ImgurImageNotFoundExcepti
 import com.salesianostriana.dam.farma_app.upload.error.StorageException;
 import io.jsonwebtoken.io.IOException;
 import jakarta.annotation.PostConstruct;
-import jakarta.annotation.Resource;
 import lombok.extern.java.Log;
-import org.apache.tika.metadata.HttpHeaders;
+import org.springframework.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,13 +58,13 @@ public class ImgurStorageService implements StorageService {
 
         restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
             @Override
-            public boolean hasError(ClientHttpResponse response) throws IOException {
+            public boolean hasError(ClientHttpResponse response) throws IOException, java.io.IOException {
                 return response.getStatusCode().is4xxClientError() ||
                         response.getStatusCode().is5xxServerError();
             }
 
             @Override
-            public void handleError(URI url, HttpMethod method, ClientHttpResponse response) throws IOException {
+            public void handleError(URI url, HttpMethod method, ClientHttpResponse response) throws IOException, java.io.IOException {
                 HttpStatusCode statusCode = response.getStatusCode();
                 if (statusCode.equals(INTERNAL_SERVER_ERROR)) {
                     throw new RuntimeException("Error de servidor");
@@ -91,7 +93,7 @@ public class ImgurStorageService implements StorageService {
 
                 HttpHeaders headers = getHeaders();
                 HttpEntity<NewImageRequest> request =
-                        new HttpEntity<>(req, headers);
+                        new HttpEntity<>(req, (MultiValueMap<String, String>) headers);
 
                 NewImageResponse response =
                         restTemplate.postForObject(
@@ -111,6 +113,7 @@ public class ImgurStorageService implements StorageService {
                 } else {
                     throw new ImgurBadRequestException("Error en la solicitud. Error en la subida de imagen");
                 }
+
 
 
             } catch (Exception e) {
@@ -156,7 +159,6 @@ public class ImgurStorageService implements StorageService {
             throw new ImgurImageNotFoundException("No se ha encontrado la imagen con id %s".formatted(id));
         }
     }
-
     @Override
     public void deleteFile(String deleteHash) {
         URI uri = uriBuilderFactory.uriString(URL_DELETE_IMAGE).build(deleteHash);
