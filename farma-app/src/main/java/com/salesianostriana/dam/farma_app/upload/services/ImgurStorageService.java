@@ -1,13 +1,18 @@
 package com.salesianostriana.dam.farma_app.upload.services;
 
 import com.salesianostriana.dam.farma_app.upload.FileMetadata;
+import com.salesianostriana.dam.farma_app.upload.dtos.GetImageResponse;
+import com.salesianostriana.dam.farma_app.upload.dtos.NewImageRequest;
+import com.salesianostriana.dam.farma_app.upload.dtos.NewImageResponse;
 import com.salesianostriana.dam.farma_app.upload.error.ImgurBadRequestException;
 import io.jsonwebtoken.io.IOException;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import lombok.extern.java.Log;
+import org.apache.tika.metadata.HttpHeaders;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.DefaultResponseErrorHandler;
@@ -18,6 +23,7 @@ import org.springframework.web.util.UriBuilderFactory;
 
 import java.net.URI;
 import java.util.Base64;
+import java.util.Collections;
 
 @Log
 @Service
@@ -102,7 +108,6 @@ public class ImgurStorageService implements StorageService {
                 }
 
 
-
             } catch (Exception e) {
                 throw new ImgurBadRequestException(e.getMessage());
             }
@@ -146,6 +151,7 @@ public class ImgurStorageService implements StorageService {
             throw new ImgurImageNotFoundException("No se ha encontrado la imagen con id %s".formatted(id));
         }
     }
+
     @Override
     public void deleteFile(String deleteHash) {
         URI uri = uriBuilderFactory.uriString(URL_DELETE_IMAGE).build(deleteHash);
@@ -165,3 +171,4 @@ public class ImgurStorageService implements StorageService {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         return headers;
     }
+}
