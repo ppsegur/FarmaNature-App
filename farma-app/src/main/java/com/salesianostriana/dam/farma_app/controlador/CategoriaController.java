@@ -20,12 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -92,5 +90,21 @@ public class CategoriaController {
     @GetMapping("/categoria/all")
     public List<GetCategoriaDto> findAll() {
         return categoriaService.findAll().stream().map(GetCategoriaDto::of).toList();
+    }
+
+    @Operation(summary = "Elimina una categoría buscándola por su nombre")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Categoria  eliminada con éxito",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "No se encontró la categoría con el nombre (nombre proporcionado)",
+                    content = @Content)
+    })
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/categoria/{id}")
+    public ResponseEntity<?> delete(@PathVariable String nombre) {
+        service.delete(nombre);
+        return ResponseEntity.noContent().build();
     }
 }
