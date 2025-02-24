@@ -1,8 +1,11 @@
 package com.salesianostriana.dam.farma_app.error;
 
-public class CategoriaNotFoundException extends RuntimeException{
+import org.springframework.http.HttpStatus;
 
-    public CategoriaNotFoundException(String message){
-        super("No se encuentran categorias");
+public class CategoriaNotFoundException extends EntidadNotFoundException {
+
+
+    public CategoriaNotFoundException(String message, HttpStatus status) {
+        super(message, status);
     }
 }

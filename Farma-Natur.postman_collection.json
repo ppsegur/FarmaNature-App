@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "7d25446e-8833-45f0-8a95-6e98b8fd4a01",
+		"_postman_id": "c1dcf126-60f8-47d2-bc01-a737de636c0b",
 		"name": "Farma-Natur",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "38748105",
-		"_collection_link": "https://connect-app-3874.postman.co/workspace/Team-Workspace~f27e39a4-19f4-4154-82cc-b592f43ade3c/collection/38748105-7d25446e-8833-45f0-8a95-6e98b8fd4a01?action=share&source=collection_link&creator=38748105"
+		"_exporter_id": "41650191",
+		"_collection_link": "https://conectapp.postman.co/workspace/Team-Workspace~e71c83f1-d5fb-4b64-8dd4-6d1ed7259ced/collection/41650191-c1dcf126-60f8-47d2-bc01-a737de636c0b?action=share&source=collection_link&creator=41650191"
 	},
 	"item": [
 		{
@@ -352,16 +352,21 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/producto/filtro/",
+							"raw": "http://localhost:8080/buscar/?search=precio>10",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"producto",
-								"filtro",
+								"buscar",
 								""
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "precio>10"
+								}
 							]
 						}
 					},
@@ -389,6 +394,26 @@
 				},
 				{
 					"name": "BuscarPorId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/producto/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"producto",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FiltrarCategoria",
 					"request": {
 						"method": "GET",
 						"header": []
@@ -498,6 +523,74 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Comentario",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"comentario\":\"Falta de proyección falta de prospecto de alergias  \"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}comentario/",
+							"host": [
+								"{{BASE_URL}}comentario"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SubidaDeFicheros",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "http://localhost:8080/",
+			"type": "string"
 		}
 	]
 }

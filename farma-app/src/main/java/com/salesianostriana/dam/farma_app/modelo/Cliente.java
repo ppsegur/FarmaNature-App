@@ -27,6 +27,10 @@ public class Cliente extends Usuario{
     @OneToMany(mappedBy = "cliente")
     private Set<Comentario> comentarios = new HashSet<>();
 
+    public void removeComentario(Comentario comentario) {
+        this.comentarios.remove(comentario);
+        comentario.setCliente(null);
+    }
 
 
 

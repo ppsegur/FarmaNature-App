@@ -89,6 +89,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,"/buscar/**").permitAll()
                 .requestMatchers(HttpMethod.POST ,"/upload/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/productoCategoria/**").permitAll()
+                .requestMatchers(HttpMethod.POST,"/comentario/**").hasRole("CLIENTE")
+               // .requestMatchers(HttpMethod.GET,"/comentario/cliente/{username}").permitAll()
+                .requestMatchers(HttpMethod.GET,"/comentario/**").permitAll()
+                .requestMatchers(HttpMethod.PUT,"/comentario/editar/**").hasRole("CLIENTE")
+                .requestMatchers(HttpMethod.DELETE,"/comentario/eliminar/**").hasRole("CLIENTE")
 
 
 

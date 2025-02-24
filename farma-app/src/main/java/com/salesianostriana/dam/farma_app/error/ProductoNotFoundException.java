@@ -1,8 +1,11 @@
 package com.salesianostriana.dam.farma_app.error;
 
-public class ProductoNotFoundException extends RuntimeException{
+import org.springframework.http.HttpStatus;
 
-    public ProductoNotFoundException(String message){
-        super("No se encuentran produtos");
+public class ProductoNotFoundException extends EntidadNotFoundException {
+
+
+    public ProductoNotFoundException(String message, HttpStatus status) {
+        super(message, status);
     }
 }

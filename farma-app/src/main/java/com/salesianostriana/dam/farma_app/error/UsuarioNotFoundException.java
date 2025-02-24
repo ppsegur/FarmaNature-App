@@ -1,9 +1,10 @@
 package com.salesianostriana.dam.farma_app.error;
 
-public class UsuarioNotFoundException extends RuntimeException{
+import org.springframework.http.HttpStatus;
 
+public class UsuarioNotFoundException extends EntidadNotFoundException {
 
-    public UsuarioNotFoundException(String username){
-        super("No se encontro ningun usuario por ese nombre "+username);
+    public UsuarioNotFoundException(String message, HttpStatus status) {
+        super(message, status);
     }
 }

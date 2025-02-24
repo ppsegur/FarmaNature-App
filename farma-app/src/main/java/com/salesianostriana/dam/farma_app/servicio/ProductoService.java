@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -86,7 +87,7 @@ public Page<Producto> findAllProductos(int page, int size, String[] sort) {
     public Producto findById(UUID id) {
         Optional<Producto> producto = repo.findById(id);
         if(producto.isEmpty()){
-            throw new ProductoNotFoundException("No se han encontrado usuario cone ese id ");
+            throw new ProductoNotFoundException("No se han encontrado usuario cone ese id ", HttpStatus.NOT_FOUND);
         }
         return producto.get();
     }
@@ -107,14 +108,14 @@ public Page<Producto> findAllProductos(int page, int size, String[] sort) {
                  return repo.save(old);
 
                 })
-                .orElseThrow(() -> new ProductoNotFoundException("No se encontró la empresa con el id " + id));
+                .orElseThrow(() -> new ProductoNotFoundException("No se encontró la empresa con el id " + id, HttpStatus.NOT_FOUND));
     }
 
     @Transactional
     public void delete(UUID id) {
         Optional<Producto> productoOptional = repo.findById(id);
         if(productoOptional.isEmpty()) {
-            throw new ProductoNotFoundException("No se encontró la empresa con el id " + id);
+            throw new ProductoNotFoundException("No se encontró la empresa con el id " + id, HttpStatus.NOT_FOUND);
         }
         Producto p = productoOptional.get();
         Categoria categoria = p.getCategoria();
