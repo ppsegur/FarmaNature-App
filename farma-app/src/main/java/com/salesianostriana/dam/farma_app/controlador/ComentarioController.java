@@ -60,5 +60,14 @@ public class ComentarioController {
                 .collect(Collectors.toSet());
 
     }
+    @GetMapping("/producto/{username}")
+    public Set<GetComentarioDto> listarComentariosDeproducto(
+            @PathVariable String username) {
+
+        return comentarioService.listarComentariosDeProducto(username)
+                .stream().map(GetComentarioDto::of)
+                .collect(Collectors.toSet());
+
+    }
 
 }

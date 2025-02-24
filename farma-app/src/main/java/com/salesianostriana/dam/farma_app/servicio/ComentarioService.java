@@ -54,7 +54,6 @@ public class ComentarioService {
                 .comentarios(dto.comentario())
                 .build();
 
-        // Guardar el comentario
         return comentarioRepositorio.save(comentario);
     }
 
@@ -83,7 +82,20 @@ public class ComentarioService {
             throw new ComentarioNotFoundException("comentarios noexisten", HttpStatus.NOT_FOUND);
         }
         return comentarios;
-    }// Crear la clave compuesta
+    }
+
+    @Transactional
+    public Set<Comentario> listarComentariosDeProducto(String username) {
+        Producto p = productoRepositorio.findByNombreIgnoreCase(username)
+                .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado", HttpStatus.NOT_FOUND));
+
+        Set<Comentario> comentarios = p.getReseñas();
+        if (comentarios.isEmpty()) {
+            throw new ComentarioNotFoundException("comentarios noexisten", HttpStatus.NOT_FOUND);
+        }
+        return comentarios;
+    }
+
     @Transactional
     public void eliminarComentario(Cliente cliente, UUID productoId) {
 

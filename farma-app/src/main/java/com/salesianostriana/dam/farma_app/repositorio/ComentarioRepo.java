@@ -11,6 +11,5 @@ import java.util.List;
 public interface ComentarioRepo extends JpaRepository<Comentario, ComentarioKey> {
 
 
-    @Query("SELECT c FROM Comentario c WHERE c.cliente.nombre = :cliente_nombre")
-    List<Comentario> findByClienteNombre(@Param("cliente_nombre") String nombre);
+
 }
