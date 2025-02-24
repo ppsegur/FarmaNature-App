@@ -13,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 public abstract class AbstractFileMetadata implements FileMetadata{
+    //protegidos
     protected String id;
     protected String filename;
     protected String URL;

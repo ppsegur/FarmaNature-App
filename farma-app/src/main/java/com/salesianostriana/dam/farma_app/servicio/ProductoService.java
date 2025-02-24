@@ -7,6 +7,8 @@ import com.salesianostriana.dam.farma_app.error.ProductoNotFoundException;
 import com.salesianostriana.dam.farma_app.modelo.Categoria;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
 import com.salesianostriana.dam.farma_app.modelo.Usuario;
+import com.salesianostriana.dam.farma_app.query.ProductSpecificationBuilder;
+import com.salesianostriana.dam.farma_app.query.SearchCriteria;
 import com.salesianostriana.dam.farma_app.repositorio.CategoriaRepo;
 import com.salesianostriana.dam.farma_app.repositorio.ProductoRepo;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,8 +18,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -113,4 +117,39 @@ public Page<Producto> findAllProductos(int page, int size, String[] sort) {
     }
 
 
+
+    //Filtrado
+    public List<GetProductoDto> search(List<SearchCriteria> searchCriteriaList) {
+        ProductSpecificationBuilder builder = new ProductSpecificationBuilder(searchCriteriaList);
+        Specification<Producto> spec = builder.build();
+
+        List<Producto> productos = repo.findAll(spec);
+        //Cambios por la subida de imágenes
+        return  productos.stream()
+                .map(producto -> GetProductoDto.of(producto, producto.getImagen())) // Usar una lambda
+                .collect(Collectors.toList());
+    }
+
+    /**
+    Busqueda de un listado de productos por categoría
+
+    public List<GetProductoDto> buscarPorCategoria(String nombre){
+        List<GetProductoDto> productos = new ArrayList<>();
+        if(repo.findByCategoria(nombre)){
+            return productos;
+        }
+        return null;
+    }
+    **/
+    // Busqueda de un listado de productos por categoría
+    public List<GetProductoDto> filtrarPorCategoria(String nombreCategoria) {
+        List<Producto> productos = repo.findByCategoriaNombre(nombreCategoria);
+        return productos.stream()
+                .map(producto -> GetProductoDto.of(producto, producto.getImagen()))
+                .collect(Collectors.toList());
+    }
+
 }
+
+
+
