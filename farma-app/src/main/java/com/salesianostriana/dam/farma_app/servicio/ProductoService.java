@@ -124,8 +124,9 @@ public Page<Producto> findAllProductos(int page, int size, String[] sort) {
         Specification<Producto> spec = builder.build();
 
         List<Producto> productos = repo.findAll(spec);
-        return productos.stream()
-                .map(GetProductoDto::of)
+        //Cambios por la subida de imágenes
+        return  productos.stream()
+                .map(producto -> GetProductoDto.of(producto, producto.getImagen())) // Usar una lambda
                 .collect(Collectors.toList());
     }
 
@@ -140,6 +141,15 @@ public Page<Producto> findAllProductos(int page, int size, String[] sort) {
         return null;
     }
     **/
-
+    // Busqueda de un listado de productos por categoría
+    public List<GetProductoDto> filtrarPorCategoria(String nombreCategoria) {
+        List<Producto> productos = repo.findByCategoriaNombre(nombreCategoria);
+        return productos.stream()
+                .map(producto -> GetProductoDto.of(producto, producto.getImagen()))
+                .collect(Collectors.toList());
+    }
 
 }
+
+
+

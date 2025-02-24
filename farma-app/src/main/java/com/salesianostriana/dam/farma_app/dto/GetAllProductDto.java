@@ -10,8 +10,8 @@ public record GetAllProductDto(List<GetProductoDto> listaProductos
 
     public static GetAllProductDto fromDto(List<Producto> listadoProductosSinProcesasr) {
         return GetAllProductDto.builder()
-                .listaProductos(listadoProductosSinProcesasr.stream().map(GetProductoDto::of).toList()).build();
-
-
+                .listaProductos(listadoProductosSinProcesasr.stream().map(producto -> GetProductoDto.of(producto, producto.getImagen())) // Usar una lambda
+                        .toList())
+                .build();
     }
 }

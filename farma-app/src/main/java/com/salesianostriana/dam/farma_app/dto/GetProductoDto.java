@@ -17,11 +17,13 @@ public record GetProductoDto(
         Date fechaPublicacion,
 
         Boolean oferta,
-        EditCategoriaDto categoria,
+        GetCategoriaDto categoria,
         String imagenUrl
         ) {
 
     public static GetProductoDto of(Producto p, String url){
-        return new GetProductoDto(p.getDescripcion(),p.getPrecio(),p.getStock(),p.getFechaPublicacion() ,p.getOferta(),p.getCategoria(),url);
+        //Cambios para devolver el producto con la foto y la categoría aparentemente  correcto
+        GetCategoriaDto categoriaDto = GetCategoriaDto.of(p.getCategoria());
+        return new GetProductoDto(p.getDescripcion(),p.getPrecio(),p.getStock(),p.getFechaPublicacion() ,p.getOferta(), categoriaDto,url);
     }
 }
