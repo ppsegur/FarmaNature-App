@@ -1,4 +1,4 @@
-package com.salesianostriana.dam.farma_app.modelo;
+package com.salesianostriana.dam.farma_app.modelo.users;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name= "admin")
 @PrimaryKeyJoinColumn(name = "id")
-public class Admin extends Usuario{
+public class Admin extends Usuario {
 
     @Override
     public String getRole() {

@@ -1,9 +1,10 @@
-package com.salesianostriana.dam.farma_app.servicio;
+package com.salesianostriana.dam.farma_app.servicio.users;
 
-import com.salesianostriana.dam.farma_app.dto.user.EditClienteDto;
 import com.salesianostriana.dam.farma_app.dto.user.EditFarmaceuticoDto;
 import com.salesianostriana.dam.farma_app.modelo.*;
-import com.salesianostriana.dam.farma_app.repositorio.FarmaceuticoRepo;
+import com.salesianostriana.dam.farma_app.modelo.users.Farmaceutico;
+import com.salesianostriana.dam.farma_app.modelo.users.Usuario;
+import com.salesianostriana.dam.farma_app.repositorio.users.FarmaceuticoRepo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

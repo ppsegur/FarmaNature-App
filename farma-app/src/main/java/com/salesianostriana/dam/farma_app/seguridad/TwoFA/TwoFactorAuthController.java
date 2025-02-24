@@ -1,8 +1,8 @@
 package com.salesianostriana.dam.farma_app.seguridad.TwoFA;
 
 
-import com.salesianostriana.dam.farma_app.modelo.Usuario;
-import com.salesianostriana.dam.farma_app.repositorio.UsuarioRepo;
+import com.salesianostriana.dam.farma_app.modelo.users.Usuario;
+import com.salesianostriana.dam.farma_app.repositorio.users.UsuarioRepo;
 import lombok.RequiredArgsConstructor;
 import org.jboss.aerogear.security.otp.Totp;
 import org.springframework.http.ResponseEntity;

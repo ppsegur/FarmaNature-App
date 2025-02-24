@@ -1,7 +1,7 @@
 package com.salesianostriana.dam.farma_app.seguridad.access;
 
-import com.salesianostriana.dam.farma_app.modelo.Usuario;
-import com.salesianostriana.dam.farma_app.repositorio.UsuarioRepo;
+import com.salesianostriana.dam.farma_app.modelo.users.Usuario;
+import com.salesianostriana.dam.farma_app.repositorio.users.UsuarioRepo;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

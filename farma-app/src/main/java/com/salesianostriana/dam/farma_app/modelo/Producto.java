@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.util.*;
@@ -41,7 +40,7 @@ public class Producto {
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     @JsonBackReference
-    private Categoria categoria;
+    private ComentarioKey.Categoria categoria;
 
 
     @OneToMany(mappedBy = "producto",cascade = CascadeType.ALL, orphanRemoval = true)
@@ -53,6 +52,22 @@ public class Producto {
         comentario.setProducto(null);
     }
 
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "productos"  ,cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<LineaDeVenta> lv  = new ArrayList<>();
+
+    public void addLineaVenta(LineaDeVenta lv) {
+        this.lv.add(lv);
+        lv.setProducto(this);
+    }
+
+    public void removeLineaVenta(LineaDeVenta lv) {
+        this.lv.remove(lv);
+        //lv.setProducto(null);
+    }
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

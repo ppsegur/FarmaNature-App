@@ -1,7 +1,6 @@
-package com.salesianostriana.dam.farma_app.repositorio;
+package com.salesianostriana.dam.farma_app.repositorio.users;
 
-import com.salesianostriana.dam.farma_app.modelo.Cliente;
-import com.salesianostriana.dam.farma_app.modelo.Farmaceutico;
+import com.salesianostriana.dam.farma_app.modelo.users.Farmaceutico;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

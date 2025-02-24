@@ -1,6 +1,6 @@
 package com.salesianostriana.dam.farma_app.seguridad.access;
 
-import com.salesianostriana.dam.farma_app.modelo.Usuario;
+import com.salesianostriana.dam.farma_app.modelo.users.Usuario;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;

@@ -6,11 +6,11 @@ import com.salesianostriana.dam.farma_app.error.ComentarioDuplicadoException;
 import com.salesianostriana.dam.farma_app.error.ComentarioNotFoundException;
 import com.salesianostriana.dam.farma_app.error.ProductoNotFoundException;
 import com.salesianostriana.dam.farma_app.error.UsuarioNotFoundException;
-import com.salesianostriana.dam.farma_app.modelo.Cliente;
+import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
 import com.salesianostriana.dam.farma_app.modelo.Comentario;
 import com.salesianostriana.dam.farma_app.modelo.ComentarioKey;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
-import com.salesianostriana.dam.farma_app.repositorio.ClienteRepo;
+import com.salesianostriana.dam.farma_app.repositorio.users.ClienteRepo;
 import com.salesianostriana.dam.farma_app.repositorio.ComentarioRepo;
 import com.salesianostriana.dam.farma_app.repositorio.ProductoRepo;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 

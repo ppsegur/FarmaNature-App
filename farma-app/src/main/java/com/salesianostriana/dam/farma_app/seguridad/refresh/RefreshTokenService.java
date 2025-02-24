@@ -2,8 +2,8 @@ package com.salesianostriana.dam.farma_app.seguridad.refresh;
 
 
 import com.salesianostriana.dam.farma_app.dto.user.UserResponse;
-import com.salesianostriana.dam.farma_app.modelo.Usuario;
-import com.salesianostriana.dam.farma_app.repositorio.UsuarioRepo;
+import com.salesianostriana.dam.farma_app.modelo.users.Usuario;
+import com.salesianostriana.dam.farma_app.repositorio.users.UsuarioRepo;
 import com.salesianostriana.dam.farma_app.seguridad.access.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

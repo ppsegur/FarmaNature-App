@@ -2,18 +2,15 @@ package com.salesianostriana.dam.farma_app.servicio;
 
 import com.salesianostriana.dam.farma_app.dto.EditProductDto;
 import com.salesianostriana.dam.farma_app.dto.GetProductoDto;
-import com.salesianostriana.dam.farma_app.dto.user.PageResponse;
 import com.salesianostriana.dam.farma_app.error.ProductoNotFoundException;
-import com.salesianostriana.dam.farma_app.modelo.Categoria;
+import com.salesianostriana.dam.farma_app.modelo.ComentarioKey;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
-import com.salesianostriana.dam.farma_app.modelo.Usuario;
 import com.salesianostriana.dam.farma_app.query.ProductSpecificationBuilder;
 import com.salesianostriana.dam.farma_app.query.SearchCriteria;
 import com.salesianostriana.dam.farma_app.repositorio.CategoriaRepo;
 import com.salesianostriana.dam.farma_app.repositorio.ProductoRepo;
 import com.salesianostriana.dam.farma_app.upload.FileMetadata;
 import com.salesianostriana.dam.farma_app.upload.services.StorageService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,7 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,7 +41,7 @@ public class ProductoService {
 
 
         // Buscar la categoría por nombre
-        Categoria categoria = categoriaRepo.findByNombre(nuevo.categoria().nombre());
+        ComentarioKey.Categoria categoria = categoriaRepo.findByNombre(nuevo.categoria().nombre());
 
         // Verificar si la categoría es nula
         if (categoria == null) {
@@ -118,7 +114,7 @@ public Page<Producto> findAllProductos(int page, int size, String[] sort) {
             throw new ProductoNotFoundException("No se encontró la empresa con el id " + id, HttpStatus.NOT_FOUND);
         }
         Producto p = productoOptional.get();
-        Categoria categoria = p.getCategoria();
+        ComentarioKey.Categoria categoria = p.getCategoria();
         if (categoria != null) {
             categoria.removeProducto(p);
         }

@@ -1,13 +1,13 @@
-package com.salesianostriana.dam.farma_app.controlador;
+package com.salesianostriana.dam.farma_app.controlador.users;
 
 import com.salesianostriana.dam.farma_app.dto.user.*;
-import com.salesianostriana.dam.farma_app.modelo.Usuario;
+import com.salesianostriana.dam.farma_app.modelo.users.Usuario;
 import com.salesianostriana.dam.farma_app.seguridad.TwoFA.Verify2FARequest;
 import com.salesianostriana.dam.farma_app.seguridad.access.JwtService;
 import com.salesianostriana.dam.farma_app.seguridad.refresh.RefreshToken;
 import com.salesianostriana.dam.farma_app.seguridad.refresh.RefreshTokenRequest;
 import com.salesianostriana.dam.farma_app.seguridad.refresh.RefreshTokenService;
-import com.salesianostriana.dam.farma_app.servicio.UsuarioService;
+import com.salesianostriana.dam.farma_app.servicio.users.UsuarioService;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -33,7 +33,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor

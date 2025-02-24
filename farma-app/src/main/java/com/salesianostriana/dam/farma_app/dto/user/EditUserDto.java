@@ -1,8 +1,7 @@
 package com.salesianostriana.dam.farma_app.dto.user;
 
-import com.salesianostriana.dam.farma_app.modelo.UserRole;
+import com.salesianostriana.dam.farma_app.modelo.users.UserRole;
 import com.salesianostriana.dam.farma_app.validation.FieldsValueMatch;
-import com.salesianostriana.dam.farma_app.validation.UniqueUsername;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

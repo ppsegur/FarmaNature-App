@@ -1,4 +1,4 @@
-package com.salesianostriana.dam.farma_app.servicio;
+package com.salesianostriana.dam.farma_app.servicio.users;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -9,9 +9,9 @@ import com.salesianostriana.dam.farma_app.dto.user.CreateUserRequest;
 import com.salesianostriana.dam.farma_app.dto.user.EditUserDto;
 import com.salesianostriana.dam.farma_app.error.ActivationExpiredException;
 import com.salesianostriana.dam.farma_app.error.UsuarioNotFoundException;
-import com.salesianostriana.dam.farma_app.modelo.UserRole;
-import com.salesianostriana.dam.farma_app.modelo.Usuario;
-import com.salesianostriana.dam.farma_app.repositorio.UsuarioRepo;
+import com.salesianostriana.dam.farma_app.modelo.users.UserRole;
+import com.salesianostriana.dam.farma_app.modelo.users.Usuario;
+import com.salesianostriana.dam.farma_app.repositorio.users.UsuarioRepo;
 import com.salesianostriana.dam.farma_app.util.MailService;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
