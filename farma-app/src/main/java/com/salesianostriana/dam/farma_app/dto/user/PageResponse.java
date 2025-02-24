@@ -1,8 +1,11 @@
 package com.salesianostriana.dam.farma_app.dto.user;
 
+import lombok.Builder;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+
+@Builder
 public record PageResponse<T>(
         List<T> content,
         int pageNumber,
@@ -11,7 +14,7 @@ public record PageResponse<T>(
         int totalPages,
         boolean last
 ) {
-    public static <T> PageResponse<T> of(Page<T> page) {
+    public PageResponse<T> of(Page<T> page) {
         return new PageResponse<>(
                 page.getContent(),
                 page.getNumber(),
@@ -21,4 +24,5 @@ public record PageResponse<T>(
                 page.isLast()
         );
     }
+
 }

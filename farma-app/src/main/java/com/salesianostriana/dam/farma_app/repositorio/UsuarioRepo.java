@@ -17,6 +17,7 @@ public interface UsuarioRepo extends JpaRepository<Usuario, UUID> , PagingAndSor
     Optional<Usuario> findByActivationToken(String activationToken);
 
     Page<Usuario> findAll(Pageable pageable);
+
     Page<Usuario> findByNombre(String nombre, Pageable pageable);
 
     //consulta para 2FA

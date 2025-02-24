@@ -78,6 +78,19 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE,"/auth/").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/cliente/**").hasRole("CLIENTE")
                 .requestMatchers(HttpMethod.PUT, "/farmaceutico/**").hasRole("FARMACEUTICO")
+                .requestMatchers(HttpMethod.GET,"/categoria/**").permitAll()
+                .requestMatchers(HttpMethod.POST,"/categoria/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT,"/categoria/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE,"/categoria/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/producto/all").permitAll()
+                .requestMatchers(HttpMethod.GET ,"/producto/{id}").permitAll()
+                .requestMatchers(HttpMethod.DELETE,"/producto/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT,"/producto/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/buscar/**").permitAll()
+                .requestMatchers(HttpMethod.POST ,"/upload/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/productoCategoria/**").permitAll()
+
+
 
                 .requestMatchers("/h2-console","/auth/qr-code/**","/auth/verify-2fa").permitAll()
                 .anyRequest().authenticated());

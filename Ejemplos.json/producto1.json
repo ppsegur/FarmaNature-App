@@ -1,0 +1,12 @@
+{
+
+    "nombre": "tés",
+        "precio":21,
+        "descripcion": "tés básicos set 20 sabores",
+        "stock":11,
+        "categoria":{
+            "nombre":"Medicamentos"
+        },
+        "FechaPublicaion":"18-03-2025",
+        "oferta":false
+}

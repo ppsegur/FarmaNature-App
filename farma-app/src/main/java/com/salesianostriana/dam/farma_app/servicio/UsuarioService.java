@@ -171,14 +171,7 @@ public class UsuarioService {
 
     }
 
-    /**
-    public List<Usuario> findallUsuarios() {
-        List<Usuario> usuarios = userRepository.findAll();
-        if(usuarios.isEmpty())
-            throw new EntityNotFoundException("No existen usuarios");
-        return usuarios;
-    }
-    */
+
     public Page<Usuario> findAllUsuarios(int page, int size, String[] sort) {
         Pageable pageable = PageRequest.of(page, size);
         return userRepository.findAll(pageable);
