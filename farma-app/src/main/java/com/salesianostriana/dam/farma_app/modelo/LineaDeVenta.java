@@ -2,6 +2,9 @@ package com.salesianostriana.dam.farma_app.modelo;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
+
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -12,6 +15,7 @@ import lombok.*;
 @Entity
 @IdClass(LineaVentaId.class)
 public class LineaDeVenta {
+
     @Id
     @GeneratedValue
     private Long id;
@@ -38,12 +42,28 @@ public class LineaDeVenta {
         producto.addLineaVenta(this);
     }
     public void removeProducto(Producto producto) {
-   this.setProducto(producto);
-   this.cantidad--;
-   if (this.cantidad == 0) {
+        this.setProducto(producto);
+        this.cantidad--;
+        if (this.cantidad == 0) {
        producto.removeLineaVenta(this);
    }
 
     }
-   
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        LineaDeVenta that = (LineaDeVenta) o;
+        return getId() != null && Objects.equals(getId(), that.getId())
+                && getVenta() != null && Objects.equals(getVenta(), that.getVenta());
+    }
+
+    @Override
+    public final int hashCode() {
+        return Objects.hash(id, venta);
+    }
 }
