@@ -1,6 +1,8 @@
 package com.salesianostriana.dam.farma_app.error;
 
-public class UsuarioNotFoundException extends RuntimeException{
+import jakarta.persistence.EntityNotFoundException;
+
+public class UsuarioNotFoundException extends EntityNotFoundException {
 
 
     public UsuarioNotFoundException(String username){

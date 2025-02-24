@@ -5,6 +5,7 @@ import com.salesianostriana.dam.farma_app.dto.CreateComentarioDto;
 import com.salesianostriana.dam.farma_app.dto.GetComentarioDto;
 import com.salesianostriana.dam.farma_app.dto.GetProductoDto;
 import com.salesianostriana.dam.farma_app.dto.user.UserResponse;
+import com.salesianostriana.dam.farma_app.error.ComentarioDuplicadoException;
 import com.salesianostriana.dam.farma_app.error.ProductoNotFoundException;
 import com.salesianostriana.dam.farma_app.error.UsuarioNotFoundException;
 import com.salesianostriana.dam.farma_app.modelo.Cliente;
@@ -39,6 +40,11 @@ public class ComentarioService {
 
         // Crear el comentario
         ComentarioKey id = new ComentarioKey(clienteVerdadero.getId(), producto.getId());
+        if (comentarioRepositorio.existsById(id)) {
+            throw new ComentarioDuplicadoException("Ya has comentado este producto. ¿Tal vez quieras editarlo?");
+        }
+
+
         Comentario comentario = Comentario.builder()
                 .id(id)
                 .cliente(clienteVerdadero)
