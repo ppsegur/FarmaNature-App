@@ -55,4 +55,17 @@ public class ComentarioService {
         // Guardar el comentario
         return comentarioRepositorio.save(comentario);
     }
+
+    // Editar un comentario
+    @Transactional
+    public Comentario editarComentario(Cliente c , CreateComentarioDto dto) {
+        Producto p = productoRepositorio.findById(dto.productoId())
+                .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado: " + dto.productoId()));
+        ComentarioKey id = new ComentarioKey(c.getId(), p.getId());
+        Comentario comentario = comentarioRepositorio.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
+
+        comentario.setComentarios(dto.comentario());
+        return comentarioRepositorio.save(comentario);
+    }
 }
