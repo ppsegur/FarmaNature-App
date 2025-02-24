@@ -2,9 +2,11 @@ package com.salesianostriana.dam.farma_app.dto;
 
 import com.salesianostriana.dam.farma_app.modelo.Categoria;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 
 import java.util.Date;
 
+@Builder
 public record EditProductDto(
 
         @NotNull(message = "El precio no puede ser nulo")

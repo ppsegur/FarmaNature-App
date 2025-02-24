@@ -30,6 +30,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -78,9 +80,15 @@ public class ProductoController {
     })
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/producto")
-    public ResponseEntity<Producto> addProducto(@RequestBody @Valid EditProductDto nuevo) {
+    public ResponseEntity<GetProductoDto> addProducto(@RequestPart("file") MultipartFile file,
+            @RequestPart("producto") @Valid GetProductoDto nuevo) {
+        Producto  producto =  productoService.saveproducto(nuevo, file);
+        String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/download")
+                .path(producto.toString())
+                .toUriString();
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(productoService.saveproducto(nuevo));
+                .body(GetProductoDto.of(producto,uri));
 
     }
 
@@ -94,11 +102,11 @@ public class ProductoController {
                                     value = """
                                              {
                                                {
-                                                  "nombre" : "té",                     
+                                                  "nombre" : "té",                    \s
                                                   "categoria": "Medicamentos",                                           \s
                                                }
                                              }
-                                            """
+                                           \s"""
                             )}
                     )}),
             @ApiResponse(responseCode = "404",

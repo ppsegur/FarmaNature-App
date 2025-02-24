@@ -11,6 +11,8 @@ import com.salesianostriana.dam.farma_app.query.ProductSpecificationBuilder;
 import com.salesianostriana.dam.farma_app.query.SearchCriteria;
 import com.salesianostriana.dam.farma_app.repositorio.CategoriaRepo;
 import com.salesianostriana.dam.farma_app.repositorio.ProductoRepo;
+import com.salesianostriana.dam.farma_app.upload.FileMetadata;
+import com.salesianostriana.dam.farma_app.upload.services.StorageService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +36,12 @@ public class ProductoService {
 
     private final ProductoRepo repo;
     private final CategoriaRepo categoriaRepo;
+    private final StorageService  storageService;
 
     @Transactional
-    public Producto saveproducto(EditProductDto nuevo) {
+    public Producto saveproducto(GetProductoDto nuevo, MultipartFile file) {
+        FileMetadata fileMetadata = storageService.store(file);
+
 
         // Buscar la categoría por nombre
         Categoria categoria = categoriaRepo.findByNombre(nuevo.categoria().nombre());
@@ -46,16 +52,19 @@ public class ProductoService {
         }
 
         // Construir y guardar el producto
-        Producto producto = Producto.builder()
+        Producto producto =  Producto.builder()
                 .nombre(nuevo.nombre())
                 .descripcion(nuevo.descripcion())
                 .precio(nuevo.precio())
                 .stock(nuevo.stock())
-                .imagen(nuevo.imagen())
+                .imagen(fileMetadata.getFilename())
                 .fechaPublicacion(nuevo.fechaPublicacion())
                 .oferta(nuevo.oferta())
-                .categoria(categoria)
                 .build();
+
+                producto.setCategoria(categoria);
+
+                categoria.addProducto(producto);
 
         categoria.addProducto(producto);
         return repo.save(producto);
