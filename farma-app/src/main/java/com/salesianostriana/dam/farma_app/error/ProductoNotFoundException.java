@@ -1,10 +1,11 @@
 package com.salesianostriana.dam.farma_app.error;
 
-import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
 
-public class ProductoNotFoundException extends EntityNotFoundException {
+public class ProductoNotFoundException extends EntidadNotFoundException {
 
-    public ProductoNotFoundException(String message){
-        super("No se encuentran produtos");
+
+    public ProductoNotFoundException(String message, HttpStatus status) {
+        super(message, status);
     }
 }

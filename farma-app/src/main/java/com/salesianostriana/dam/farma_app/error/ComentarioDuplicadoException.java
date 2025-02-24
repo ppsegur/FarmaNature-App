@@ -1,8 +1,11 @@
 package com.salesianostriana.dam.farma_app.error;
 
-public class ComentarioDuplicadoException extends RuntimeException {
+import org.springframework.http.HttpStatus;
 
-    public ComentarioDuplicadoException(String mensaje) {
-        super(mensaje);
+public class ComentarioDuplicadoException extends EntidadNotFoundException {
+
+
+    public ComentarioDuplicadoException(String message, HttpStatus status) {
+        super(message, status);
     }
 }

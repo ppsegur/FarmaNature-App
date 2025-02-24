@@ -17,10 +17,8 @@ import java.util.UUID;
 public class ComentarioKey implements Serializable {
 
     @Column(name = "cliente_id")
-    UUID clienteId;
+    private UUID clienteId;
 
     @Column(name = "producto_id")
-    UUID productoId;
-
-
+    private UUID productoId;
 }

@@ -18,19 +18,19 @@ import lombok.experimental.SuperBuilder;
 public class Comentario {
 
     @EmbeddedId
-    ComentarioKey id;
+    private ComentarioKey id;
 
     @ManyToOne
     @MapsId("clienteId")
     @JoinColumn(name = "cliente_id")
     @JsonBackReference
-    Cliente cliente;
+    private Cliente cliente;
 
     @ManyToOne
     @MapsId("productoId")
     @JoinColumn(name = "producto_id")
     @JsonBackReference
-    Producto producto;
+    private Producto producto;
 
-    String  comentarios;
+    private String  comentarios;
 }

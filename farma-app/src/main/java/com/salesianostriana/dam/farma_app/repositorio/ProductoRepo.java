@@ -20,7 +20,6 @@ public interface ProductoRepo extends
     @Query(value = "SELECT p FROM Producto p")
     Page<Producto> findAll(Pageable pageable);
 
-
     Optional<Producto> findById(UUID id);
 
     //Filtrado por categoría

@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -49,7 +50,7 @@ public class FarmaceuticoController {
     })
     @PreAuthorize("hasRole('FARMACEUTICO')")
     @PutMapping("/farmaceutico/{username}")
-    public Usuario edit(@RequestBody EditFarmaceuticoDto editDto,
+    public Usuario edit(@RequestBody @Valid EditFarmaceuticoDto editDto,
                         @AuthenticationPrincipal String username) {
         return service.editFarmaceutico(editDto, username );
     }
