@@ -115,7 +115,7 @@ public class CategoriaController {
     })
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/categoria/{nombre}")
-    public GetCategoriaDto edit(@PathVariable String nombre, @RequestBody EditCategoriaDto categoriaDto) {
+    public GetCategoriaDto edit(@PathVariable String nombre, @RequestBody @Valid EditCategoriaDto categoriaDto) {
         return GetCategoriaDto.of(service.edit(categoriaDto, nombre));
     }
 }

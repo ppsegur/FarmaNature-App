@@ -1,10 +1,11 @@
 package com.salesianostriana.dam.farma_app.error;
 
-import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
 
-public class CategoriaNotFoundException extends EntityNotFoundException {
+public class CategoriaNotFoundException extends EntidadNotFoundException {
 
-    public CategoriaNotFoundException(String message){
-        super("No se encuentran categorias");
+
+    public CategoriaNotFoundException(String message, HttpStatus status) {
+        super(message, status);
     }
 }

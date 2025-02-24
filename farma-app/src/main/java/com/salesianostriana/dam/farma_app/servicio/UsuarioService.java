@@ -150,7 +150,7 @@ public class UsuarioService {
     public Usuario editUsuario(EditUserDto editUsuarioDto, String username) {
         Optional<Usuario> usuarioOp = userRepository.findFirstByUsername(username);
         if(usuarioOp.isEmpty()){
-            throw new UsuarioNotFoundException("No existen usuarios con ese id");
+            throw new UsuarioNotFoundException("No existen usuarios con ese id", HttpStatus.NOT_FOUND);
         }
        // usuarioOp.get().setUsername(editUsuarioDto.username());
         usuarioOp.get().setPassword(editUsuarioDto.password());
@@ -164,7 +164,7 @@ public class UsuarioService {
     //Eliminar usuario
     public void deleteUsuario(String username) {
         Optional<Usuario> usuarioAEliminar = userRepository.findFirstByUsername(username);
-        if(!usuarioAEliminar.isEmpty() && !usuarioAEliminar.get().getRoles().equals("ADMIN")){
+        if(!usuarioAEliminar.isEmpty()){
             userRepository.deleteById(usuarioAEliminar.get().getId());
 
         }

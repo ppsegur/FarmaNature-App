@@ -241,7 +241,7 @@ public class UsuarioController {
 })
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/auth/{username}")
-    public Usuario edit(@RequestBody EditUserDto editDto,
+    public Usuario edit(@RequestBody @Valid EditUserDto editDto,
                         @PathVariable String username) {
         return userService.editUsuario(editDto, username );
     }

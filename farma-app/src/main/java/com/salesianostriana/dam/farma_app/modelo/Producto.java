@@ -48,6 +48,11 @@ public class Producto {
     @JsonManagedReference
     private Set<Comentario> reseñas = new HashSet<>();
 
+    public void removeReseña(Comentario comentario) {
+        this.reseñas.remove(comentario);
+        comentario.setProducto(null);
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
