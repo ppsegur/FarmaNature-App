@@ -5,6 +5,8 @@ import com.salesianostriana.dam.farma_app.dto.CreateComentarioDto;
 import com.salesianostriana.dam.farma_app.dto.GetComentarioDto;
 import com.salesianostriana.dam.farma_app.dto.GetProductoDto;
 import com.salesianostriana.dam.farma_app.dto.user.UserResponse;
+import com.salesianostriana.dam.farma_app.error.ProductoNotFoundException;
+import com.salesianostriana.dam.farma_app.error.UsuarioNotFoundException;
 import com.salesianostriana.dam.farma_app.modelo.Cliente;
 import com.salesianostriana.dam.farma_app.modelo.Comentario;
 import com.salesianostriana.dam.farma_app.modelo.ComentarioKey;
@@ -16,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ComentarioService {
@@ -24,29 +28,25 @@ public class ComentarioService {
     private final ComentarioRepo comentarioRepositorio;
     private final ClienteRepo clienteRepositorio;
     private final ProductoRepo productoRepositorio;
-
     @Transactional
-    public Comentario crearComentario(CreateComentarioDto dto) {
-        // Buscar el cliente y el producto
-        Cliente cliente = clienteRepositorio.findById(dto.clienteId())
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
-        Producto producto = productoRepositorio.findById(dto.productoId())
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+    public Comentario crearComentario(Cliente c, CreateComentarioDto dto) {
+        // Buscar Cliente y Producto por nombre
+        Cliente clienteVerdadero = clienteRepositorio.findFirstByUsername(c.getUsername())
+                .orElseThrow(() -> new UsuarioNotFoundException("Cliente no encontrado"));
 
-        // Crear la clave primaria compuesta
-        ComentarioKey id = new ComentarioKey(dto.clienteId(), dto.productoId());
+        Producto producto = productoRepositorio.findById(dto.productoId())
+                .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado: " + dto.productoId()));
 
         // Crear el comentario
+        ComentarioKey id = new ComentarioKey(clienteVerdadero.getId(), producto.getId());
         Comentario comentario = Comentario.builder()
                 .id(id)
-                .cliente(cliente)
+                .cliente(clienteVerdadero)
                 .producto(producto)
                 .comentarios(dto.comentario())
                 .build();
 
         // Guardar el comentario
-      return  comentarioRepositorio.save(comentario);
-
-
+        return comentarioRepositorio.save(comentario);
     }
 }

@@ -4,7 +4,7 @@ package com.salesianostriana.dam.farma_app.dto;
 import java.util.UUID;
 
 public record CreateComentarioDto(
-        UUID clienteId,
+        String username,
         UUID productoId,
         String comentario
 ) {

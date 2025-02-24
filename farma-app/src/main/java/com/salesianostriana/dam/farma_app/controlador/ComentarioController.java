@@ -2,11 +2,14 @@ package com.salesianostriana.dam.farma_app.controlador;
 
 import com.salesianostriana.dam.farma_app.dto.CreateComentarioDto;
 import com.salesianostriana.dam.farma_app.dto.GetComentarioDto;
+import com.salesianostriana.dam.farma_app.modelo.Cliente;
 import com.salesianostriana.dam.farma_app.modelo.Comentario;
+import com.salesianostriana.dam.farma_app.modelo.Usuario;
 import com.salesianostriana.dam.farma_app.servicio.ComentarioService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +23,9 @@ public class ComentarioController {
     private final ComentarioService comentarioService;
 
     @PostMapping("/")
-    public ResponseEntity<Comentario> crearComentario(@RequestBody CreateComentarioDto dto) {
-        Comentario comentarioCreado = comentarioService.crearComentario(dto);
+    public ResponseEntity<Comentario> crearComentario(@RequestBody CreateComentarioDto dto,
+                                                        @AuthenticationPrincipal Cliente c) {
+        Comentario comentarioCreado = comentarioService.crearComentario(c,dto);
         return ResponseEntity.status(201).body(comentarioCreado);
     }
 }
