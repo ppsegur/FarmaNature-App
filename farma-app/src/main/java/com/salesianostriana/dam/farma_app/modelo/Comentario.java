@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 public class Comentario {
+
     @EmbeddedId
     ComentarioKey id;
 
