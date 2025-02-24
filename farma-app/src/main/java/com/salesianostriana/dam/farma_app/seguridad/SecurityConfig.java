@@ -89,6 +89,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,"/buscar/**").permitAll()
                 .requestMatchers(HttpMethod.POST ,"/upload/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/productoCategoria/**").permitAll()
+                .requestMatchers(HttpMethod.POST,"/comentario/**").hasRole("CLIENTE")
+               // .requestMatchers(HttpMethod.GET,"/comentario/all").permitAll() idea devolver todos los comentarios asociados a un producto y otra qeu devuelva todos los comentarios realizados por un cliente
 
 
 

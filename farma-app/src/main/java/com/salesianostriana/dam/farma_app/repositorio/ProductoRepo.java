@@ -16,9 +16,10 @@ import java.util.UUID;
 public interface ProductoRepo extends
         JpaRepository<Producto, UUID> , PagingAndSortingRepository<Producto, UUID>,
         JpaSpecificationExecutor<Producto> {
-    Optional<Producto> findFirstByNombre(String name);
+    Optional<Producto> findByNombreIgnoreCase(String name);
     @Query(value = "SELECT p FROM Producto p")
     Page<Producto> findAll(Pageable pageable);
+
 
     Optional<Producto> findById(UUID id);
 
