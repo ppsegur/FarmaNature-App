@@ -39,6 +39,7 @@ public class FileController {
     }
 
 
+
     @PostMapping("/upload")
     public ResponseEntity<?> upload(@RequestPart("file") MultipartFile file) {
 
@@ -66,6 +67,7 @@ public class FileController {
                 .build();
     }
 
+    //obtención de la imagen
 
     @GetMapping("/download/{id:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String id) {

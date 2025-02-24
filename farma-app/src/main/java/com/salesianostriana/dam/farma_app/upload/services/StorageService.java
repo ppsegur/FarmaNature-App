@@ -11,7 +11,7 @@ public interface StorageService {
 
     FileMetadata store(MultipartFile file);
 
-    Resource loadAsResource(String filename);
+    Resource loadAsResource(String id);
 
     void deleteFile(String filename);
 }

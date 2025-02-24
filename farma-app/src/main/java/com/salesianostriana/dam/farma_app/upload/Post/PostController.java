@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 
@@ -22,13 +23,17 @@ public class PostController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Post> create(
+    public ResponseEntity<GetPostDto> create(
             @RequestParam("file") MultipartFile file,
             @RequestPart("post") CreatePostDto newPost
              ){
         Post post = service.save(newPost, file);
+        String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/download")
+                .path(post.toString())
+                .toUriString();
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(post);
+                .body(GetPostDto.of(post,uri));
     }
 
 }

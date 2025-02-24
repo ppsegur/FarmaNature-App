@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,5 +20,6 @@ public interface ProductoRepo extends
     Page<Producto> findAll(Pageable pageable);
 
     Optional<Producto> findById(UUID id);
+
 
 }

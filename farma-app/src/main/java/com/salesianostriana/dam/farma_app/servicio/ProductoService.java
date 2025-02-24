@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -127,6 +128,18 @@ public Page<Producto> findAllProductos(int page, int size, String[] sort) {
                 .map(GetProductoDto::of)
                 .collect(Collectors.toList());
     }
+
+    /**
+    Busqueda de un listado de productos por categoría
+
+    public List<GetProductoDto> buscarPorCategoria(String nombre){
+        List<GetProductoDto> productos = new ArrayList<>();
+        if(repo.findByCategoria(nombre)){
+            return productos;
+        }
+        return null;
+    }
+    **/
 
 
 }
