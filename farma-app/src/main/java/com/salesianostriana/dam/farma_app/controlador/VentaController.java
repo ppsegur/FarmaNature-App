@@ -26,12 +26,12 @@ public class VentaController {
     private final VentaService ventaService;
 
     @GetMapping("/")
-    public ResponseEntity<Venta> obtenerCarrito(@AuthenticationPrincipal Cliente cliente) {
-        Venta carrito = ventaService.getCarrito(cliente);
-        if (carrito == null) {
+    public ResponseEntity<VentaDto> obtenerCarrito(@AuthenticationPrincipal Cliente cliente) {
+      VentaDto v  = VentaDto.of(ventaService.getCarrito(cliente));
+        if (v == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().body(carrito);
+        return ResponseEntity.ok().body(v);
     }
 
     @PostMapping("/producto/")
@@ -62,8 +62,11 @@ public class VentaController {
     @PostMapping("/finalizar")
     public ResponseEntity<VentaDto> finalizarCompra(@AuthenticationPrincipal Cliente cliente) {
         ventaService.finalizarCompra(cliente);
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        VentaDto v  = ventaService.finalizarCompra(cliente);
+        if (v == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(v);
     }
 
 

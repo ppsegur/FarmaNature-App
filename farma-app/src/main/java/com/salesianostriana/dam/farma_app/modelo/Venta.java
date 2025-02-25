@@ -35,7 +35,7 @@ public class Venta {
 
     @OneToMany(
             mappedBy = "venta",
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @Builder.Default

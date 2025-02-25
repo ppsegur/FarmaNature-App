@@ -3,21 +3,23 @@ package com.salesianostriana.dam.farma_app.dto;
 import com.salesianostriana.dam.farma_app.modelo.LineaDeVenta;
 import lombok.Builder;
 
+import java.util.UUID;
+
 @Builder
 public record LineaVentaDto (
-     Long productoId,
+     UUID productoId,
      String nombreProducto,
     double precioUnitario,
     int cantidad,
      double subtotal
 ){
     public static LineaVentaDto of(LineaDeVenta lineaVenta) {
-        return LineaVentaDto.of(LineaDeVenta.builder()
-                .venta(lineaVenta.getVenta())
-                .precioVenta(lineaVenta.getPrecioVenta())
+        return LineaVentaDto.builder()
+                .productoId(lineaVenta.getProducto().getId())
+                .nombreProducto(lineaVenta.getProducto().getNombre())
+                .precioUnitario(lineaVenta.getPrecioVenta())
                 .cantidad(lineaVenta.getCantidad())
-                .producto(lineaVenta.getProducto())
-                .build());
-
+                .subtotal(lineaVenta.getPrecioVenta() * lineaVenta.getCantidad())
+                .build();
     }
 }

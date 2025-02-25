@@ -1,7 +1,9 @@
 package com.salesianostriana.dam.farma_app.servicio;
 
 import com.salesianostriana.dam.farma_app.dto.GetProductoDto;
+import com.salesianostriana.dam.farma_app.dto.VentaDto;
 import com.salesianostriana.dam.farma_app.error.ProductoNotFoundException;
+import com.salesianostriana.dam.farma_app.error.VentaNotFoundException;
 import com.salesianostriana.dam.farma_app.modelo.LineaDeVenta;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
 import com.salesianostriana.dam.farma_app.modelo.Venta;
@@ -14,9 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -27,9 +28,11 @@ public class VentaService {
     private final CarritoService service;
 
 
-    public Venta edit(Venta venta) {
-        return  ventaRepo.save(venta);
+    @Transactional
+    public void edit(Venta venta) {
+        ventaRepo.save(venta);
     }
+    //Deprecado
     public boolean hayProductosEnCarrito(Cliente c, GetProductoDto dto) {
         Optional<Venta> venta = ventaRepo.findByClienteAndEstadoFalse(c);
         if (venta.isPresent()) {
@@ -38,7 +41,8 @@ public class VentaService {
         }
         return false;
     }
-    //devolver el carrito
+
+    @Transactional
     public void addProducto(Cliente c, GetProductoDto dto) {
         Producto producto = productoRepo.findById(dto.id())
                 .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado", HttpStatus.NOT_FOUND));
@@ -61,7 +65,8 @@ public class VentaService {
     }
 
     // Buscar por Producto
-    private Optional<LineaDeVenta> BuscarPorProducto(Cliente c, Producto p) {
+    @Transactional
+    public Optional<LineaDeVenta> BuscarPorProducto(Cliente c, Producto p) {
         Venta carrito = getCarrito(c);
         return carrito.getLineasVenta().stream().filter(lv -> lv.getProducto().getId() == p.getId()).findFirst();
     }
@@ -81,26 +86,34 @@ public class VentaService {
     }
 
 
-    public Venta crearCarrito(Cliente c) {
 
-        Venta carrito = Venta.builder().cliente(c).estado(false).build();
-        return carrito;
+    @Transactional
+    public VentaDto finalizarCompra(Cliente c) {
+        Venta carrito = ventaRepo.findByCliente(c);
+            // Buscar solo la compra en proceso
 
-    }
+        if (carrito == null) {
+            throw new VentaNotFoundException( "No hay carrito en proceso", HttpStatus.NOT_FOUND);
+        }
 
-    public void finalizarCompra(Cliente c) {
-        Venta carrito = getCarrito(c);
-        carrito.getLineasVenta().forEach(lineaVenta ->{ //esta lambda recorre los productos en el carrito y setea su atributo bolleano comprado para que no nos aparezca despues de comprarlo
-            Producto p  = lineaVenta.getProducto();
+        // Calcular el total de la compra
+        double total = carrito.getLineasVenta().stream()
+                .mapToDouble(lineaVenta -> lineaVenta.getProducto().getPrecio() * lineaVenta.getCantidad())
+                .sum();
 
-        });
         carrito.setEstado(true);
-        carrito.setFechaCreacion(LocalDate.now().atStartOfDay());
-        carrito.setImporteTotal(getImporteTotal(c));
+        carrito.setFechaCreacion(LocalDateTime.now());
+        carrito.setImporteTotal(total);
 
-      edit(carrito);
+
+        carrito = ventaRepo.save(carrito);
+
+
+        return VentaDto.of(carrito);
     }
 
+
+   /* @Transactional
     public double getImporteTotal(Cliente c) {
         Venta carrito = getCarrito(c);
 
@@ -108,7 +121,7 @@ public class VentaService {
                 .mapToDouble(lv -> lv.getProducto().getPrecio() * lv.getCantidad())
                 .sum();
     }
-
+*/
     @Transactional
     public void eliminarProductoDelCarrito(Cliente c, UUID productoId) {
         Venta carrito = ventaRepo.findByCliente(c);
