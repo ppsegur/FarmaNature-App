@@ -94,6 +94,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,"/comentario/**").permitAll()
                 .requestMatchers(HttpMethod.PUT,"/comentario/editar/**").hasRole("CLIENTE")
                 .requestMatchers("/carrito").permitAll()
+                .requestMatchers("/carrito/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE,"/comentario/eliminar/**").hasRole("CLIENTE")
 
 

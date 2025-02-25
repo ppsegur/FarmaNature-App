@@ -24,12 +24,12 @@ import java.util.UUID;
 public class VentaService {
     private final VentaRepo ventaRepo;
     private final ProductoRepo productoRepo;
+    private final CarritoService service;
 
 
     public Venta edit(Venta venta) {
         return  ventaRepo.save(venta);
     }
-    // Ver si existe un carrito
     public boolean hayProductosEnCarrito(Cliente c, GetProductoDto dto) {
         Optional<Venta> venta = ventaRepo.findByClienteAndEstadoFalse(c);
         if (venta.isPresent()) {
@@ -66,13 +66,21 @@ public class VentaService {
         return carrito.getLineasVenta().stream().filter(lv -> lv.getProducto().getId() == p.getId()).findFirst();
     }
 
+
+    @Transactional
     public Venta getCarrito(Cliente cliente) {
-        return getVentasSinFinalizar(cliente).orElseGet(() -> crearCarrito(cliente));//nos devuelve la venta sin finalizar y si no me crea un carrito
+        return ventaRepo.findByClienteAndEstadoFalse(cliente)
+                .orElseGet(() -> {
+                    Venta carrito = Venta.builder()
+                            .cliente(cliente)
+                            .estado(false)
+                            .build();
+                    ventaRepo.save(carrito); // Guarda el carrito en la base de datos
+                    return carrito;
+                });
     }
 
-    public Optional<Venta> getVentasSinFinalizar(Cliente cliente) {
-        return ventaRepo.findByClienteAndEstadoFalse(cliente);
-    }
+
     public Venta crearCarrito(Cliente c) {
 
         Venta carrito = Venta.builder().cliente(c).estado(false).build();

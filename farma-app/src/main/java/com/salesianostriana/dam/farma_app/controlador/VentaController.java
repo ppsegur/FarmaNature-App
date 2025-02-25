@@ -28,11 +28,14 @@ public class VentaController {
     @GetMapping("/")
     public ResponseEntity<Venta> obtenerCarrito(@AuthenticationPrincipal Cliente cliente) {
         Venta carrito = ventaService.getCarrito(cliente);
-         return ResponseEntity.ok().body(carrito);
+        if (carrito == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(carrito);
     }
 
     @PostMapping("/producto/")
-    public ResponseEntity<Void> agregarProductoAlCarrito(
+    public ResponseEntity<GetProductoDto> agregarProductoAlCarrito(
             @AuthenticationPrincipal Cliente cliente,
             @RequestBody GetProductoDto dto) {
         ventaService.addProducto(cliente, dto );
@@ -40,7 +43,7 @@ public class VentaController {
     }
 
     @DeleteMapping("/producto/{productoId}")
-    public ResponseEntity<Void> eliminarProductoDelCarrito(
+    public ResponseEntity<?> eliminarProductoDelCarrito(
             @AuthenticationPrincipal Cliente cliente,
             @PathVariable UUID productoId) {
         ventaService.eliminarProductoDelCarrito(cliente, productoId);
@@ -48,7 +51,7 @@ public class VentaController {
     }
 
     @PutMapping("/producto/{productoId}/cantidad/{cantidad}")
-    public ResponseEntity<Void> actualizarCantidadProducto(
+    public ResponseEntity<GetProductoDto> actualizarCantidadProducto(
             @AuthenticationPrincipal Cliente cliente,
             @PathVariable UUID productoId,
             @PathVariable int cantidad) {
