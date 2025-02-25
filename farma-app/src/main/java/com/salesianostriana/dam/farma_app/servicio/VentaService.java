@@ -1,19 +1,22 @@
 package com.salesianostriana.dam.farma_app.servicio;
 
 import com.salesianostriana.dam.farma_app.dto.GetProductoDto;
+import com.salesianostriana.dam.farma_app.error.ProductoNotFoundException;
 import com.salesianostriana.dam.farma_app.modelo.LineaDeVenta;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
 import com.salesianostriana.dam.farma_app.modelo.Venta;
 import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
-import com.salesianostriana.dam.farma_app.repositorio.LineaDeVentaRepo;
 import com.salesianostriana.dam.farma_app.repositorio.ProductoRepo;
 import com.salesianostriana.dam.farma_app.repositorio.VentaRepo;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -39,30 +42,25 @@ public class VentaService {
         return ventaRepo.findByCliente(c);
     }
     // Metodo agregar producto
-    public void addProducto(Cliente c, GetProductoDto dto) {
+    public void addProducto(Cliente c, UUID dto) {
         Venta carrito = ventaRepo.findByCliente(c);
         Optional<LineaDeVenta> lineaExistente = BuscarPorProducto(c, dto);
-        //Traemos la venta
         if (lineaExistente.isPresent()) {
-            // Si ya existe, incrementar la cantidad
             LineaDeVenta linea = lineaExistente.get();
             linea.setCantidad(linea.getCantidad() + 1);
         } else {
-            // Si no existe, crear una nueva línea con cantidad 1
             carrito.addLineaPedido(LineaDeVenta.builder()
                     .producto(productoRepo.findById(dto.id()).orElse(null))
-                    .cantidad(1) // Asegúrate de inicializar la cantidad
+                    .cantidad(1)
                     .build());
         }
 
-        // Guardar los cambios
-        ventaRepo.save(carrito); // Cambiado de ventaServicio.edit a ventaRepo.save
+        ventaRepo.save(carrito);
     }
     // Buscar por Producto
     private Optional<LineaDeVenta> BuscarPorProducto(Cliente c, GetProductoDto dto) {
         Venta carrito = getCarrito(c);
         return carrito.getLineasVenta().stream().filter(lv -> lv.getProducto().getId() == dto.id()).findFirst();
-        //en la labda lo que hacemos es coger el id del producto que nos pasan y lo comparamos, y nos devolverá el perimero que encuentre
     }
 
     public Venta getCarrito(Cliente cliente) {
@@ -81,7 +79,7 @@ public class VentaService {
 
     public void finalizarCompra(Cliente c) {
         Venta carrito = getCarrito(c);
-        carrito.getLineasVenta().forEach(lineaVenta ->{ //esta lambda recorre los cursos en el carrito y setea su atributo bolleano comprado para que no nos aparezca despues de comprarlo
+        carrito.getLineasVenta().forEach(lineaVenta ->{ //esta lambda recorre los productos en el carrito y setea su atributo bolleano comprado para que no nos aparezca despues de comprarlo
             Producto p  = lineaVenta.getProducto();
 
         });
@@ -98,6 +96,47 @@ public class VentaService {
         return carrito.getLineasVenta().stream()
                 .mapToDouble(lv -> lv.getProducto().getPrecio() * lv.getCantidad())
                 .sum();
+    }
+
+    @Transactional
+    public void eliminarProductoDelCarrito(Cliente c, UUID productoId) {
+        Venta carrito = ventaRepo.findByCliente(c);
+        Optional<LineaDeVenta> lineaExistente = carrito.getLineasVenta().stream()
+                .filter(lv -> lv.getProducto().getId().equals(productoId))
+                .findFirst();
+
+        if (lineaExistente.isPresent()) {
+            carrito.getLineasVenta().remove(lineaExistente.get());
+            ventaRepo.save(carrito);
+        } else {
+            throw new ProductoNotFoundException("Producto no encontrado en el carrito", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public void eliminarProducto(Cliente cliente, UUID productoDto) {
+        Venta carrito = getCarrito(cliente);
+        carrito.getLineasVenta().removeIf(lv -> lv.getProducto().getId().equals(productoDto.id()));
+        ventaRepo.save(carrito);
+    }
+
+    public void actualizarCantidad(Cliente cliente, UUID productoDto, int cantidad) {
+        if (cantidad <= 0) {
+            eliminarProducto(cliente, productoDto);
+            return;
+        }
+
+        Venta carrito = getCarrito(cliente);
+        Optional<LineaDeVenta> lineaOpt = BuscarPorProducto(cliente, productoDto);
+
+        if (lineaOpt.isPresent()) {
+            LineaDeVenta linea = lineaOpt.get();
+            linea.setCantidad(cantidad);
+            ventaRepo.save(carrito);
+        }
+    }
+
+    public List<Venta> obtenerHistorialCompras(Cliente cliente) {
+        return ventaRepo.findByClienteAndFinalizadaTrue(cliente);
     }
 
 }

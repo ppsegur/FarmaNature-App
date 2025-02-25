@@ -4,6 +4,7 @@ import com.salesianostriana.dam.farma_app.modelo.Venta;
 import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,5 +14,5 @@ public interface VentaRepo extends JpaRepository<Venta, UUID> {
 
     Venta findByCliente(Cliente cliente);
 
-
+    List<Venta> findByClienteAndFinalizadaTrue(Cliente cliente);
 }

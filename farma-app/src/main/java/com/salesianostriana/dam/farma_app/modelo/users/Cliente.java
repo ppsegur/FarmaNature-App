@@ -32,7 +32,7 @@ public class Cliente extends Usuario {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @Builder.Default
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Venta> ventas = new HashSet<>();
 
     public void removeComentario(Comentario comentario) {

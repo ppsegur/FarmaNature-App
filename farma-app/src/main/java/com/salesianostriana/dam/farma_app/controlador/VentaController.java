@@ -1,4 +1,67 @@
 package com.salesianostriana.dam.farma_app.controlador;
 
+import com.salesianostriana.dam.farma_app.dto.GetProductoDto;
+import com.salesianostriana.dam.farma_app.dto.LineaVentaDto;
+import com.salesianostriana.dam.farma_app.dto.VentaDto;
+import com.salesianostriana.dam.farma_app.modelo.LineaDeVenta;
+import com.salesianostriana.dam.farma_app.modelo.Venta;
+import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
+import com.salesianostriana.dam.farma_app.servicio.VentaService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/api/carrito")
+@RequiredArgsConstructor
 public class VentaController {
+
+    private final VentaService ventaService;
+
+    @GetMapping("/")
+    public ResponseEntity<VentaDto> obtenerCarrito(@AuthenticationPrincipal Cliente cliente) {
+        List<LineaVentaDto>
+        return ResponseEntity.ok();
+    }
+
+    @PostMapping("/producto/{productoId}")
+    public ResponseEntity<Void> agregarProductoAlCarrito(
+            @AuthenticationPrincipal Cliente cliente,
+            @PathVariable UUID productoId) {
+        ventaService.addProducto(cliente, productoId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/producto/{productoId}")
+    public ResponseEntity<Void> eliminarProductoDelCarrito(
+            @AuthenticationPrincipal Cliente cliente,
+            @PathVariable UUID productoId) {
+        ventaService.eliminarProductoDelCarrito(cliente, productoId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/producto/{productoId}/cantidad/{cantidad}")
+    public ResponseEntity<Void> actualizarCantidadProducto(
+            @AuthenticationPrincipal Cliente cliente,
+            @PathVariable UUID productoId,
+            @PathVariable int cantidad) {
+        ventaService.actualizarCantidad(cliente, productoId, cantidad);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/finalizar")
+    public ResponseEntity<VentaDto> finalizarCompra(@AuthenticationPrincipal Cliente cliente) {
+        ventaService.finalizarCompra(cliente);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+
+
 }

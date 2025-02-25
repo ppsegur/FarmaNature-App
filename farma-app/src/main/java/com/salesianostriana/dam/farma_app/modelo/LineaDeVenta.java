@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.farma_app.modelo;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -24,7 +25,12 @@ public class LineaDeVenta {
     @ManyToOne
     private Venta venta;
 
+
+
     @ManyToOne
+    @JoinColumn(name = "id_producto",
+            foreignKey = @ForeignKey(name = "fk_producto_lv"))
+    @JsonBackReference
     private Producto producto;
 
     private int cantidad;

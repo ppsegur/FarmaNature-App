@@ -55,9 +55,9 @@ public class Producto {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "productos"  ,cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "productos"  ,cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
-    private List<LineaDeVenta> lv  = new ArrayList<>();
+    private Set<LineaDeVenta> lv  = new HashSet<>();
 
     public void addLineaVenta(LineaDeVenta lv) {
         this.lv.add(lv);
