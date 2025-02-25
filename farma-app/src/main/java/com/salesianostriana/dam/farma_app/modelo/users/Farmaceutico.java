@@ -1,5 +1,6 @@
-package com.salesianostriana.dam.farma_app.modelo;
+package com.salesianostriana.dam.farma_app.modelo.users;
 
+import com.salesianostriana.dam.farma_app.modelo.Turno;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -15,7 +16,7 @@ import java.util.Set;
 @SuperBuilder
 @Table(name = "farmaceutico")
 @PrimaryKeyJoinColumn(name = "id")
-public class Farmaceutico extends Usuario{
+public class Farmaceutico extends Usuario {
 
     @Column(name = "direccion")
     private String direccion;

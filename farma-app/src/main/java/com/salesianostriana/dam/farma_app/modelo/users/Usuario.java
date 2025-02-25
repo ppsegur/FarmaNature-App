@@ -1,10 +1,7 @@
-package com.salesianostriana.dam.farma_app.modelo;
+package com.salesianostriana.dam.farma_app.modelo.users;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.NaturalId;

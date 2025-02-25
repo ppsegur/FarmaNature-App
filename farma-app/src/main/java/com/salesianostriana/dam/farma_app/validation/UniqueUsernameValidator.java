@@ -1,6 +1,6 @@
 package com.salesianostriana.dam.farma_app.validation;
 
-import com.salesianostriana.dam.farma_app.repositorio.UsuarioRepo;
+import com.salesianostriana.dam.farma_app.repositorio.users.UsuarioRepo;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.farma_app.modelo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

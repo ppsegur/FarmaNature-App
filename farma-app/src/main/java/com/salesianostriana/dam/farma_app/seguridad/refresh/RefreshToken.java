@@ -1,7 +1,7 @@
 package com.salesianostriana.dam.farma_app.seguridad.refresh;
 
 
-import com.salesianostriana.dam.farma_app.modelo.Usuario;
+import com.salesianostriana.dam.farma_app.modelo.users.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,51 +1,60 @@
 package com.salesianostriana.dam.farma_app.modelo;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.awt.*;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 
-@Entity
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name="categoria")
-public class Categoria {
+@Entity
+public class Venta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
 
-    @Column(name = "nombre")
-    private String nombre;
-
-    @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     @Builder.Default
-    @JsonManagedReference
-    Set<Producto> productos = new HashSet<>();
+    private LocalDateTime fechaCreacion = LocalDateTime.now();
 
 
-    //Metodos helpers PRODUCTO-CATEGORIAS
-    public void addProducto(Producto p) {
-        p.setCategoria(this);
-        productos.add(p);
+    private boolean estado;
+
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
+
+
+    @OneToMany(
+            mappedBy = "venta",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @Builder.Default
+    @ToString.Exclude
+    @Setter(AccessLevel.NONE)
+    private Set<LineaDeVenta> lineasVenta = new HashSet<>();
+
+    private double importeTotal;
+    // Helpers
+
+    public void addLineaPedido(LineaDeVenta lineaDeVenta) {
+        lineasVenta.add(lineaDeVenta);
+        lineaDeVenta.setVenta(this);
     }
-    public void removeProducto(Producto p) {
-        productos.remove(p);
-        p.setCategoria(null);
+
+    public void removeLineaPedido(LineaDeVenta lineaDeVenta) {
+        lineasVenta.remove(lineaDeVenta);
     }
+
 
     @Override
     public final boolean equals(Object o) {
@@ -54,8 +63,8 @@ public class Categoria {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Categoria categoria = (Categoria) o;
-        return getId() != null && Objects.equals(getId(), categoria.getId());
+        Venta venta = (Venta) o;
+        return getId() != null && Objects.equals(getId(), venta.getId());
     }
 
     @Override

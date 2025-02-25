@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "c1dcf126-60f8-47d2-bc01-a737de636c0b",
+		"_postman_id": "8dddd3b5-c7b2-497c-b692-6cbbe5bcff2a",
 		"name": "Farma-Natur",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "41650191",
-		"_collection_link": "https://conectapp.postman.co/workspace/Team-Workspace~e71c83f1-d5fb-4b64-8dd4-6d1ed7259ced/collection/41650191-c1dcf126-60f8-47d2-bc01-a737de636c0b?action=share&source=collection_link&creator=41650191"
+		"_exporter_id": "38748105",
+		"_collection_link": "https://connect-app-3874.postman.co/workspace/Team-Workspace~f27e39a4-19f4-4154-82cc-b592f43ade3c/collection/38748105-8dddd3b5-c7b2-497c-b692-6cbbe5bcff2a?action=share&source=collection_link&creator=38748105"
 	},
 	"item": [
 		{
@@ -416,7 +416,10 @@
 					"name": "FiltrarCategoria",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				}
@@ -528,13 +531,23 @@
 			"name": "Comentario",
 			"item": [
 				{
-					"name": "New Request",
+					"name": "GuardarComentario",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_user}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"comentario\":\"Falta de proyección falta de prospecto de alergias  \"\r\n}",
+							"raw": "{\r\n    \"comentario\":\"Falta de proyección falta de prospecto de alergias  \",\r\n    \"productoId\":\"550e8400-e29b-41d4-a716-446655440002\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -552,6 +565,202 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "EditarComentario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NTBlODQwMC1lMjliLTQxZDQtYTcxNi00NDY2NTU0NDAwMDEiLCJpYXQiOjE3NDA0MjYwNzYsImV4cCI6MTc0MDQyNjEzNn0.g-FEibLiS5OnmiuOkW3ysMueap7wVGBvtCDCA8gV8Lo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n{\r\n    \"comentario\":\"Falta de proyección falta de prospecto de   \",\r\n    \"productoId\":\"550e8400-e29b-41d4-a716-446655440002\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}comentario/editar",
+							"host": [
+								"{{BASE_URL}}comentario"
+							],
+							"path": [
+								"editar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListarComentariosDelcliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}comentario/cliente/usuario",
+							"host": [
+								"{{BASE_URL}}comentario"
+							],
+							"path": [
+								"cliente",
+								"usuario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ListarcomentariosDelProducto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}comentario/producto",
+							"host": [
+								"{{BASE_URL}}comentario"
+							],
+							"path": [
+								"producto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EliminarComentario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token_user}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}eliminar/Paracetamol",
+							"host": [
+								"{{BASE_URL}}eliminar"
+							],
+							"path": [
+								"Paracetamol"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ventas",
+			"item": [
+				{
+					"name": "ObtenerCarritoCliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}carrito/",
+							"host": [
+								"{{BASE_URL}}carrito"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AgregarProducto",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}carrito/agregar",
+							"host": [
+								"{{BASE_URL}}carrito"
+							],
+							"path": [
+								"agregar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FinalizarCompra",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}carrito/finalizar",
+							"host": [
+								"{{BASE_URL}carrito"
+							],
+							"path": [
+								"finalizar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EliminarProductoCarrito",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}carrito/{productoId}",
+							"host": [
+								"{{BASE_URL}}carrito"
+							],
+							"path": [
+								"{productoId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ImporteCarritoTotal",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}carrito/importe",
+							"host": [
+								"{{BASE_URL}}carrito"
+							],
+							"path": [
+								"importe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			]
 		},
@@ -559,7 +768,10 @@
 			"name": "SubidaDeFicheros",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": ""
+				}
 			},
 			"response": []
 		}
@@ -591,6 +803,14 @@
 			"key": "BASE_URL",
 			"value": "http://localhost:8080/",
 			"type": "string"
+		},
+		{
+			"key": "token_user",
+			"value": ""
+		},
+		{
+			"key": "refreshToken_user",
+			"value": ""
 		}
 	]
 }

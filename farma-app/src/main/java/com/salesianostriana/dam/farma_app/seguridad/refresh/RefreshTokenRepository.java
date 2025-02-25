@@ -1,6 +1,6 @@
 package com.salesianostriana.dam.farma_app.seguridad.refresh;
 
-import com.salesianostriana.dam.farma_app.modelo.Usuario;
+import com.salesianostriana.dam.farma_app.modelo.users.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.transaction.annotation.Transactional;

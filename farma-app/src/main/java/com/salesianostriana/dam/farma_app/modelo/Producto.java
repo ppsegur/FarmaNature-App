@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.util.*;
@@ -41,18 +40,39 @@ public class Producto {
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     @JsonBackReference
-    private Categoria categoria;
+    private ComentarioKey.Categoria categoria;
 
 
-    @OneToMany(mappedBy = "producto",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "producto",cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY )
     @JsonManagedReference
     private Set<Comentario> reseñas = new HashSet<>();
+
+    public void addReseña(Comentario comentario){
+
+    }
 
     public void removeReseña(Comentario comentario) {
         this.reseñas.remove(comentario);
         comentario.setProducto(null);
     }
 
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "producto"  ,cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    @JsonManagedReference
+    private Set<LineaDeVenta> lv  = new HashSet<>();
+
+    public void addLineaVenta(LineaDeVenta lv) {
+        this.lv.add(lv);
+        lv.setProducto(this);
+    }
+
+    public void removeLineaVenta(LineaDeVenta lv) {
+        this.lv.remove(lv);
+        //lv.setProducto(null);
+    }
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

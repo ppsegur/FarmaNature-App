@@ -1,13 +1,14 @@
 package com.salesianostriana.dam.farma_app.modelo;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -21,4 +22,56 @@ public class ComentarioKey implements Serializable {
 
     @Column(name = "producto_id")
     private UUID productoId;
+
+    @Entity
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Table(name="categoria")
+    public static class Categoria {
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.UUID)
+        private UUID id;
+
+
+        @Column(name = "nombre")
+        private String nombre;
+
+        @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+        @ToString.Exclude
+        @EqualsAndHashCode.Exclude
+        @Builder.Default
+        @JsonManagedReference
+        Set<Producto> productos = new HashSet<>();
+
+
+        //Metodos helpers PRODUCTO-CATEGORIAS
+        public void addProducto(Producto p) {
+            p.setCategoria(this);
+            productos.add(p);
+        }
+        public void removeProducto(Producto p) {
+            productos.remove(p);
+            p.setCategoria(null);
+        }
+
+        @Override
+        public final boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null) return false;
+            Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+            Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+            if (thisEffectiveClass != oEffectiveClass) return false;
+            Categoria categoria = (Categoria) o;
+            return getId() != null && Objects.equals(getId(), categoria.getId());
+        }
+
+        @Override
+        public final int hashCode() {
+            return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+        }
+    }
 }
