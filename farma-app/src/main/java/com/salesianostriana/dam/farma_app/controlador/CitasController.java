@@ -17,11 +17,11 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/cita")
+@RequestMapping("/citas")
 @Tag(name = "citas", description = "El controlador para los distintas citas  ")
 public class CitasController {
 
-    private CitaService citaService;
+    private final CitaService citaService;
 
     @PostMapping("/")
     public ResponseEntity<CreateCitaDto> crearCita(@RequestBody CreateCitaDto dto, @AuthenticationPrincipal Cliente cliente ) {

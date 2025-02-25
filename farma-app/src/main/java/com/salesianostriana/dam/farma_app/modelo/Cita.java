@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -31,8 +32,8 @@ public class Cita {
 
     private String titulo;
 
-    @Column(name = "fecha_inicio", insertable = false, updatable = false)
-    private LocalDateTime fecha_inicio;
+    @Column(name = "fechaInicio",insertable = false, updatable = false)
+    private LocalDateTime fechaInicio;
 
     private LocalDateTime fecha_fin;
     private double precioCita;
@@ -54,7 +55,7 @@ public class Cita {
         this.cliente = cliente;
     }
 
-    public void removeFromAlumno(Cliente cliente) {
+    public void removeFromCliente(Cliente cliente) {
         cliente.getCitas().remove(this);
         this.cliente = null;
     }

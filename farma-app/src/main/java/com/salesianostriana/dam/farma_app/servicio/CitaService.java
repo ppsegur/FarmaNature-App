@@ -2,8 +2,6 @@ package com.salesianostriana.dam.farma_app.servicio;
 
 
 import com.salesianostriana.dam.farma_app.dto.CreateCitaDto;
-import com.salesianostriana.dam.farma_app.dto.user.ClienteCitaDto;
-import com.salesianostriana.dam.farma_app.dto.user.FarmaceuticoCitaDto;
 import com.salesianostriana.dam.farma_app.error.UsuarioNotFoundException;
 import com.salesianostriana.dam.farma_app.modelo.Cita;
 import com.salesianostriana.dam.farma_app.modelo.CitaPk;
@@ -18,12 +16,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.Collections;
+import java.util.List;
 
 @Service
-    @RequiredArgsConstructor
-    public class CitaService {
+@RequiredArgsConstructor
+public class CitaService {
 
 
     private final CitaRepo citaRepo;
@@ -45,7 +45,7 @@ import java.util.Optional;
 
         Turno turno = determinarTurno(fechaInicio);
 
-        double precio = switch (dto.title().toLowerCase()) {
+        double precio = switch (dto.tittle().toLowerCase()) {
             case "basica" -> 20;
             case "general" -> 30;
             case "terapia" -> 50;
@@ -61,7 +61,7 @@ import java.util.Optional;
                 citaPk,
                 farmaceuticoVerdadero,
                 c,
-                dto.title(),
+                dto.tittle(),
                 dto.fecha_inicio(),
                 dto.fecha_fin(),
                 precio,
@@ -78,6 +78,28 @@ import java.util.Optional;
             if (hora >= 12 && hora < 18) return Turno.TARDE;
             return Turno.NOCHE;
         }
+
+    //Obtiene todas las citas de un farmacéutico específico
+
+    @Transactional(readOnly = true)
+    public List<CreateCitaDto> getCitasByFarmaceutico(String username) {
+        farmaceuticoRepo.findFirstByUsername(username)
+                .orElseThrow(() -> new UsuarioNotFoundException("Farmacéutico no encontrado", HttpStatus.NOT_FOUND));
+
+        List<Cita> citas = citaRepo.findByFarmaceuticoUsername(username);
+        return Collections.singletonList(CreateCitaDto.of((Cita) citas));
+    }
+
+    //Obtiene todas las citas de un cliente específico
+
+    @Transactional(readOnly = true)
+    public List<CreateCitaDto> getCitasByCliente(String userename) {
+        clienteRepo.findFirstByUsername(userename)
+                .orElseThrow(() -> new UsuarioNotFoundException("Cliente no encontrado", HttpStatus.NOT_FOUND));
+
+        List<Cita> citas = citaRepo.findByClienteUsername(userename);
+        return Collections.singletonList(CreateCitaDto.of((Cita) citas));
+    }
     }
 
 

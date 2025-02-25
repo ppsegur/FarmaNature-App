@@ -32,6 +32,7 @@ public class CitaPk implements Serializable {
     @Column(name = "farmaceutico_id")
     private UUID id_farmaceutico;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime fecha_inicio;
+    @Column(name = "fechaInicio")
+    private LocalDateTime fechaInicio;
 
 }
