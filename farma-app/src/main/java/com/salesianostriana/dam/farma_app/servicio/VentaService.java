@@ -144,31 +144,40 @@ public class VentaService {
             throw new ProductoNotFoundException("Producto no encontrado en el carrito", HttpStatus.NOT_FOUND);
         }
     }
-
+    @Transactional
     public void eliminarProducto(Cliente cliente, UUID productoDto) {
         Venta carrito = getCarrito(cliente);
         carrito.getLineasVenta().removeIf(lv -> lv.getProducto().getId().equals(productoDto));
         ventaRepo.save(carrito);
     }
 
+    @Transactional
     public void actualizarCantidad(Cliente cliente, UUID productoDto, int cantidad) {
 
       //EL actualizar no funciona
         if (cantidad <= 0) {
             eliminarProducto(cliente, productoDto);
-            return;
         }
         Optional<Producto> p = productoRepo.findById(productoDto);
         if(p.isPresent()) {
 
-        Optional<LineaDeVenta> lineaOpt = BuscarPorProducto(cliente, p.get());
+            Venta carrito = getCarrito(cliente);
+            Optional<LineaDeVenta> lineaExistente = BuscarPorProducto(cliente, p.get());
 
-        if (lineaOpt.isPresent()) {
-            LineaDeVenta linea = lineaOpt.get();
+
+            if (lineaExistente.isPresent()) {
+            LineaDeVenta linea = lineaExistente.get();
             linea.setCantidad(cantidad);
-            lineaRepo.save(linea);
+            carrito.addLineaPedido(linea);
+            ventaRepo.save(carrito);
+        } else {
+            carrito.addLineaPedido(LineaDeVenta.builder()
+                    .producto(p.get())
+                    .cantidad(1)
+                    .build());
 
-        }}
+        }
+    }
     }
 
     public Venta obtenerHistorialCompras(Cliente cliente) {
@@ -176,3 +185,4 @@ public class VentaService {
     }
 
 }
+
