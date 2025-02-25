@@ -46,6 +46,7 @@ public class Venta {
     @Setter(AccessLevel.NONE)
     private List<LineaDeVenta> lineasVenta = new ArrayList<>();
 
+    private double importeTotal;
     // Helpers
 
     public void addLineaPedido(LineaDeVenta lineaDeVenta) {

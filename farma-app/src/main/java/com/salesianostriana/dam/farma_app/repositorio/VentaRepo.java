@@ -1,9 +1,17 @@
 package com.salesianostriana.dam.farma_app.repositorio;
 
 import com.salesianostriana.dam.farma_app.modelo.Venta;
+import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface VentaRepo extends JpaRepository<Venta, UUID> {
+
+    Optional<Venta> findByClienteAndFinalizadaFalse(Cliente cliente);
+
+    Venta findByCliente(Cliente cliente);
+
+
 }
