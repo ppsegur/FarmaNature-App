@@ -96,7 +96,8 @@ public class SecurityConfig {
                 .requestMatchers("/carrito").permitAll()
                 .requestMatchers("/carrito/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE,"/comentario/eliminar/**").hasRole("CLIENTE")
-
+                .requestMatchers(HttpMethod.POST,"/cita/**").hasRole("CLIENTE")
+                .requestMatchers(HttpMethod.DELETE,"/cita/**").hasRole("FARMACEUTICO")
 
 
                 .requestMatchers("/h2-console","/auth/qr-code/**","/auth/verify-2fa").permitAll()

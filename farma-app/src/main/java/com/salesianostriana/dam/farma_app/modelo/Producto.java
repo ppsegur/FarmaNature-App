@@ -40,7 +40,7 @@ public class Producto {
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     @JsonBackReference
-    private ComentarioKey.Categoria categoria;
+    private Categoria categoria;
 
 
     @OneToMany(mappedBy = "producto",cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY )

@@ -2,7 +2,7 @@ package com.salesianostriana.dam.farma_app.controlador;
 
 import com.salesianostriana.dam.farma_app.dto.EditCategoriaDto;
 import com.salesianostriana.dam.farma_app.dto.GetCategoriaDto;
-import com.salesianostriana.dam.farma_app.modelo.ComentarioKey;
+import com.salesianostriana.dam.farma_app.modelo.Categoria;
 import com.salesianostriana.dam.farma_app.servicio.CategoriaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -37,7 +37,7 @@ public class CategoriaController {
                     content = {
                             @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = EditCategoriaDto.class),
+                                    schema = @Schema(implementation = Categoria.class),
                                     examples = @ExampleObject(value = """
                                 {
                                  
@@ -56,9 +56,10 @@ public class CategoriaController {
     })
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/categoria")
-    public ResponseEntity<ComentarioKey.Categoria> addCategoria(@RequestBody @Valid EditCategoriaDto getCategoriaDto){
+    public ResponseEntity<Categoria> addCategoria(@RequestBody  GetCategoriaDto getCategoriaDto){
+        Categoria categoria = service.saveCategoria(getCategoriaDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.saveCategoria(getCategoriaDto));
+                .body(service.saveCategoria(GetCategoriaDto.of(categoria)));
 
     }
     @Operation(summary = "Obtiene todas las categorias y las devuelve en forma de listado")
@@ -66,7 +67,7 @@ public class CategoriaController {
             @ApiResponse(responseCode = "200",
                     description = "Se han encontrado las categorias",
                     content = { @Content(mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = ComentarioKey.Categoria.class)),
+                            array = @ArraySchema(schema = @Schema(implementation = Categoria.class)),
                             examples = {@ExampleObject(
                                     value = """
                                             {
@@ -108,7 +109,7 @@ public class CategoriaController {
             @ApiResponse(responseCode = "200",
                     description = "Categoría actualizada con éxito",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ComentarioKey.Categoria.class))}),
+                            schema = @Schema(implementation =Categoria.class))}),
             @ApiResponse(responseCode = "404",
                     description = "No se encontró la categoría con el id (id proporcionado)",
                     content = @Content)

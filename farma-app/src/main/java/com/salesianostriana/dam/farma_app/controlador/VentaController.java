@@ -69,19 +69,13 @@ public class VentaController {
     }
 
     @GetMapping("/historial")
-    public ResponseEntity<List<VentaDto>> obtenerHistorialCompras(@AuthenticationPrincipal Cliente cliente) {
+    public List<VentaDto> obtenerHistorialCompras(@AuthenticationPrincipal Cliente cliente) {
         List<Venta> historial = ventaService.obtenerHistorialCompras(cliente);
-
-
-        if (historial.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
         List<VentaDto> historialDto = historial.stream()
                 .map(VentaDto::of)
                 .toList();
 
-        return ResponseEntity.ok(historialDto);
+        return historialDto;
     }
 
 

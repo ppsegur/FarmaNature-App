@@ -3,11 +3,14 @@ package com.salesianostriana.dam.farma_app.modelo;
 import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
 import com.salesianostriana.dam.farma_app.modelo.users.Farmaceutico;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 
-@Data
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -26,34 +29,50 @@ public class Cita {
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;
 
-    private int duracion;
+    private String titulo;
+
+    @Column(name = "fecha_inicio", insertable = false, updatable = false)
+    private LocalDateTime fecha_inicio;
+
+    private LocalDateTime fecha_fin;
     private double precioCita;
     private boolean especial;
 
-    // Helper doctor
+    // Métodos para gestionar relaciones
     public void addToFarmaceutico(Farmaceutico farmaceutico) {
-
         farmaceutico.getCitas().add(this);
-
         this.farmaceutico = farmaceutico;
     }
 
-    public void removeFromDoctor(Farmaceutico farmaceutico) {
-
+    public void removeFromFarmaceutico(Farmaceutico farmaceutico) {
         farmaceutico.getCitas().remove(this);
-
         this.farmaceutico = null;
     }
 
-    // Helper cliente
     public void addToCliente(Cliente cliente) {
         cliente.getCitas().add(this);
-
         this.cliente = cliente;
     }
 
     public void removeFromAlumno(Cliente cliente) {
         cliente.getCitas().remove(this);
         this.cliente = null;
+    }
+
+    // Equals y HashCode
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Cita cita = (Cita) o;
+        return getCitasPk() != null && Objects.equals(getCitasPk(), cita.getCitasPk());
+    }
+
+    @Override
+    public final int hashCode() {
+        return Objects.hash(citasPk);
     }
 }

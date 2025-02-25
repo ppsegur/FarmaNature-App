@@ -1,14 +1,18 @@
+
 package com.salesianostriana.dam.farma_app.servicio;
 
 import com.salesianostriana.dam.farma_app.dto.EditCategoriaDto;
+import com.salesianostriana.dam.farma_app.dto.GetCategoriaDto;
 import com.salesianostriana.dam.farma_app.error.CategoriaNotFoundException;
-import com.salesianostriana.dam.farma_app.modelo.ComentarioKey;
+import com.salesianostriana.dam.farma_app.modelo.Categoria;
 import com.salesianostriana.dam.farma_app.repositorio.CategoriaRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -16,37 +20,40 @@ public class CategoriaService {
 
     private final CategoriaRepo repo;
 
-    public ComentarioKey.Categoria saveCategoria(EditCategoriaDto nuevo){
-        return repo.save(ComentarioKey.Categoria
+    public Categoria saveCategoria(GetCategoriaDto nuevo){
+        return repo.save(Categoria
                 .builder().nombre(nuevo.nombre()).build());
     }
 
-    public List<ComentarioKey.Categoria> findAll() {
-        List<ComentarioKey.Categoria> categorias = repo.findAll();
+    public List<Categoria> findAll() {
+        List<Categoria> categorias = repo.findAll();
         if(categorias.isEmpty()) {
             throw new CategoriaNotFoundException("No se encontraron empresas", HttpStatus.NOT_FOUND);
         }
         return categorias;
     }
     public void delete(String nombre) {
-       ComentarioKey.Categoria categoria = repo.findByNombre(nombre);
+        Categoria categoria = repo.findByNombre(nombre);
 
-
-
-        if(categoria == null) {
-            throw new CategoriaNotFoundException("No se ha encontrado " , HttpStatus.NOT_FOUND);
+        Categoria c = categoria;
+        // c.getProductos().forEach(producto -> producto.removeFromCategorias(c));
+        if(c == null) {
+            throw new CategoriaNotFoundException(nombre , HttpStatus.NOT_FOUND);
         }
-        repo.deleteById(categoria.getId());
+        repo.deleteById(c.getId());
     }
 
 
-    public ComentarioKey.Categoria edit(EditCategoriaDto dto, String  nombre) {
-        ComentarioKey.Categoria categoria = repo.findByNombre(nombre);
-        if (dto.nombre() != null) {
-            categoria.setNombre(dto.nombre());
-        }
+    public Categoria edit(EditCategoriaDto dto, String  nombre) {
+        Optional<Categoria> categoriaOptional = Optional.ofNullable(repo.findByNombre(nombre));
 
-        return repo.save(categoria);
+        return categoriaOptional.map(old -> {
+            old.setNombre(dto.nombre());
+
+            // old.setproductosRelacionados(dto.ProdctosRelacionados());
+            return repo.save(old);
+        }).get();
     }
+
 
 }
