@@ -43,9 +43,13 @@ public class Producto {
     private ComentarioKey.Categoria categoria;
 
 
-    @OneToMany(mappedBy = "producto",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "producto",cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY )
     @JsonManagedReference
     private Set<Comentario> reseñas = new HashSet<>();
+
+    public void addReseña(Comentario comentario){
+
+    }
 
     public void removeReseña(Comentario comentario) {
         this.reseñas.remove(comentario);
@@ -55,8 +59,9 @@ public class Producto {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "productos"  ,cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "producto"  ,cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
+    @JsonManagedReference
     private Set<LineaDeVenta> lv  = new HashSet<>();
 
     public void addLineaVenta(LineaDeVenta lv) {

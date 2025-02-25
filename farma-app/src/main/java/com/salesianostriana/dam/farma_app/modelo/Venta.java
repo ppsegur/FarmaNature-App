@@ -6,10 +6,7 @@ import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
@@ -32,19 +29,19 @@ public class Venta {
     private boolean estado;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
 
     @OneToMany(
-            mappedBy = "pedido",
-            fetch = FetchType.EAGER,
+            mappedBy = "venta",
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @Builder.Default
     @ToString.Exclude
     @Setter(AccessLevel.NONE)
-    private List<LineaDeVenta> lineasVenta = new ArrayList<>();
+    private Set<LineaDeVenta> lineasVenta = new HashSet<>();
 
     private double importeTotal;
     // Helpers

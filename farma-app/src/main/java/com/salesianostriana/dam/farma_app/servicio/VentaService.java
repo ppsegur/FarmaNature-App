@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -42,25 +43,31 @@ public class VentaService {
         return ventaRepo.findByCliente(c);
     }
     // Metodo agregar producto
-    public void addProducto(Cliente c, UUID dto) {
+    public void addProducto(Cliente c, GetProductoDto dto) {
+        Producto producto = productoRepo.findById(dto.id())
+                .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado", HttpStatus.NOT_FOUND));
+
         Venta carrito = ventaRepo.findByCliente(c);
-        Optional<LineaDeVenta> lineaExistente = BuscarPorProducto(c, dto);
+
+        Optional<LineaDeVenta> lineaExistente = BuscarPorProducto(c, producto); // Cambié 'p' por 'producto'
+
         if (lineaExistente.isPresent()) {
             LineaDeVenta linea = lineaExistente.get();
             linea.setCantidad(linea.getCantidad() + 1);
         } else {
             carrito.addLineaPedido(LineaDeVenta.builder()
-                    .producto(productoRepo.findById(dto.id()).orElse(null))
+                    .producto(producto)
                     .cantidad(1)
                     .build());
         }
 
         ventaRepo.save(carrito);
     }
+
     // Buscar por Producto
-    private Optional<LineaDeVenta> BuscarPorProducto(Cliente c, GetProductoDto dto) {
+    private Optional<LineaDeVenta> BuscarPorProducto(Cliente c, Producto p) {
         Venta carrito = getCarrito(c);
-        return carrito.getLineasVenta().stream().filter(lv -> lv.getProducto().getId() == dto.id()).findFirst();
+        return carrito.getLineasVenta().stream().filter(lv -> lv.getProducto().getId() == p.getId()).findFirst();
     }
 
     public Venta getCarrito(Cliente cliente) {
@@ -115,7 +122,7 @@ public class VentaService {
 
     public void eliminarProducto(Cliente cliente, UUID productoDto) {
         Venta carrito = getCarrito(cliente);
-        carrito.getLineasVenta().removeIf(lv -> lv.getProducto().getId().equals(productoDto.id()));
+        carrito.getLineasVenta().removeIf(lv -> lv.getProducto().getId().equals(productoDto));
         ventaRepo.save(carrito);
     }
 
@@ -124,9 +131,11 @@ public class VentaService {
             eliminarProducto(cliente, productoDto);
             return;
         }
+        Producto p = productoRepo.findById(productoDto).orElse(null);
+
 
         Venta carrito = getCarrito(cliente);
-        Optional<LineaDeVenta> lineaOpt = BuscarPorProducto(cliente, productoDto);
+        Optional<LineaDeVenta> lineaOpt = BuscarPorProducto(cliente, p);
 
         if (lineaOpt.isPresent()) {
             LineaDeVenta linea = lineaOpt.get();
@@ -135,8 +144,8 @@ public class VentaService {
         }
     }
 
-    public List<Venta> obtenerHistorialCompras(Cliente cliente) {
-        return ventaRepo.findByClienteAndFinalizadaTrue(cliente);
+    public Set<Venta> obtenerHistorialCompras(Cliente cliente) {
+        return ventaRepo.findByClienteAndEstadoTrue(cliente);
     }
 
 }

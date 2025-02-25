@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,16 +26,16 @@ public class VentaController {
     private final VentaService ventaService;
 
     @GetMapping("/")
-    public ResponseEntity<VentaDto> obtenerCarrito(@AuthenticationPrincipal Cliente cliente) {
-        List<LineaVentaDto>
-        return ResponseEntity.ok();
+    public ResponseEntity<Venta> obtenerCarrito(@AuthenticationPrincipal Cliente cliente) {
+        Venta carrito = ventaService.obtenerCarrito(cliente);
+         return ResponseEntity.ok().body(carrito);
     }
 
-    @PostMapping("/producto/{productoId}")
+    @PostMapping("/producto/")
     public ResponseEntity<Void> agregarProductoAlCarrito(
             @AuthenticationPrincipal Cliente cliente,
-            @PathVariable UUID productoId) {
-        ventaService.addProducto(cliente, productoId);
+            @RequestBody GetProductoDto dto) {
+        ventaService.addProducto(cliente, dto );
         return ResponseEntity.ok().build();
     }
 
