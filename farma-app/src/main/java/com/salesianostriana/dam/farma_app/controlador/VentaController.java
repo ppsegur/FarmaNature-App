@@ -19,7 +19,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/carrito")
+@RequestMapping("/carrito")
 @RequiredArgsConstructor
 public class VentaController {
 
@@ -27,7 +27,7 @@ public class VentaController {
 
     @GetMapping("/")
     public ResponseEntity<Venta> obtenerCarrito(@AuthenticationPrincipal Cliente cliente) {
-        Venta carrito = ventaService.obtenerCarrito(cliente);
+        Venta carrito = ventaService.getCarrito(cliente);
          return ResponseEntity.ok().body(carrito);
     }
 

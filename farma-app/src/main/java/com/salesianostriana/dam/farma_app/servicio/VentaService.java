@@ -31,7 +31,7 @@ public class VentaService {
     }
     // Ver si existe un carrito
     public boolean hayProductosEnCarrito(Cliente c, GetProductoDto dto) {
-        Optional<Venta> venta = ventaRepo.findByClienteAndFinalizadaFalse(c);
+        Optional<Venta> venta = ventaRepo.findByClienteAndEstadoFalse(c);
         if (venta.isPresent()) {
             return venta.get().getLineasVenta().stream()
                     .anyMatch(lv -> lv.getProducto().equals(dto));
@@ -39,17 +39,13 @@ public class VentaService {
         return false;
     }
     //devolver el carrito
-    public Venta obtenerCarrito(Cliente c) {
-        return ventaRepo.findByCliente(c);
-    }
-    // Metodo agregar producto
     public void addProducto(Cliente c, GetProductoDto dto) {
         Producto producto = productoRepo.findById(dto.id())
                 .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado", HttpStatus.NOT_FOUND));
 
-        Venta carrito = ventaRepo.findByCliente(c);
+        Venta carrito = getCarrito(c);
 
-        Optional<LineaDeVenta> lineaExistente = BuscarPorProducto(c, producto); // Cambié 'p' por 'producto'
+        Optional<LineaDeVenta> lineaExistente = BuscarPorProducto(c, producto);
 
         if (lineaExistente.isPresent()) {
             LineaDeVenta linea = lineaExistente.get();
@@ -75,7 +71,7 @@ public class VentaService {
     }
 
     public Optional<Venta> getVentasSinFinalizar(Cliente cliente) {
-        return ventaRepo.findByClienteAndFinalizadaFalse(cliente);
+        return ventaRepo.findByClienteAndEstadoFalse(cliente);
     }
     public Venta crearCarrito(Cliente c) {
 
@@ -144,7 +140,7 @@ public class VentaService {
         }
     }
 
-    public Set<Venta> obtenerHistorialCompras(Cliente cliente) {
+    public Venta obtenerHistorialCompras(Cliente cliente) {
         return ventaRepo.findByClienteAndEstadoTrue(cliente);
     }
 

@@ -11,9 +11,9 @@ import java.util.UUID;
 
 public interface VentaRepo extends JpaRepository<Venta, UUID> {
 
-    Optional<Venta> findByClienteAndFinalizadaFalse(Cliente cliente);
+    Optional<Venta> findByClienteAndEstadoFalse(Cliente cliente);
 
     Venta findByCliente(Cliente cliente);
 
-    Set<Venta> findByClienteAndEstadoTrue(Cliente cliente);
+   Venta findByClienteAndEstadoTrue(Cliente cliente);
 }

@@ -28,7 +28,7 @@ public class LineaDeVenta {
 
 
     @ManyToOne
-    @JoinColumn(name = "id_producto",
+    @JoinColumn(name = "producto_id",
             foreignKey = @ForeignKey(name = "fk_producto_lv"))
     @JsonBackReference
     private Producto producto;
