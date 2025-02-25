@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -180,7 +181,7 @@ public class VentaService {
     }
     }
 
-    public Venta obtenerHistorialCompras(Cliente cliente) {
+    public List<Venta> obtenerHistorialCompras(Cliente cliente) {
         return ventaRepo.findByClienteAndEstadoTrue(cliente);
     }
 

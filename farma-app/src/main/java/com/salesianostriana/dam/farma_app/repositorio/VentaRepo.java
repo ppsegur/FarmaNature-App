@@ -15,7 +15,7 @@ public interface VentaRepo extends JpaRepository<Venta, UUID> {
 
     Venta findByCliente(Cliente cliente);
 
-   Venta findByClienteAndEstadoTrue(Cliente cliente);
+   List<Venta> findByClienteAndEstadoTrue(Cliente cliente);
     Venta findVentaByClienteAndEstadoFalse(Cliente cliente);
 
 }
