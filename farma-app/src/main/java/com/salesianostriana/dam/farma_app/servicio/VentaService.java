@@ -8,8 +8,10 @@ import com.salesianostriana.dam.farma_app.modelo.LineaDeVenta;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
 import com.salesianostriana.dam.farma_app.modelo.Venta;
 import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
+import com.salesianostriana.dam.farma_app.repositorio.LineaVentaRepo;
 import com.salesianostriana.dam.farma_app.repositorio.ProductoRepo;
 import com.salesianostriana.dam.farma_app.repositorio.VentaRepo;
+import com.salesianostriana.dam.farma_app.servicio.users.ClienteService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,7 @@ public class VentaService {
     private final VentaRepo ventaRepo;
     private final ProductoRepo productoRepo;
     private final CarritoService service;
+    private final LineaVentaRepo lineaRepo;
 
 
     @Transactional
@@ -89,24 +92,28 @@ public class VentaService {
 
     @Transactional
     public VentaDto finalizarCompra(Cliente c) {
-        Venta carrito = ventaRepo.findByCliente(c);
+
+        Venta carrito = ventaRepo.findVentaByClienteAndEstadoFalse(c);
+
+
+
             // Buscar solo la compra en proceso
 
-        if (carrito == null) {
-            throw new VentaNotFoundException( "No hay carrito en proceso", HttpStatus.NOT_FOUND);
-        }
+            if (carrito == null) {
+                throw new VentaNotFoundException("No hay carrito en proceso", HttpStatus.NOT_FOUND);
+            }
 
-        // Calcular el total de la compra
-        double total = carrito.getLineasVenta().stream()
-                .mapToDouble(lineaVenta -> lineaVenta.getProducto().getPrecio() * lineaVenta.getCantidad())
-                .sum();
+            // Calcular el total de la compra
+            double total = carrito.getLineasVenta().stream()
+                    .mapToDouble(lineaVenta -> lineaVenta.getProducto().getPrecio() * lineaVenta.getCantidad())
+                    .sum();
 
-        carrito.setEstado(true);
-        carrito.setFechaCreacion(LocalDateTime.now());
-        carrito.setImporteTotal(total);
+            carrito.setEstado(true);
+            carrito.setFechaCreacion(LocalDateTime.now());
+            carrito.setImporteTotal(total);
 
 
-        carrito = ventaRepo.save(carrito);
+            carrito = ventaRepo.save(carrito);
 
 
         return VentaDto.of(carrito);
@@ -130,6 +137,7 @@ public class VentaService {
                 .findFirst();
 
         if (lineaExistente.isPresent()) {
+
             carrito.getLineasVenta().remove(lineaExistente.get());
             ventaRepo.save(carrito);
         } else {
@@ -144,21 +152,23 @@ public class VentaService {
     }
 
     public void actualizarCantidad(Cliente cliente, UUID productoDto, int cantidad) {
+
+      //EL actualizar no funciona
         if (cantidad <= 0) {
             eliminarProducto(cliente, productoDto);
             return;
         }
-        Producto p = productoRepo.findById(productoDto).orElse(null);
+        Optional<Producto> p = productoRepo.findById(productoDto);
+        if(p.isPresent()) {
 
-
-        Venta carrito = getCarrito(cliente);
-        Optional<LineaDeVenta> lineaOpt = BuscarPorProducto(cliente, p);
+        Optional<LineaDeVenta> lineaOpt = BuscarPorProducto(cliente, p.get());
 
         if (lineaOpt.isPresent()) {
             LineaDeVenta linea = lineaOpt.get();
             linea.setCantidad(cantidad);
-            ventaRepo.save(carrito);
-        }
+            lineaRepo.save(linea);
+
+        }}
     }
 
     public Venta obtenerHistorialCompras(Cliente cliente) {

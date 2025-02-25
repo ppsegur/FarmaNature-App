@@ -61,7 +61,6 @@ public class VentaController {
 
     @PostMapping("/finalizar")
     public ResponseEntity<VentaDto> finalizarCompra(@AuthenticationPrincipal Cliente cliente) {
-        ventaService.finalizarCompra(cliente);
         VentaDto v  = ventaService.finalizarCompra(cliente);
         if (v == null) {
             return ResponseEntity.notFound().build();
