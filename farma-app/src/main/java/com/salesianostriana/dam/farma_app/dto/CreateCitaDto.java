@@ -17,9 +17,7 @@ public record CreateCitaDto(
         @NotNull(message = "El farmacéutico no puede ser nulo")
         FarmaceuticoCitaDto usernameFarma,
 
-        @NotBlank(message = "El título no puede estar vacío")
-        @Size(max = 100, message = "El título no puede tener más de 100 caracteres")
-        String title,
+
 
         @PositiveOrZero(message = "El precio no puede ser negativo")
         double precio,

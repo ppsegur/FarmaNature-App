@@ -14,6 +14,10 @@ import com.salesianostriana.dam.farma_app.repositorio.users.ClienteRepo;
 import com.salesianostriana.dam.farma_app.repositorio.ComentarioRepo;
 import com.salesianostriana.dam.farma_app.repositorio.ProductoRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -106,6 +110,12 @@ public class ComentarioService {
 
     comentarioRepositorio.delete(comentario);
 }
+    public Page<Comentario> findAllComentarios(int page, int size, String[] sort) {
+        String sortField = sort[0];
+        Sort.Direction direction = sort[1].equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        return comentarioRepositorio.findAll(pageable);
+    }
     }
 
 

@@ -175,7 +175,16 @@ public class UsuarioController {
                     .body(Map.of("error", "Error al verificar el código 2FA"));
         }
     }
-    //Deprecated
+    @Operation(summary = "Activa la cuenta de un usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Cuenta activada con éxito",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Usuario.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "Token inválido o expirado",
+                    content = @Content)
+    })
     @PostMapping("/activate/account/")
     public ResponseEntity<?> activateAccount(@RequestBody ActivateAccountRequest req) {
         String token = req.token();
@@ -264,12 +273,31 @@ public class UsuarioController {
 
 
 
-
+    @Operation(summary = "Obtiene la información del usuario autenticado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Datos del usuario obtenidos con éxito",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserResponse.class))}),
+            @ApiResponse(responseCode = "401",
+                    description = "No autorizado",
+                    content = @Content)
+    })
     @GetMapping("/me")
     public UserResponse me(@AuthenticationPrincipal Usuario user) {
         return UserResponse.of(user);
     }
 
+    @Operation(summary = "Obtiene la información del usuario autenticado con rol ADMIN")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Datos del usuario administrador obtenidos con éxito",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Usuario.class))}),
+            @ApiResponse(responseCode = "403",
+                    description = "Acceso denegado, se requiere rol ADMIN",
+                    content = @Content)
+    })
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/me/admin")
     public Usuario adminMe(@AuthenticationPrincipal Usuario user) {

@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.farma_app.controlador;
 
 import com.salesianostriana.dam.farma_app.dto.CreateCitaDto;
+import com.salesianostriana.dam.farma_app.dto.GetComentarioDto;
 import com.salesianostriana.dam.farma_app.modelo.Cita;
 import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
 import com.salesianostriana.dam.farma_app.servicio.CitaService;
@@ -9,14 +10,18 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,8 +31,15 @@ public class CitasController {
 
     private final CitaService citaService;
 
+    @Operation(summary = "Crear una nueva cita", description = "Permite a un cliente registrar una nueva cita con un farmacéutico.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Cita creada exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de la cita inválidos"),
+            @ApiResponse(responseCode = "401", description = "No autorizado para crear citas")
+    })
+    @PostAuthorize("hasRole('CLIENTE')")
     @PostMapping("/")
-    public ResponseEntity<CreateCitaDto> crearCita(@RequestBody CreateCitaDto dto, @AuthenticationPrincipal Cliente cliente ) {
+    public ResponseEntity<CreateCitaDto> crearCita(@RequestBody @Valid CreateCitaDto dto, @AuthenticationPrincipal Cliente cliente) {
         Cita cita = citaService.crearCita(dto, cliente);
         return ResponseEntity.status(HttpStatus.CREATED).body(CreateCitaDto.of(cita));
     }
@@ -38,10 +50,10 @@ public class CitasController {
             @ApiResponse(responseCode = "200", description = "Citas encontradas exitosamente"),
             @ApiResponse(responseCode = "404", description = "Farmacéutico no encontrado")
     })
-    public List<CreateCitaDto> getCitasByFarmaceutico(
+    public Set<CreateCitaDto> getCitasByFarmaceutico(
             @PathVariable String username) {
-        List<CreateCitaDto> citas = citaService.getCitasByFarmaceutico(username);
-        return ResponseEntity.ok(citas).getBody();
+        return citaService.listarCitasDelFarmaceutico(username).stream().map(CreateCitaDto::of).collect(Collectors.toSet());
+
     }
 
     @GetMapping("/cliente/{username}")
@@ -50,12 +62,10 @@ public class CitasController {
             @ApiResponse(responseCode = "200", description = "Citas encontradas exitosamente"),
             @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
     })
-    @PreAuthorize("hasAnyRole('ADMIN','FARMACEUTICO') ")
-    public List<CreateCitaDto> getCitasByCliente(
+    public Set<CreateCitaDto> getCitasByCliente(
             @Parameter(description = "Username del cliente", required = true)
             @PathVariable String username) {
-        List<CreateCitaDto> citas = citaService.getCitasByCliente(username);
-        return ResponseEntity.ok(citas).getBody();
-
+        return citaService.listarCitasByCliente(username).stream().map(CreateCitaDto::of).collect(Collectors.toSet());
     }
 }
+

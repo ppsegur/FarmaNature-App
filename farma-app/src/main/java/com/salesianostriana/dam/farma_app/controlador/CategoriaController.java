@@ -56,7 +56,7 @@ public class CategoriaController {
     })
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/categoria")
-    public ResponseEntity<Categoria> addCategoria(@RequestBody  GetCategoriaDto getCategoriaDto){
+    public ResponseEntity<Categoria> addCategoria(@RequestBody @Valid  GetCategoriaDto getCategoriaDto){
         Categoria categoria = service.saveCategoria(getCategoriaDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(service.saveCategoria(GetCategoriaDto.of(categoria)));

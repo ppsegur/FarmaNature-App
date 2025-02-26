@@ -2,10 +2,10 @@ package com.salesianostriana.dam.farma_app.servicio;
 
 
 import com.salesianostriana.dam.farma_app.dto.CreateCitaDto;
+import com.salesianostriana.dam.farma_app.error.ComentarioNotFoundException;
+import com.salesianostriana.dam.farma_app.error.ProductoNotFoundException;
 import com.salesianostriana.dam.farma_app.error.UsuarioNotFoundException;
-import com.salesianostriana.dam.farma_app.modelo.Cita;
-import com.salesianostriana.dam.farma_app.modelo.CitaPk;
-import com.salesianostriana.dam.farma_app.modelo.Turno;
+import com.salesianostriana.dam.farma_app.modelo.*;
 import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
 import com.salesianostriana.dam.farma_app.modelo.users.Farmaceutico;
 import com.salesianostriana.dam.farma_app.repositorio.CitaRepo;
@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -99,6 +100,32 @@ public class CitaService {
 
         List<Cita> citas = citaRepo.findByClienteUsername(userename);
         return Collections.singletonList(CreateCitaDto.of((Cita) citas));
+    }
+
+    @Transactional
+    public Set<Cita> listarCitasDelFarmaceutico(String username) {
+
+        Farmaceutico f  = farmaceuticoRepo.findFirstByUsername(username)
+                .orElseThrow(() -> new UsuarioNotFoundException("Farmaceutico no encontrado", HttpStatus.NOT_FOUND));
+
+
+        Set<Cita> citas = f.getCitas();
+        if (citas.isEmpty()) {
+            throw new UsuarioNotFoundException("comentarios noexisten", HttpStatus.NOT_FOUND);
+        }
+        return citas;
+    }
+
+    @Transactional
+    public Set<Cita> listarCitasByCliente(String username) {
+        Cliente c  = clienteRepo.findFirstByUsername(username)
+                .orElseThrow(() -> new ProductoNotFoundException("Producto no encontrado", HttpStatus.NOT_FOUND));
+
+        Set<Cita> citas = c.getCitas();
+        if (citas.isEmpty()) {
+            throw new UsuarioNotFoundException("comentarios noexisten", HttpStatus.NOT_FOUND);
+        }
+        return citas;
     }
     }
 

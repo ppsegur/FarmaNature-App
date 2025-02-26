@@ -35,8 +35,6 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler accessDeniedHandler;
 
 
-    //2FA
-    private AuthenticationSuccessHandler authenticationSuccessHandler;
 
     @Bean
     AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
@@ -101,8 +99,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE,"/comentario/eliminar/**").hasRole("CLIENTE")
                 .requestMatchers(HttpMethod.POST,"/citas/").hasRole("CLIENTE")
                 .requestMatchers(HttpMethod.DELETE,"/citas/**").hasRole("FARMACEUTICO")
-                .requestMatchers(HttpMethod.GET,"/citas/cliente/{username}").hasAnyRole("ADMIN","FARMACETICO")
-                .requestMatchers(HttpMethod.GET,"/citas/farmaceutico/{username}").permitAll()
+                .requestMatchers(HttpMethod.GET,"/citas/cliente/**").hasRole("FARMACEUTICO")
+                .requestMatchers(HttpMethod.GET,"/citas/farmaceutico/**").permitAll()
 
                 .requestMatchers("/h2-console","/auth/qr-code/**","/auth/verify-2fa").permitAll()
                 .anyRequest().authenticated());
