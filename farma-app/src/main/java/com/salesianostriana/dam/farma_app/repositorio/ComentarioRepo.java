@@ -12,7 +12,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.UUID;
 
 public interface ComentarioRepo extends JpaRepository<Comentario, ComentarioKey>, PagingAndSortingRepository<Comentario, ComentarioKey> {
-    @Query(value = "SELECT c FROM comentario c")
+    @Query(value = "SELECT c FROM Comentario c")
     Page<Comentario> findAll(Pageable pageable);
 
 

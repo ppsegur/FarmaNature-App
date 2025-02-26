@@ -102,7 +102,7 @@ public class UsuarioController {
                     content = @Content)
     })
     @PostMapping("/auth/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody  LoginRequest loginRequest) {
         Authentication authentication =
                 authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(
@@ -254,13 +254,13 @@ public class UsuarioController {
         return userService.editUsuario(editDto, username );
     }
 
-    @Operation(summary = "Elimina un usuario por su ID")
+    @Operation(summary = "Elimina un usuario por su username")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204",
                     description = "usuario eliminado con éxito",
                     content = @Content),
             @ApiResponse(responseCode = "404",
-                    description = "No se ha encontrado el usuario con el ID proporcionado",
+                    description = "No se ha encontrado el usuario con el usuario proporcionado",
                     content = @Content)
     })
     @PreAuthorize("hasRole('ADMIN')")
@@ -303,5 +303,6 @@ public class UsuarioController {
     public Usuario adminMe(@AuthenticationPrincipal Usuario user) {
         return user;
     }
+
 
 }

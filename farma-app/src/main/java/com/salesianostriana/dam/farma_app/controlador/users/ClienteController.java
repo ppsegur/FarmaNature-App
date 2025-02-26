@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,7 +58,7 @@ public class ClienteController {
     @PreAuthorize("hasRole('CLIENTE')")
     @PutMapping("/cliente/{username}")
     public Usuario edit(@RequestBody @Valid EditClienteDto editDto,
-                        @AuthenticationPrincipal String username) {
+                        @PathVariable String username) {
         return service.editCliente(editDto, username );
     }
 

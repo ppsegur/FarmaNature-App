@@ -54,7 +54,7 @@ public class CategoriaController {
                     content = @Content
             )
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','FARMACEUTICO')")
     @PostMapping("/categoria")
     public ResponseEntity<Categoria> addCategoria(@RequestBody @Valid  GetCategoriaDto getCategoriaDto){
         Categoria categoria = service.saveCategoria(getCategoriaDto);
@@ -83,6 +83,7 @@ public class CategoriaController {
             )
     })
 //No le daremos autentificación por si podemos usarlo para que el usuario liste estas y desddde ellas elija después los distintos productos
+    @PreAuthorize("permitAll()")
     @GetMapping("/categoria/all")
     public List<GetCategoriaDto> findAll() {
         return service.findAll().stream().map(GetCategoriaDto::of).toList();
@@ -97,7 +98,7 @@ public class CategoriaController {
                     description = "No se encontró la categoría con el nombre (nombre proporcionado)",
                     content = @Content)
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FARMACEUTICO')")
     @DeleteMapping("/categoria/{nombre}")
     public ResponseEntity<?> delete(@PathVariable String nombre) {
         service.delete(nombre);
@@ -114,7 +115,7 @@ public class CategoriaController {
                     description = "No se encontró la categoría con el id (id proporcionado)",
                     content = @Content)
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FARMACEUTICO')")
     @PutMapping("/categoria/{nombre}")
     public GetCategoriaDto edit(@PathVariable String nombre, @RequestBody @Valid EditCategoriaDto categoriaDto) {
         return GetCategoriaDto.of(service.edit(categoriaDto, nombre));

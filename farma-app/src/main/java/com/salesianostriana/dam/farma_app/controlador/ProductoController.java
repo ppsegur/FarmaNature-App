@@ -72,7 +72,7 @@ public class ProductoController {
                     content = @Content
             )
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','FARMACEUTICO')")
     @PostMapping("/producto")
     public ResponseEntity<GetProductoDto> addProducto(@RequestPart("file") MultipartFile file,
             @RequestPart("producto") @Valid GetProductoDto nuevo) {
@@ -144,7 +144,7 @@ public class ProductoController {
                     description = "No se encontró el producto con el id (id proporcionado)",
                     content = @Content)
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','FARMACEUTICO')")
     @DeleteMapping("/producto/{id}")
     public ResponseEntity<?> delete(@PathVariable UUID id) {
         productoService.delete(id);
@@ -184,7 +184,7 @@ public class ProductoController {
                     content = @Content
             )
     })
-            @PostAuthorize("hasRole('ADMIN')")
+            @PostAuthorize("hasAnyRole('ADMIN','FARMACEUTICO')")
             @PutMapping("/producto/{id}")
             public ResponseEntity<GetProductoDto> editProducto(
             @PathVariable UUID id,
