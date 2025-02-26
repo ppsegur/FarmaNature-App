@@ -35,8 +35,6 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler accessDeniedHandler;
 
 
-    //2FA
-    private AuthenticationSuccessHandler authenticationSuccessHandler;
 
     @Bean
     AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
@@ -75,29 +73,35 @@ public class SecurityConfig {
                 .requestMatchers("/me/admin").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/auth/todos").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/auth/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE,"/auth/").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE,"/auth/").hasAnyRole("ADMIN","FARMACEUTICO")
                 .requestMatchers(HttpMethod.PUT, "/cliente/**").hasRole("CLIENTE")
                 .requestMatchers(HttpMethod.PUT, "/farmaceutico/**").hasRole("FARMACEUTICO")
                 .requestMatchers(HttpMethod.GET,"/categoria/**").permitAll()
-                .requestMatchers(HttpMethod.POST,"/categoria/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT,"/categoria/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE,"/categoria/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST,"/categoria").hasAnyRole("ADMIN","FARMACEUTICO")
+                .requestMatchers(HttpMethod.PUT,"/categoria/**").hasAnyRole("ADMIN","FARMACEUTICO")
+                .requestMatchers(HttpMethod.DELETE,"/categoria/**").hasAnyRole("ADMIN","FARMACEUTICO")
                 .requestMatchers(HttpMethod.GET,"/producto/all").permitAll()
+                .requestMatchers(HttpMethod.GET,"/categoria/**").permitAll()
+                .requestMatchers(HttpMethod.POST,"/producto/**").hasAnyRole("ADMIN","FARMACEUTICO")
                 .requestMatchers(HttpMethod.GET ,"/producto/{id}").permitAll()
-                .requestMatchers(HttpMethod.DELETE,"/producto/{id}").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT,"/producto/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE,"/producto/{id}").hasAnyRole("ADMIN","FARMACEUTICO")
+                .requestMatchers(HttpMethod.PUT,"/producto/**").hasAnyRole("ADMIN","FARMACETICO")
                 .requestMatchers(HttpMethod.GET,"/buscar/**").permitAll()
                 .requestMatchers(HttpMethod.POST ,"/upload/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/productoCategoria/**").permitAll()
-                .requestMatchers(HttpMethod.POST,"/comentario/**").hasRole("CLIENTE")
+                .requestMatchers(HttpMethod.POST,"/comentario/").hasRole("CLIENTE")
                // .requestMatchers(HttpMethod.GET,"/comentario/cliente/{username}").permitAll()
                 .requestMatchers(HttpMethod.GET,"/comentario/**").permitAll()
-                .requestMatchers(HttpMethod.PUT,"/comentario/editar/**").hasRole("CLIENTE")
+                .requestMatchers(HttpMethod.PUT,"/comentario/editar/**").hasAnyRole("CLIENTE")
                 .requestMatchers("/carrito").permitAll()
+                .requestMatchers("/api-docs/**", "/swagger-ui/**","/swagger-ui.html").permitAll()
+
                 .requestMatchers("/carrito/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE,"/comentario/eliminar/**").hasRole("CLIENTE")
-
-
+                .requestMatchers(HttpMethod.POST,"/citas/").hasRole("CLIENTE")
+                .requestMatchers(HttpMethod.DELETE,"/citas/**").hasRole("FARMACEUTICO")
+                .requestMatchers(HttpMethod.GET,"/citas/cliente/**").hasRole("FARMACEUTICO")
+                .requestMatchers(HttpMethod.GET,"/citas/farmaceutico/**").permitAll()
 
                 .requestMatchers("/h2-console","/auth/qr-code/**","/auth/verify-2fa").permitAll()
                 .anyRequest().authenticated());

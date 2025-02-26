@@ -1,8 +1,10 @@
 package com.salesianostriana.dam.farma_app.modelo.users;
 
+import com.salesianostriana.dam.farma_app.modelo.Cita;
 import com.salesianostriana.dam.farma_app.modelo.Comentario;
 import com.salesianostriana.dam.farma_app.modelo.Venta;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -35,6 +37,10 @@ public class Cliente extends Usuario {
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Venta> ventas = new HashSet<>();
 
+    public Cliente(
+            String email,  int edad, String direccion, String telefono) {
+    }
+
     public void removeComentario(Comentario comentario) {
         this.comentarios.remove(comentario);
         comentario.setCliente(null);
@@ -42,9 +48,19 @@ public class Cliente extends Usuario {
 
 
 
+    @OneToMany(mappedBy = "cliente" /*fetch = FetchType.EAGER*/)
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    @ToString.Exclude
+    private Set<Cita> citas = new HashSet<>();
+
+
+
     @Override
     public String getRole() {
         return "CLIENTE";
     }
+
+
 
 }

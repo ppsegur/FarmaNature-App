@@ -1,11 +1,14 @@
 package com.salesianostriana.dam.farma_app.servicio.users;
 
 import com.salesianostriana.dam.farma_app.dto.user.EditClienteDto;
+import com.salesianostriana.dam.farma_app.error.UsuarioNotFoundException;
 import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
 import com.salesianostriana.dam.farma_app.modelo.users.Usuario;
 import com.salesianostriana.dam.farma_app.repositorio.users.ClienteRepo;
+import com.salesianostriana.dam.farma_app.repositorio.users.UsuarioRepo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,20 +18,27 @@ import java.util.Optional;
 public class ClienteService {
 
     private final ClienteRepo repo;
+    private final UsuarioRepo r;
 
 
     public Usuario editCliente(EditClienteDto editUsuarioDto, String username) {
-        Optional<Cliente> usuarioOp = repo.findFirstByUsername(username);
-        if(usuarioOp.isEmpty()){
-            throw new EntityNotFoundException("No existen usuarios con ese nombre");
+        Optional<Usuario> usuarioOpt = r.findFirstByUsername(username);
+
+        if (usuarioOpt.isEmpty()) {
+            throw new UsuarioNotFoundException("No existen usuarios con ese nombre", HttpStatus.NOT_FOUND);
         }
-        // usuarioOp.get().setUsername(editUsuarioDto.username());
-        usuarioOp.get().setEmail(editUsuarioDto.email());
-        usuarioOp.get().setEdad(editUsuarioDto.edad());
-        usuarioOp.get().setDireccion(editUsuarioDto.direccion());
-        usuarioOp.get().setTelefono(editUsuarioDto.telefono());
 
+        if (!(usuarioOpt.get() instanceof Cliente)) {
+            throw new IllegalArgumentException("El usuario no es un cliente");
+        }
 
-        return repo.save(usuarioOp.get());
+        Cliente cliente = (Cliente) usuarioOpt.get();
+
+        cliente.setEmail(editUsuarioDto.email());
+        cliente.setEdad(editUsuarioDto.edad());
+        cliente.setDireccion(editUsuarioDto.direccion());
+        cliente.setTelefono(editUsuarioDto.telefono());
+
+       return r.save(cliente);
     }
 }

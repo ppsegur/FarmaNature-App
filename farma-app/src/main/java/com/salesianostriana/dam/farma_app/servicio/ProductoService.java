@@ -3,7 +3,7 @@ package com.salesianostriana.dam.farma_app.servicio;
 import com.salesianostriana.dam.farma_app.dto.EditProductDto;
 import com.salesianostriana.dam.farma_app.dto.GetProductoDto;
 import com.salesianostriana.dam.farma_app.error.ProductoNotFoundException;
-import com.salesianostriana.dam.farma_app.modelo.ComentarioKey;
+import com.salesianostriana.dam.farma_app.modelo.Categoria;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
 import com.salesianostriana.dam.farma_app.query.ProductSpecificationBuilder;
 import com.salesianostriana.dam.farma_app.query.SearchCriteria;
@@ -41,7 +41,7 @@ public class ProductoService {
 
 
         // Buscar la categoría por nombre
-        ComentarioKey.Categoria categoria = categoriaRepo.findByNombre(nuevo.categoria().nombre());
+        Categoria categoria = categoriaRepo.findByNombre(nuevo.categoria().nombre());
 
         // Verificar si la categoría es nula
         if (categoria == null) {
@@ -114,7 +114,7 @@ public Page<Producto> findAllProductos(int page, int size, String[] sort) {
             throw new ProductoNotFoundException("No se encontró la empresa con el id " + id, HttpStatus.NOT_FOUND);
         }
         Producto p = productoOptional.get();
-        ComentarioKey.Categoria categoria = p.getCategoria();
+        Categoria categoria = p.getCategoria();
         if (categoria != null) {
             categoria.removeProducto(p);
         }

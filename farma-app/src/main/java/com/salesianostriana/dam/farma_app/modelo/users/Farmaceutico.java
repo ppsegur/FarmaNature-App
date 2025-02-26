@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.farma_app.modelo.users;
 
+import com.salesianostriana.dam.farma_app.modelo.Cita;
 import com.salesianostriana.dam.farma_app.modelo.Turno;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,4 +35,12 @@ public class Farmaceutico extends Usuario {
     public String getRole() {
         return "FARMACEUTICO";
     }
+
+
+    @OneToMany(mappedBy = "farmaceutico")
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    @ToString.Exclude
+    private Set<Cita> citas = new HashSet<>();
+
 }
