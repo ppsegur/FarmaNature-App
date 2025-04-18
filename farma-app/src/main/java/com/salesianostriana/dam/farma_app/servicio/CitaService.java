@@ -11,6 +11,8 @@ import com.salesianostriana.dam.farma_app.modelo.users.Farmaceutico;
 import com.salesianostriana.dam.farma_app.repositorio.CitaRepo;
 import com.salesianostriana.dam.farma_app.repositorio.users.ClienteRepo;
 import com.salesianostriana.dam.farma_app.repositorio.users.FarmaceuticoRepo;
+import com.salesianostriana.dam.farma_app.util.MailService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,9 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class CitaService {
     private final CitaRepo citaRepo;
     private final FarmaceuticoRepo farmaceuticoRepo;
     private final ClienteRepo clienteRepo;
+    private final MailService mailService;
 
     @Transactional
     public Cita crearCita(CreateCitaDto dto, Cliente c) {
@@ -126,6 +129,39 @@ public class CitaService {
             throw new UsuarioNotFoundException("comentarios noexisten", HttpStatus.NOT_FOUND);
         }
         return citas;
+    }
+
+        //Eliminar Citas
+    @Transactional
+    public void eliminarCita(UUID clienteId, UUID farmaceuticoId, LocalDateTime fechaInicio) {
+        CitaPk citaPk = new CitaPk(clienteId, farmaceuticoId, fechaInicio);
+        Optional<Cita> citaToDelete = citaRepo.findById(citaPk);
+
+        if (citaToDelete.isPresent()) {
+            Cita cita = citaToDelete.get();
+            Cliente cliente = cita.getCliente();
+            citaRepo.delete(cita);
+
+            // Construir el mensaje de correo electrónico
+            String asunto = "Cancelación de su cita";
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            String fechaInicioFormateada = cita.getCitasPk().getFechaInicio().format(formatter);
+            String mensaje = String.format("Estimado/a %s,\n\nSu cita programada para el %s ha sido cancelada.\n\nSi tiene alguna pregunta, no dude en contactarnos.",
+                    cliente.getNombre(), fechaInicioFormateada);
+
+            // Enviar el correo electrónico
+            mailService.sendMail(cliente.getEmail(), asunto, mensaje,null);
+        } else {
+            throw new EntityNotFoundException();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<CreateCitaDto> obtenerTodasLasCitas() {
+        List<Cita> citas = citaRepo.findAll();
+        return citas.stream()
+                .map(CreateCitaDto::of)
+                .collect(Collectors.toList());
     }
     }
 
