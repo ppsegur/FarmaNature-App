@@ -84,6 +84,7 @@ public class CategoriaController {
     })
 //No le daremos autentificación por si podemos usarlo para que el usuario liste estas y desddde ellas elija después los distintos productos
     @PreAuthorize("permitAll()")
+    @CrossOrigin
     @GetMapping("/categoria/all")
     public List<GetCategoriaDto> findAll() {
         return service.findAll().stream().map(GetCategoriaDto::of).toList();

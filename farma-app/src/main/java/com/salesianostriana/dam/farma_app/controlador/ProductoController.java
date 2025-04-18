@@ -107,6 +107,7 @@ public class ProductoController {
                     description = "No se han encontrado productos"
             )
     })
+    @CrossOrigin()
     @GetMapping("/producto/all")
     public ResponseEntity<?> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
