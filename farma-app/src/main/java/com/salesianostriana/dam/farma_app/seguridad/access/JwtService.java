@@ -12,6 +12,8 @@ import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -52,10 +54,16 @@ public class JwtService {
                                 .atZone(ZoneId.systemDefault())
                                 .toInstant()
                 );
-
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", user.getId());
+        claims.put("username", user.getUsername());
+        claims.put("verified", user.isVerificado());
+        claims.put("email", user.getEmail());
+        claims.put("role", user.getRole());
         return Jwts.builder()
                 .header().type(TOKEN_TYPE)
                 .and()
+                .claims(claims)
                 .subject(user.getId().toString())
                 .issuedAt(new Date())
                 .expiration(tokeExpirationDate)
