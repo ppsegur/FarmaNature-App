@@ -72,4 +72,23 @@ INSERT INTO producto (id, nombre, descripcion, precio, stock, fecha_publicacion,
                                                                                                                    ('550e8400-e29b-41d4-a716-446655440014', 'Cepillo Dental', 'Cepillo dental de cerdas suaves', 2.99, 100, '2023-10-10', 'cepillo_dental.jpg', false, '550e8400-e29b-41d4-a716-446655440003'),
                                                                                                                    -- Belleza
                                                                                                                    ('550e8400-e29b-41d4-a716-446655440015', 'Mascarilla Facial', 'Mascarilla de arcilla purificante', 7.99, 35, '2023-10-07', 'mascarilla_facial.jpg', true, '550e8400-e29b-41d4-a716-446655440004'),
-                                                                                                                   ('550e8400-e29b-41d4-a716-446655440016', 'Aceite Esencial de Lavanda', 'Aceite relajante para aromaterapia', 14.99, 25, '2023-10-06', 'aceite_lavanda.jpg', false, '550e8400-e29b-41d4-a716-446655440004');
+
+
+
+
+                                                                                                                ('550e8400-e29b-41d4-a716-446655440016', 'Aceite Esencial de Lavanda', 'Aceite relajante para aromaterapia', 14.99, 25, '2023-10-06', 'aceite_lavanda.jpg', false, '550e8400-e29b-41d4-a716-446655440004');
+
+
+-- Formato: (id_cliente, id_farmaceutico, fechaInicio, fecha_fin, precioCita, especial, titulo)
+
+INSERT INTO cita (id_cliente, id_farmaceutico, fecha_inicio, fecha_fin, precio_cita, especial, titulo) VALUES
+-- Cliente 1 y Farmacéutico 1
+('650e8400-e29b-41d4-a716-446655440001', '750e8400-e29b-41d4-a716-446655440004', '2025-05-14 10:00:00', '2025-05-14 10:30:00', 25.00, false, 'Consulta general'),
+-- Cliente 2 y Farmacéutico 2
+('650e8400-e29b-41d4-a716-446655440002', '750e8400-e29b-41d4-a716-446655440005', '2025-05-15 16:00:00', '2025-05-15 16:45:00', 35.00, true, 'Revisión de tratamiento'),
+-- Cliente 3 y Farmacéutico 3
+('650e8400-e29b-41d4-a716-446655440003', '750e8400-e29b-41d4-a716-446655440006', '2025-05-16 20:00:00', '2025-05-16 20:30:00', 30.00, false, 'Asesoramiento nutricional'),
+-- Cliente 1 y Farmacéutico 2
+('650e8400-e29b-41d4-a716-446655440001', '750e8400-e29b-41d4-a716-446655440005', '2025-05-17 11:00:00', '2025-05-17 11:45:00', 28.50, true, 'Consulta dermatológica'),
+-- Cliente 2 y Farmacéutico 3
+('650e8400-e29b-41d4-a716-446655440002', '750e8400-e29b-41d4-a716-446655440006', '2025-05-18 19:30:00', '2025-05-18 20:00:00', 22.00, false, 'Control de tensión arterial');
