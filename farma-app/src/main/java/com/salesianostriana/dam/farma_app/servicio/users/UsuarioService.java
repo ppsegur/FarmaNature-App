@@ -172,9 +172,8 @@ public class UsuarioService {
     }
 
 
-    public Page<Usuario> findAllUsuarios(int page, int size, String[] sort) {
-        Pageable pageable = PageRequest.of(page, size);
-        return userRepository.findAll(pageable);
+    public List<Usuario> findAllUsuarios() {
+        return userRepository.findAll();
     }
 
     // Con ordenamiento
@@ -187,6 +186,12 @@ public class UsuarioService {
         Pageable pageable = PageRequest.of(page, size, ordenamiento);
 
         return userRepository.findAll(pageable);
+    }
+
+
+
+    public Optional<Usuario> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
 
