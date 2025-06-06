@@ -9,6 +9,7 @@ import java.util.List;
 public record GetAllUsuariosDto(
         List<UserResponse> listadoDeUsuarios
 ) {
+    
     public static GetAllUsuariosDto fromDto(List<Usuario> listadoDeUsuariosSinProcesar) {
         return GetAllUsuariosDto.builder()
                 .listadoDeUsuarios(listadoDeUsuariosSinProcesar.stream().map(UserResponse::of).toList())
