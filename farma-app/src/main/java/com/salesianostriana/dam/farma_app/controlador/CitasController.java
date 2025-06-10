@@ -1,71 +1,150 @@
 package com.salesianostriana.dam.farma_app.controlador;
 
 import com.salesianostriana.dam.farma_app.dto.CreateCitaDto;
-import com.salesianostriana.dam.farma_app.dto.GetComentarioDto;
+import com.salesianostriana.dam.farma_app.dto.user.ClienteCitaDto;
+import com.salesianostriana.dam.farma_app.dto.user.FarmaceuticoCitaDto;
 import com.salesianostriana.dam.farma_app.modelo.Cita;
+import com.salesianostriana.dam.farma_app.modelo.CitaPk;
 import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
+import com.salesianostriana.dam.farma_app.modelo.users.Farmaceutico;
 import com.salesianostriana.dam.farma_app.servicio.CitaService;
+import com.salesianostriana.dam.farma_app.servicio.users.UsuarioService;
+import com.salesianostriana.dam.farma_app.util.MailService;
+
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import java.time.format.DateTimeFormatter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin
 @RequestMapping("/citas")
 @Tag(name = "citas", description = "El controlador para los distintas citas  ")
 public class CitasController {
 
     private final CitaService citaService;
+    private final UsuarioService usuarioService;
 
-    @Operation(summary = "Crear una nueva cita", description = "Permite a un cliente registrar una nueva cita con un farmacéutico.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Cita creada exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos de la cita inválidos"),
-            @ApiResponse(responseCode = "401", description = "No autorizado para crear citas")
-    })
     @PostAuthorize("hasRole('CLIENTE')")
     @PostMapping("/")
     public ResponseEntity<CreateCitaDto> crearCita(@RequestBody @Valid CreateCitaDto dto, @AuthenticationPrincipal Cliente cliente) {
         Cita cita = citaService.crearCita(dto, cliente);
+        Farmaceutico f = cita.getFarmaceutico();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(CreateCitaDto.of(cita));
+    }
+    @PostAuthorize("hasAnyRole('ADMIN' ,'FARMACEUTICO')")
+    @PostMapping("/crear")
+    public ResponseEntity<CreateCitaDto> crearCitaFarmacutico(@RequestBody @Valid CreateCitaDto dto) {
+        Cita cita = citaService.crearCitaFarma(dto);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(CreateCitaDto.of(cita));
     }
 
     @GetMapping("/farmaceutico/{username}")
-    @Operation(summary = "Obtener citas por farmacéutico", description = "Devuelve todas las citas asociadas a un farmacéutico específico")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Citas encontradas exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Farmacéutico no encontrado")
-    })
-    public Set<CreateCitaDto> getCitasByFarmaceutico(
-            @PathVariable String username) {
-        return citaService.listarCitasDelFarmaceutico(username).stream().map(CreateCitaDto::of).collect(Collectors.toSet());
-
+    public Set<CreateCitaDto> getCitasByFarmaceutico(@PathVariable String username) {
+        return citaService.listarCitasDelFarmaceutico(username)
+                .stream()
+                .map(cita -> CreateCitaDto.of(cita)) // uso explícito de lambda en vez de method reference
+                .collect(Collectors.toSet());
     }
 
     @GetMapping("/cliente/{username}")
-    @Operation(summary = "Obtener citas por cliente", description = "Devuelve todas las citas asociadas a un cliente específico")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Citas encontradas exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
-    })
-    public Set<CreateCitaDto> getCitasByCliente(
-            @Parameter(description = "Username del cliente", required = true)
-            @PathVariable String username) {
-        return citaService.listarCitasByCliente(username).stream().map(CreateCitaDto::of).collect(Collectors.toSet());
+    public Set<CreateCitaDto> getCitasByCliente(@PathVariable String username) {
+        return citaService.listarCitasByCliente(username)
+                .stream()
+                .map(cita -> CreateCitaDto.of(cita)) 
+                .collect(Collectors.toSet());
     }
-}
 
+    @GetMapping("/all")
+    public List<CreateCitaDto> findAll() {
+        return citaService.findAll()
+                .stream()
+                .map(cita -> CreateCitaDto.of(cita)) 
+                .toList();
+    }
+
+    @PutMapping("/editar")
+    public ResponseEntity<?> editarCitaPorIds(
+            @RequestParam UUID clienteId,
+            @RequestParam UUID farmaceuticoId,
+            @RequestParam String fechaInicio,
+            @RequestBody CreateCitaDto dto
+    ) {
+        try {
+            citaService.editarCitaPorIds(clienteId, farmaceuticoId, fechaInicio, dto);
+            return ResponseEntity.ok().body("Cita actualizada correctamente");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{titulo}")
+    public ResponseEntity<?> eliminarCita(@PathVariable String titulo) {
+        citaService.eliminarCita(titulo);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/top-farmaceutico")
+    public ResponseEntity<FarmaceuticoCitaDto> getFarmaceuticoTop() {
+        return ResponseEntity.ok(citaService.getFarmaceuticoConMasCitas());
+    }
+
+    @GetMapping("/top-cliente")
+    public ResponseEntity<ClienteCitaDto> getClienteTop() {
+        return ResponseEntity.ok(citaService.getClienteConMasCitas());
+    }
+
+
+    // Número de citas de un farmaceutico
+    @GetMapping("/numero-citas-farmaceutico/{username}")
+    public long getNumeroCitasFarmaceutico(@PathVariable String username) {
+        return citaService.getNumeroCitasFarmaceutico(username);
+    }
+
+    // Número de citas de un cliente
+    @GetMapping("/numero-citas-cliente/{username}")
+    public long getNumeroCitasCliente(@PathVariable String username) {
+        return citaService.getNumeroCitasCliente(username);
+    }
+    //Nº de citas por día
+    @GetMapping("/media/dia")
+    public ResponseEntity<Double> mediaCitasPorDia() {
+        return ResponseEntity.ok(citaService.getMediaCitasPorDia());
+    }
+    //Nº de citas por mes
+    @GetMapping("/media/mes")
+    public ResponseEntity<Double> mediaCitasPorMes() {
+        return ResponseEntity.ok(citaService.getMediaCitasPorMes());
+    }
+
+
+
+    
+
+
+}

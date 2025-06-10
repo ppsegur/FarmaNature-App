@@ -5,7 +5,6 @@ import lombok.Builder;
 
 import java.util.Date;
 
-@Builder
 public record EditProductDto(
 
         @NotNull(message = "El precio no puede ser nulo")

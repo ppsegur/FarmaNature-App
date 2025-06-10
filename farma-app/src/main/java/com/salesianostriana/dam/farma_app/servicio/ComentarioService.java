@@ -99,9 +99,9 @@ public class ComentarioService {
     }
 
     @Transactional
-    public void eliminarComentario(Cliente cliente, UUID productoId) {
+    public void eliminarComentario(UUID  clienteId, UUID productoId) {
 
-    ComentarioKey id = new ComentarioKey(cliente.getId(), productoId);
+    ComentarioKey id = new ComentarioKey(clienteId, productoId);
 
     Comentario comentario = comentarioRepositorio.findById(id)
             .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));

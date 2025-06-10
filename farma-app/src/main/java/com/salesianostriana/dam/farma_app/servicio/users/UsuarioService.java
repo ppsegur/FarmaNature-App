@@ -11,11 +11,13 @@ import com.salesianostriana.dam.farma_app.error.ActivationExpiredException;
 import com.salesianostriana.dam.farma_app.error.UsuarioNotFoundException;
 import com.salesianostriana.dam.farma_app.modelo.users.UserRole;
 import com.salesianostriana.dam.farma_app.modelo.users.Usuario;
+import com.salesianostriana.dam.farma_app.repositorio.CitaRepo;
 import com.salesianostriana.dam.farma_app.repositorio.users.UsuarioRepo;
 import com.salesianostriana.dam.farma_app.util.MailService;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -43,6 +45,7 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final GoogleAuthenticator googleAuthenticator;
     private final MailService mailService;
+    private final CitaRepo citaRepo;
 
     @Value("${activation.duration}")
     private int activationDuration;
@@ -141,40 +144,44 @@ public class UsuarioService {
         return userRepository.findByEmail(email);
     }
 
-    //Deberíamos hacer dos endPoints para crear un cliente o un farmaceútico
-    //Podemos plantearlo paara que cuando sea un farmaceutico el correo de verificacion sea al admin de todas para que hasta que este no confiirme su cuenta no esta verificada
-    //y para los usuarios como los clientes podemos hacer el verificado del Qr con 2factor -->
 
     //Métodos de gestión de ROLES
     //Editar usuario usando el dto
-    public Usuario editUsuario(EditUserDto editUsuarioDto, String username) {
-        Optional<Usuario> usuarioOp = userRepository.findFirstByUsername(username);
-        if(usuarioOp.isEmpty()){
-            throw new UsuarioNotFoundException("No existen usuarios con ese id", HttpStatus.NOT_FOUND);
-        }
-       // usuarioOp.get().setUsername(editUsuarioDto.username());
-        usuarioOp.get().setPassword(editUsuarioDto.password());
-        UserRole newRole = UserRole.valueOf(String.valueOf(editUsuarioDto.role()));
-
-        usuarioOp.get().setRoles(Collections.singleton(newRole));
-        //usuarioOp.get().setRoles(Collections.singleton(editUsuarioDto.role()));
-        return userRepository.save(usuarioOp.get());
+@Transactional
+public Usuario editUsuario(EditUserDto editUsuarioDto, String username) {
+    Optional<Usuario> usuarioOp = userRepository.findFirstByUsername(username);
+    if(usuarioOp.isEmpty()){
+        throw new UsuarioNotFoundException("No existen usuarios con ese id", HttpStatus.NOT_FOUND);
     }
+    Usuario usuario = usuarioOp.get();
+    usuario.setPassword(passwordEncoder.encode(editUsuarioDto.password()));
+    usuario.setEmail(editUsuarioDto.email());
+
+usuario.setRoles(new HashSet<>(Collections.singleton(editUsuarioDto.role())));    Usuario saved = userRepository.save(usuario);
+    userRepository.flush();
+    return saved;
+}
 
     //Eliminar usuario
-    public void deleteUsuario(String username) {
-        Optional<Usuario> usuarioAEliminar = userRepository.findFirstByUsername(username);
-        if(!usuarioAEliminar.isEmpty()){
-            userRepository.deleteById(usuarioAEliminar.get().getId());
+  @Transactional
+public void deleteUsuario(String username) {
+    Optional<Usuario> usuarioAEliminar = userRepository.findFirstByUsername(username);
 
-        }
+    if (usuarioAEliminar.isPresent()) {
+        Usuario usuario = usuarioAEliminar.get();
 
+        // Elimina citas donde es farmaceutico
+        citaRepo.deleteByFarmaceuticoId(usuario.getId());
+        // Elimina citas donde es cliente
+        citaRepo.deleteByClienteId(usuario.getId());
+
+        userRepository.deleteById(usuario.getId());
     }
+}
 
 
-    public Page<Usuario> findAllUsuarios(int page, int size, String[] sort) {
-        Pageable pageable = PageRequest.of(page, size);
-        return userRepository.findAll(pageable);
+    public List<Usuario> findAllUsuarios() {
+        return userRepository.findAll();
     }
 
     // Con ordenamiento
@@ -187,6 +194,12 @@ public class UsuarioService {
         Pageable pageable = PageRequest.of(page, size, ordenamiento);
 
         return userRepository.findAll(pageable);
+    }
+
+
+
+    public Optional<Usuario> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
 

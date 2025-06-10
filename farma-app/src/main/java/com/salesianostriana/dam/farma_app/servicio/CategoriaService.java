@@ -1,11 +1,13 @@
 
 package com.salesianostriana.dam.farma_app.servicio;
 
+import com.salesianostriana.dam.farma_app.dto.CategoriaProductCount;
 import com.salesianostriana.dam.farma_app.dto.EditCategoriaDto;
 import com.salesianostriana.dam.farma_app.dto.GetCategoriaDto;
 import com.salesianostriana.dam.farma_app.error.CategoriaNotFoundException;
 import com.salesianostriana.dam.farma_app.modelo.Categoria;
 import com.salesianostriana.dam.farma_app.repositorio.CategoriaRepo;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class CategoriaService {
 
     private final CategoriaRepo repo;
 
+    @Transactional
     public Categoria saveCategoria(GetCategoriaDto nuevo){
         return repo.save(Categoria
                 .builder().nombre(nuevo.nombre()).build());
@@ -44,15 +47,29 @@ public class CategoriaService {
     }
 
 
-    public Categoria edit(EditCategoriaDto dto, String  nombre) {
-        Optional<Categoria> categoriaOptional = Optional.ofNullable(repo.findByNombre(nombre));
+    public Categoria edit(EditCategoriaDto dto, String nombre) {
+        return Optional.ofNullable(repo.findByNombre(nombre))
+                .map(old -> {
+                    old.setNombre(dto.nombre());
+                    return repo.save(old);
+                })
+                .orElseThrow(() -> new CategoriaNotFoundException(
+                        "Categoría con nombre " + nombre + " no encontrada",
+                        HttpStatus.NOT_FOUND
+                ));
+    }
 
-        return categoriaOptional.map(old -> {
-            old.setNombre(dto.nombre());
 
-            // old.setproductosRelacionados(dto.ProdctosRelacionados());
-            return repo.save(old);
-        }).get();
+    public List<CategoriaProductCount> obtenerConteoProductosPorCategoria() {
+        return repo.contarProductosPorCategoria();
+    }
+
+    @Transactional
+    public CategoriaProductCount obtenerCategoriaConMasProductos() {
+        return repo.topCategoriaPorProducto()
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No hay categorías disponibles"));
     }
 
 

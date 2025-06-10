@@ -10,6 +10,7 @@ public record GetAllCategoriaDto(
 
         List<GetCategoriaDto> listado
 ) {
+    @Builder
     public static GetAllCategoriaDto fromDto(List<Categoria> listadoT){
         return GetAllCategoriaDto.builder()
                 .listado(listadoT.stream().map(GetCategoriaDto::of).toList())

@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.farma_app.controlador;
 
+import com.salesianostriana.dam.farma_app.dto.CategoriaProductCount;
 import com.salesianostriana.dam.farma_app.dto.EditCategoriaDto;
 import com.salesianostriana.dam.farma_app.dto.GetCategoriaDto;
 import com.salesianostriana.dam.farma_app.modelo.Categoria;
@@ -59,7 +60,7 @@ public class CategoriaController {
     public ResponseEntity<Categoria> addCategoria(@RequestBody @Valid  GetCategoriaDto getCategoriaDto){
         Categoria categoria = service.saveCategoria(getCategoriaDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.saveCategoria(GetCategoriaDto.of(categoria)));
+                .body(categoria);
 
     }
     @Operation(summary = "Obtiene todas las categorias y las devuelve en forma de listado")
@@ -120,4 +121,19 @@ public class CategoriaController {
     public GetCategoriaDto edit(@PathVariable String nombre, @RequestBody @Valid EditCategoriaDto categoriaDto) {
         return GetCategoriaDto.of(service.edit(categoriaDto, nombre));
     }
+
+
+    @GetMapping("/conteo-productos")
+    public List<CategoriaProductCount> contarProductosPorCategoria() {
+        return service.obtenerConteoProductosPorCategoria();
+    }
+
+    @GetMapping("/categoria/top-categoria")
+    public CategoriaProductCount obtenerCategoriaConMasProductos() {
+        return service.obtenerCategoriaConMasProductos();
+
+
+
+    }
+
 }
