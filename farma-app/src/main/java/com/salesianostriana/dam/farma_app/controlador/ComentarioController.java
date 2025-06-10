@@ -67,11 +67,11 @@ public class ComentarioController {
             @ApiResponse(responseCode = "403", description = "No autorizado para eliminar este comentario"),
             @ApiResponse(responseCode = "404", description = "Comentario no encontrado")
     })
-    @DeleteMapping("/eliminar/{id}")
+    @DeleteMapping("/eliminar/{clienteId}/{id}")
     public ResponseEntity<?> eliminarComentario(
-            @AuthenticationPrincipal Cliente c,
+            @PathVariable UUID clienteId,
             @PathVariable UUID id) {
-        comentarioService.eliminarComentario(c, id);
+        comentarioService.eliminarComentario(clienteId, id);
         return ResponseEntity.noContent().build();
     }
 
@@ -122,15 +122,15 @@ public class ComentarioController {
             )
     })
     @GetMapping("/all")
-    public ResponseEntity<?> getAllProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id,asc") String[] sort) {
-        Page<Comentario> productos = comentarioService.findAllComentarios(page, size, sort);
-        List<String> nombres = productos.getContent().stream()
-                .map(Comentario::getComentarios)
-                .toList();
-        return ResponseEntity.ok(nombres);
-    }
+public ResponseEntity<?> getAllComentarios(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "id,asc") String[] sort) {
+    Page<Comentario> comentarios = comentarioService.findAllComentarios(page, size, sort);
+    List<GetComentarioDto> resultado = comentarios.getContent().stream()
+            .map(GetComentarioDto::of)
+            .toList();
+    return ResponseEntity.ok(resultado);
+}
 
 }
