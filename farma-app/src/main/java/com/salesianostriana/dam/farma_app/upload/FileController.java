@@ -58,13 +58,15 @@ public class FileController {
 
         fileMetadata.setURL(uri);
 
-        return FileResponse.builder()
+      FileResponse respones = FileResponse.builder()
                 .id(fileMetadata.getId())
                 .name(fileMetadata.getFilename())
                 .size(multipartFile.getSize())
                 .type(multipartFile.getContentType())
                 .uri(uri)
                 .build();
+
+        return respones;
     }
 
     //obtención de la imagen

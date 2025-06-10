@@ -99,7 +99,4 @@ INSERT INTO cita (id_cliente, id_farmaceutico, fecha_inicio, fecha_fin, precio_c
 INSERT INTO comentario (cliente_id, producto_id, comentarios) VALUES
 ('650e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440005', 'Muy buen producto, lo recomiendo.'),
 ('650e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440006', 'No me funcionó como esperaba.'),
-('650e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440007', 'Entrega rápida y producto en buen estado.'),
-('650e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440005', 'Muy buen producto, lo recomiendo.'),
-('650e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440005', 'No me funcionó como esperaba.'),
-('650e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440005', 'Entrega rápida y producto en buen estado.');
+('650e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440007', 'Entrega rápida y producto en buen estado.');

@@ -2,6 +2,8 @@ package com.salesianostriana.dam.farma_app.servicio;
 
 
 import com.salesianostriana.dam.farma_app.dto.CreateComentarioDto;
+import com.salesianostriana.dam.farma_app.dto.ProductoComentarioCountDto;
+import com.salesianostriana.dam.farma_app.dto.user.ClienteComentarioCountDto;
 import com.salesianostriana.dam.farma_app.error.ComentarioDuplicadoException;
 import com.salesianostriana.dam.farma_app.error.ComentarioNotFoundException;
 import com.salesianostriana.dam.farma_app.error.ProductoNotFoundException;
@@ -125,23 +127,20 @@ public class ComentarioService {
 
     // Función para sacar le producto con más comentarios
     @Transactional
-    public Producto productoConMasComentarios() {
-    List<Object[]> result = comentarioRepositorio.findProductoConMasComentarios();
-    return result.isEmpty() ? null : (Producto) result.get(0)[0];
+public ProductoComentarioCountDto productoConMasComentarios() {
+    var lista = comentarioRepositorio.findProductosConMasComentarios(org.springframework.data.domain.PageRequest.of(0, 1));
+    return lista.isEmpty() ? null : lista.get(0);
 }
-// Función para sacar el usuario que más comentarios ha hecho
 @Transactional
-public Cliente usuarioQueMasComenta() {
-    List<Object[]> result = comentarioRepositorio.findClienteQueMasComenta();
-    return result.isEmpty() ? null : (Cliente) result.get(0)[0];
+public ClienteComentarioCountDto clienteQueMasComenta() {
+    var lista = comentarioRepositorio.findClientesQueMasComentan(org.springframework.data.domain.PageRequest.of(0, 1));
+    return lista.isEmpty() ? null : lista.get(0);
 }
 
-// Función para sacar los 3 productos con más comentarios
 @Transactional
-public List<Object[]> top3ProductosConMasComentarios() {
-    return comentarioRepositorio.findTop3ProductosConMasComentarios(PageRequest.of(0, 3));
+public List<ProductoComentarioCountDto> top3ProductosConMasComentarios() {
+    return comentarioRepositorio.findProductosConMasComentarios(org.springframework.data.domain.PageRequest.of(0, 3));
 }
-
 
     }
 

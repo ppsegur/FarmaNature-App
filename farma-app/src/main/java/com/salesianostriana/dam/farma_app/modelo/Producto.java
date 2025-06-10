@@ -48,6 +48,9 @@ public class Producto {
     private Set<Comentario> reseñas = new HashSet<>();
 
     public void addReseña(Comentario comentario){
+        this.reseñas.add(comentario);
+        comentario.setProducto(this);
+        
 
     }
 

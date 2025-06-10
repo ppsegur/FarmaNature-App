@@ -1,5 +1,7 @@
 package com.salesianostriana.dam.farma_app.repositorio;
 
+import com.salesianostriana.dam.farma_app.dto.ProductoComentarioCountDto;
+import com.salesianostriana.dam.farma_app.dto.user.ClienteComentarioCountDto;
 import com.salesianostriana.dam.farma_app.modelo.Comentario;
 import com.salesianostriana.dam.farma_app.modelo.ComentarioKey;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
@@ -17,16 +19,18 @@ public interface ComentarioRepo extends JpaRepository<Comentario, ComentarioKey>
     Page<Comentario> findAll(Pageable pageable);
 
     //Producto con mas comentarios
-    @Query("SELECT c.producto, COUNT(c) as total FROM Comentario c GROUP BY c.producto ORDER BY total DESC")
-    List<Object[]> findProductoConMasComentarios();
+   
+@Query("SELECT new com.salesianostriana.dam.farma_app.dto.ProductoComentarioCountDto(c.producto.nombre, COUNT(c)) " +
+       "FROM Comentario c GROUP BY c.producto.nombre, c.producto.imagen ORDER BY COUNT(c) DESC")
+List<ProductoComentarioCountDto> findProductosConMasComentarios(Pageable pageable);
 
-    // Usuario que mas comentarios ha hecho
-    @Query("SELECT c.cliente, COUNT(c) as total FROM Comentario c GROUP BY c.cliente ORDER BY total DESC")
-    List<Object[]> findClienteQueMasComenta();
+@Query("SELECT new com.salesianostriana.dam.farma_app.dto.user.ClienteComentarioCountDto(c.cliente.username, c.cliente.nombre, c.cliente.email, COUNT(c)) " +
+       "FROM Comentario c GROUP BY c.cliente.username, c.cliente.nombre, c.cliente.email ORDER BY COUNT(c) DESC")
+List<ClienteComentarioCountDto> findClientesQueMasComentan(Pageable pageable);
 
     // Top 3 productos con mas comentarios
     @Query(value = "SELECT c.producto, COUNT(c) as total FROM Comentario c GROUP BY c.producto ORDER BY total DESC")
-    List<Object[]> findTop3ProductosConMasComentarios(Pageable pageable);
+    List<ProductoComentarioCountDto> findTop3ProductosConMasComentarios(Pageable pageable);
 
 
     

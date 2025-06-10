@@ -2,6 +2,8 @@ package com.salesianostriana.dam.farma_app.controlador;
 
 import com.salesianostriana.dam.farma_app.dto.CreateComentarioDto;
 import com.salesianostriana.dam.farma_app.dto.GetComentarioDto;
+import com.salesianostriana.dam.farma_app.dto.ProductoComentarioCountDto;
+import com.salesianostriana.dam.farma_app.dto.user.ClienteComentarioCountDto;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
 import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
 import com.salesianostriana.dam.farma_app.modelo.users.Farmaceutico;
@@ -144,8 +146,8 @@ public ResponseEntity<?> getAllComentarios(
                 @ApiResponse(responseCode = "404", description = "No se encontraron comentarios")
         })
         @GetMapping("/producto-con-mas-comentarios")
-        public ResponseEntity<Producto> productoConMasComentarios() {
-            Producto producto = comentarioService.productoConMasComentarios();
+        public ResponseEntity<ProductoComentarioCountDto> productoConMasComentarios() {
+            ProductoComentarioCountDto producto = comentarioService.productoConMasComentarios();
             if (producto == null) {
                 return ResponseEntity.status(404).build();
             }
@@ -158,8 +160,8 @@ public ResponseEntity<?> getAllComentarios(
                 @ApiResponse(responseCode = "404", description = "No se encontraron comentarios")
         })
         @GetMapping("/cliente-que-mas-comenta")
-        public ResponseEntity<Cliente> usuarioQueMasComenta() {
-            Cliente cliente = comentarioService.usuarioQueMasComenta();
+        public ResponseEntity<?> usuarioQueMasComenta() {
+            ClienteComentarioCountDto cliente = comentarioService.clienteQueMasComenta();
             if (cliente == null) {
                 return ResponseEntity.status(404).build();
             }
@@ -169,7 +171,7 @@ public ResponseEntity<?> getAllComentarios(
 
         @GetMapping("/top3-productos-mas-comentados")
                 public ResponseEntity<?> getTop3ProductosConMasComentarios() {
-                List<Object[]> top3 = comentarioService.top3ProductosConMasComentarios();
+                List<ProductoComentarioCountDto> top3 = comentarioService.top3ProductosConMasComentarios();
                 return ResponseEntity.ok(top3);
                 
         }
