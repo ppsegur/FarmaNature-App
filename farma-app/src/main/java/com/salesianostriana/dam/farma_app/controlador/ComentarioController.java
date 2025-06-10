@@ -175,8 +175,5 @@ public ResponseEntity<?> getAllComentarios(
         }
 
         
-        @GetMapping("/media-comentarios-mes")
-        public ResponseEntity<?> getMediaComentariosPorMes() {
-                List<Object[]> media = comentarioService.mediaComentariosPorMes();                        return ResponseEntity.ok(media);
-        }
+        
 }
