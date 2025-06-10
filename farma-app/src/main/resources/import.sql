@@ -92,3 +92,11 @@ INSERT INTO cita (id_cliente, id_farmaceutico, fecha_inicio, fecha_fin, precio_c
 ('650e8400-e29b-41d4-a716-446655440001', '750e8400-e29b-41d4-a716-446655440005', '2025-05-17 11:00:00', '2025-05-17 11:45:00', 28.50, true, 'Consulta dermatológica'),
 -- Cliente 2 y Farmacéutico 3
 ('650e8400-e29b-41d4-a716-446655440002', '750e8400-e29b-41d4-a716-446655440006', '2025-05-18 19:30:00', '2025-05-18 20:00:00', 22.00, false, 'Control de tensión arterial');
+
+
+
+-- Inserta comentarios de ejemplo
+INSERT INTO comentario (cliente_id, producto_id, comentarios) VALUES
+('650e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440005', 'Muy buen producto, lo recomiendo.'),
+('650e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440006', 'No me funcionó como esperaba.'),
+('650e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440007', 'Entrega rápida y producto en buen estado.');
