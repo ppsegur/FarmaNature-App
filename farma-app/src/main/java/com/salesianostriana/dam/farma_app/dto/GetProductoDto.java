@@ -2,12 +2,10 @@ package com.salesianostriana.dam.farma_app.dto;
 
 import com.salesianostriana.dam.farma_app.modelo.Producto;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
 
 import java.util.Date;
 import java.util.UUID;
 
-@Builder
 public record GetProductoDto(
         UUID id,
         @NotNull(message = "El precio no puede ser nulo")

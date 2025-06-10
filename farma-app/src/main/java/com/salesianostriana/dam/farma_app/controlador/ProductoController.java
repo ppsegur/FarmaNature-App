@@ -236,4 +236,26 @@ public class ProductoController {
         List<GetProductoDto> productos = productoService.filtrarPorCategoria(categoria);
         return ResponseEntity.ok(productos);
     }
+
+
+
+    @GetMapping("/mas-vendido")
+    public ResponseEntity<Producto> getProductoMasVendido() {
+        return productoService.getProductoMasVendido()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/categoria-mas-vendida")
+    public ResponseEntity<String> getCategoriaMasVendida() {
+        return productoService.getCategoriaMasVendida()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+        }
+
+      @GetMapping("/producto-estrella-categoria")
+        public ResponseEntity<List<GetProductoDto>> getProductoEstrellaPorCategoria() {
+                return ResponseEntity.ok(productoService.getProductoEstrellaPorCategoria());
+        }
+
 }
