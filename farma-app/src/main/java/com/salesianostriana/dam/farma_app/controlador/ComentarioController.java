@@ -4,6 +4,7 @@ import com.salesianostriana.dam.farma_app.dto.CreateComentarioDto;
 import com.salesianostriana.dam.farma_app.dto.GetComentarioDto;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
 import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
+import com.salesianostriana.dam.farma_app.modelo.users.Farmaceutico;
 import com.salesianostriana.dam.farma_app.modelo.Comentario;
 import com.salesianostriana.dam.farma_app.servicio.ComentarioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,6 +47,8 @@ public class ComentarioController {
         Comentario comentarioCreado = comentarioService.crearComentario(c,dto);
         return ResponseEntity.status(201).body(comentarioCreado);
     }
+
+
 
     @Operation(summary = "Editar un comentario", description = "Permite a un cliente autenticado editar su comentario.")
     @ApiResponses(value = {
@@ -133,4 +136,20 @@ public ResponseEntity<?> getAllComentarios(
     return ResponseEntity.ok(resultado);
 }
 
+
+        //EndPoint que devuelve el producto con mas cmentarios 
+        @Operation(summary = "Obtener el producto con más comentarios")
+        @ApiResponses(value = {
+                @ApiResponse(responseCode = "200", description = "Producto con más comentarios encontrado"),
+                @ApiResponse(responseCode = "404", description = "No se encontraron comentarios")
+        })
+        @GetMapping("/producto-con-mas-comentarios")
+        public ResponseEntity<Producto> productoConMasComentarios() {
+            Producto producto = comentarioService.productoConMasComentarios();
+            if (producto == null) {
+                return ResponseEntity.status(404).build();
+            }
+            return ResponseEntity.ok(producto);
+        }
+        
 }
