@@ -171,7 +171,12 @@ public ResponseEntity<?> getAllComentarios(
                 public ResponseEntity<?> getTop3ProductosConMasComentarios() {
                 List<Object[]> top3 = comentarioService.top3ProductosConMasComentarios();
                 return ResponseEntity.ok(top3);
-}
+                
+        }
 
         
+        @GetMapping("/media-comentarios-mes")
+        public ResponseEntity<?> getMediaComentariosPorMes() {
+                List<Object[]> media = comentarioService.mediaComentariosPorMes();                        return ResponseEntity.ok(media);
+        }
 }

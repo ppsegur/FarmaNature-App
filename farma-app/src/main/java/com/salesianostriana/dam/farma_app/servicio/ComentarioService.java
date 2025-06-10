@@ -141,6 +141,12 @@ public Cliente usuarioQueMasComenta() {
 public List<Object[]> top3ProductosConMasComentarios() {
     return comentarioRepositorio.findTop3ProductosConMasComentarios(PageRequest.of(0, 3));
 }
+
+//función para sacar la media de comentarios por mes
+@Transactional
+public List<Object[]> mediaComentariosPorMes() {
+    return comentarioRepositorio.mediaComentariosPorMes();
+}
     }
 
 

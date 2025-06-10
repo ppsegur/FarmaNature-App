@@ -27,7 +27,11 @@ public interface ComentarioRepo extends JpaRepository<Comentario, ComentarioKey>
     // Top 3 productos con mas comentarios
     @Query(value = "SELECT c.producto, COUNT(c) as total FROM Comentario c GROUP BY c.producto ORDER BY total DESC")
     List<Object[]> findTop3ProductosConMasComentarios(Pageable pageable);
-    
+
+
+    // Media de comentarios por mes 
+    @Query("SELECT FUNCTION('MONTH', c.fecha), COUNT(c) FROM Comentario c GROUP BY FUNCTION('MONTH', c.fecha)")
+    List<Object[]> mediaComentariosPorMes();
 
 
 

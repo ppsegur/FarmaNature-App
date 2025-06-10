@@ -99,6 +99,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,"/comentario/usuario-mas-comentador").permitAll()
                 .requestMatchers(HttpMethod.GET, "/comentario/productos-mas-comentados").permitAll()
                .requestMatchers(HttpMethod.GET,"/comentario/**").permitAll()
+                .requestMatchers(HttpMethod.GET,"/comentario/media-comentarios-mes").hasAnyRole("CLIENTE", "ADMIN", "FARMACEUTICO")
                 .requestMatchers(HttpMethod.PUT,"/comentario/editar/**").hasAnyRole("CLIENTE")
                 .requestMatchers("/carrito").permitAll()
                 .requestMatchers("/api-docs/**", "/swagger-ui/**","/swagger-ui.html").permitAll()
