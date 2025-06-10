@@ -135,6 +135,12 @@ public Cliente usuarioQueMasComenta() {
     List<Object[]> result = comentarioRepositorio.findClienteQueMasComenta();
     return result.isEmpty() ? null : (Cliente) result.get(0)[0];
 }
+
+// Función para sacar los 3 productos con más comentarios
+@Transactional
+public List<Object[]> top3ProductosConMasComentarios() {
+    return comentarioRepositorio.findTop3ProductosConMasComentarios(PageRequest.of(0, 3));
+}
     }
 
 

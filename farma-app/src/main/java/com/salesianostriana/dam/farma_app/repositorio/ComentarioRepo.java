@@ -23,4 +23,13 @@ public interface ComentarioRepo extends JpaRepository<Comentario, ComentarioKey>
     // Usuario que mas comentarios ha hecho
     @Query("SELECT c.cliente, COUNT(c) as total FROM Comentario c GROUP BY c.cliente ORDER BY total DESC")
     List<Object[]> findClienteQueMasComenta();
+
+    // Top 3 productos con mas comentarios
+    @Query(value = "SELECT c.producto, COUNT(c) as total FROM Comentario c GROUP BY c.producto ORDER BY total DESC")
+    List<Object[]> findTop3ProductosConMasComentarios(Pageable pageable);
+    
+
+
+
 }
+

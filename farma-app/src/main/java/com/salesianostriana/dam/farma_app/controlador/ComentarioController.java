@@ -165,6 +165,13 @@ public ResponseEntity<?> getAllComentarios(
             }
             return ResponseEntity.ok(cliente);
         }
-        
+
+
+        @GetMapping("/top3-productos-mas-comentados")
+                public ResponseEntity<?> getTop3ProductosConMasComentarios() {
+                List<Object[]> top3 = comentarioService.top3ProductosConMasComentarios();
+                return ResponseEntity.ok(top3);
+}
+
         
 }
