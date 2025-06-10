@@ -60,7 +60,7 @@ public class CategoriaController {
     public ResponseEntity<Categoria> addCategoria(@RequestBody @Valid  GetCategoriaDto getCategoriaDto){
         Categoria categoria = service.saveCategoria(getCategoriaDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.saveCategoria(GetCategoriaDto.of(categoria)));
+                .body(categoria);
 
     }
     @Operation(summary = "Obtiene todas las categorias y las devuelve en forma de listado")

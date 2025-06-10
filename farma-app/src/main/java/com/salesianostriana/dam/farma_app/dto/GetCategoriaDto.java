@@ -4,26 +4,23 @@ import com.salesianostriana.dam.farma_app.modelo.Categoria;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
 
 @Builder
 public record GetCategoriaDto(
-        @NotBlank(message = "El titulito de la categoría no puede estar vacío mas alegría que solo contamos con el nombre")
-        String nombre,
         UUID id,
-        Set<GetProductoDto> producto
+        @NotBlank(message = "El titulito de la categoría no puede estar vacío mas alegría que solo contamos con el nombre")
+        String nombre
 ) {
+    @Builder
     public static GetCategoriaDto of(Categoria c){
-
-        return GetCategoriaDto.builder()
-
-                .nombre(c.getNombre())
-                .id(c.getId())
-
-
-                .build();
-
+        return new  GetCategoriaDto(
+                c.getId(),
+                c.getNombre()
+               
+        );
     }
+        
+    
 }
