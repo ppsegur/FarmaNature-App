@@ -32,10 +32,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173", maxAge = 3600)
 @Tag(name = "Usuario", description = "El controlador de usuario ")
 public class UsuarioController {
 
@@ -214,15 +217,14 @@ public class UsuarioController {
                     description = "No se han encontrado usuarios"
             )
     })
-    @PostAuthorize("hasRole('ADMIN')")
-    @GetMapping("/auth/todos")
-    public ResponseEntity<Page<Usuario>> getAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id,asc") String[] sort) {
 
-        Page<Usuario> usuarios = userService.findAllUsuarios(page, size, sort);
-        return ResponseEntity.status(HttpStatus.OK).body(usuarios);
+    @GetMapping("/auth/todos")
+    public ResponseEntity<List<UsuarioSimpleDto>> getAllUsuarios() {
+        List<UsuarioSimpleDto> dtos = userService.findAllUsuarios()
+                .stream()
+                .map(UsuarioSimpleDto::from)
+                .toList();
+        return ResponseEntity.ok(dtos);
     }
 
     @Operation(summary = "Edita un Usuario existente")
@@ -247,12 +249,12 @@ public class UsuarioController {
             description = "No se han encontrado usuarios")
 
 })
-    @PreAuthorize("hasRole('ADMIN')")
+   
     @PutMapping("/auth/{username}")
-    public Usuario edit(@RequestBody @Valid EditUserDto editDto,
-                        @PathVariable String username) {
-        return userService.editUsuario(editDto, username );
-    }
+  public ResponseEntity<EditUserDto> edit(@RequestBody @Valid EditUserDto editUserDto, @PathVariable String username) {
+    Usuario usuario = userService.editUsuario(editUserDto, username);
+    return ResponseEntity.ok(editUserDto);
+}
 
     @Operation(summary = "Elimina un usuario por su username")
     @ApiResponses(value = {
@@ -263,7 +265,7 @@ public class UsuarioController {
                     description = "No se ha encontrado el usuario con el usuario proporcionado",
                     content = @Content)
     })
-    @PreAuthorize("hasRole('ADMIN')")
+  
     @DeleteMapping("/auth/{username}")
     public ResponseEntity<?> delete(@PathVariable String username) {
         userService.deleteUsuario(username);
@@ -302,6 +304,17 @@ public class UsuarioController {
     @GetMapping("/me/admin")
     public Usuario adminMe(@AuthenticationPrincipal Usuario user) {
         return user;
+    }
+
+
+    @GetMapping("/usuarios/username/{username}")
+    public ResponseEntity<UserResponse> getUsuarioByUsername(@PathVariable String username) {
+        Optional<Usuario> usuarioOpt = userService.findByUsername(username);
+        if (!usuarioOpt.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(new UserResponse(usuarioOpt.get().getId(), usuarioOpt.get().getUsername(), usuarioOpt.get().getEmail(), usuarioOpt.get().getRole()));
+
     }
 
 
