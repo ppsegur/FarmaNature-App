@@ -22,6 +22,7 @@ public class CategoriaService {
 
     private final CategoriaRepo repo;
 
+    @Transactional
     public Categoria saveCategoria(GetCategoriaDto nuevo){
         return repo.save(Categoria
                 .builder().nombre(nuevo.nombre()).build());

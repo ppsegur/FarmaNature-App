@@ -25,4 +25,44 @@ public interface ProductoRepo extends
     //Filtrado por categoría
     @Query("SELECT p FROM Producto p WHERE p.categoria.nombre = :nombreCategoria")
     List<Producto> findByCategoriaNombre(@Param("nombreCategoria") String nombreCategoria);
+    
+
+    //Producto mas vendido 
+        @Query("""
+        SELECT lv.producto 
+        FROM LineaDeVenta lv 
+        GROUP BY lv.producto 
+        ORDER BY SUM(lv.cantidad) DESC
+        """)
+    List<Producto> findProductosMasVendidos(Pageable pageable);
+
+
+    //  Categoría que más productos ha vendido
+@Query("""
+    SELECT lv.producto.categoria.nombre, SUM(lv.cantidad) as totalVendido
+    FROM LineaDeVenta lv
+    GROUP BY lv.producto.categoria.nombre
+    ORDER BY totalVendido DESC
+    """)
+List<Object[]> findCategoriasMasVendidas(Pageable pageable);
+
+//  Producto más vendido por categoría
+@Query("""
+    SELECT lv.producto.categoria.nombre, lv.producto, SUM(lv.cantidad) as totalVendido
+    FROM LineaDeVenta lv
+    GROUP BY lv.producto.categoria.nombre, lv.producto
+    HAVING SUM(lv.cantidad) = (
+        SELECT MAX(suma)
+        FROM (
+            SELECT SUM(lv2.cantidad) as suma
+            FROM LineaDeVenta lv2
+            WHERE lv2.producto.categoria.nombre = lv.producto.categoria.nombre
+            GROUP BY lv2.producto
+        )
+    )
+    """)
+List<Object[]> findProductoEstrellaPorCategoria();
+
+
+
 }
