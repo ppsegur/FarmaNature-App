@@ -129,6 +129,12 @@ public class ComentarioService {
     List<Object[]> result = comentarioRepositorio.findProductoConMasComentarios();
     return result.isEmpty() ? null : (Producto) result.get(0)[0];
 }
+// Función para sacar el usuario que más comentarios ha hecho
+@Transactional
+public Cliente usuarioQueMasComenta() {
+    List<Object[]> result = comentarioRepositorio.findClienteQueMasComenta();
+    return result.isEmpty() ? null : (Cliente) result.get(0)[0];
+}
     }
 
 

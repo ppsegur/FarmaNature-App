@@ -151,5 +151,20 @@ public ResponseEntity<?> getAllComentarios(
             }
             return ResponseEntity.ok(producto);
         }
+
+        @Operation(summary = "Obtener el cliente que más comentarios ha hecho")
+        @ApiResponses(value = {
+                @ApiResponse(responseCode = "200", description = "Cliente con más comentarios encontrado"),
+                @ApiResponse(responseCode = "404", description = "No se encontraron comentarios")
+        })
+        @GetMapping("/cliente-que-mas-comenta")
+        public ResponseEntity<Cliente> usuarioQueMasComenta() {
+            Cliente cliente = comentarioService.usuarioQueMasComenta();
+            if (cliente == null) {
+                return ResponseEntity.status(404).build();
+            }
+            return ResponseEntity.ok(cliente);
+        }
+        
         
 }
