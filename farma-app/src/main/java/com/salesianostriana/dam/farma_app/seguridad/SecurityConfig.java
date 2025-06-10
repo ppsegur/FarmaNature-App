@@ -73,7 +73,7 @@ public class SecurityConfig {
                 .requestMatchers("/me/admin").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/auth/todos").hasAnyRole("ADMIN","FARMACEUTICO")
                 .requestMatchers(HttpMethod.PUT, "/auth/**").hasAnyRole("ADMIN","FARMACEUTICO")
-                .requestMatchers(HttpMethod.DELETE,"/auth/").hasAnyRole("ADMIN","FARMACEUTICO")
+                .requestMatchers(HttpMethod.DELETE,"/auth/{username}").hasAnyRole("ADMIN","FARMACEUTICO")
                 .requestMatchers(HttpMethod.PUT, "/cliente/**").hasRole("CLIENTE")
                 .requestMatchers(HttpMethod.PUT, "/farmaceutico/**").hasRole("FARMACEUTICO")
                 .requestMatchers(HttpMethod.GET,"/categoria/**").permitAll()
@@ -98,7 +98,7 @@ public class SecurityConfig {
                 .requestMatchers("/api-docs/**", "/swagger-ui/**","/swagger-ui.html").permitAll()
 
                 .requestMatchers("/carrito/**").permitAll()
-                .requestMatchers(HttpMethod.DELETE,"/comentario/eliminar/**").hasRole("CLIENTE")
+                .requestMatchers(HttpMethod.DELETE,"/comentario/eliminar/**").hasAnyRole("CLIENTE", "ADMIN", "FARMACEUTICO")
                 .requestMatchers(HttpMethod.POST,"/citas/").hasRole("CLIENTE")
                 .requestMatchers(HttpMethod.GET,"/citas/all").hasAnyRole("ADMIN","FARMACEUTICO")
                 .requestMatchers(HttpMethod.DELETE,"/citas/**").hasAnyRole("FARMACEUTICO","ADMIN")
@@ -106,7 +106,17 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,"/citas/farmaceutico/**").permitAll()
                 .requestMatchers(HttpMethod.PUT,"/citas/**").hasAnyRole("FARMACEUTICO","ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/citas/**").hasAnyRole("FARMACEUTICO")
-
+                .requestMatchers(HttpMethod.GET,"/citas/top-farmaceutico").hasAnyRole("ADMIN","FARMACEUTICO")
+                .requestMatchers(HttpMethod.GET,"/citas/top-cliente").hasAnyRole("ADMIN","FARMACEUTICO")
+                .requestMatchers(HttpMethod.GET, "/usuarios/username/{username}").permitAll()
+                .requestMatchers(HttpMethod.GET,"/producto-estrella-categoria").permitAll()
+                .requestMatchers(HttpMethod.GET,"/producto-estrella-usuario").permitAll()
+                .requestMatchers(HttpMethod.GET,"/citas/numero-citas-cliente/{username}").hasAnyRole("ADMIN","FARMACEUTICO")
+                .requestMatchers(HttpMethod.GET,"/citas/numero-citas-farmaceutico/{username}").hasAnyRole("ADMIN","FARMACEUTICO")
+                .requestMatchers(HttpMethod.GET, "/citas/media/dia").hasAnyRole("ADMIN","FARMACEUTICO")
+                .requestMatchers(HttpMethod.GET, "/citas/media/mes").hasAnyRole("ADMIN","FARMACEUTICO")
+                .requestMatchers(HttpMethod.POST,"/citas/crear").hasAnyRole("ADMIN","FARMACEUTICO")
+        .requestMatchers(HttpMethod.PATCH, "/citas/{ClienteId}/{farmaciaId}/{fechaInicio}/anular").hasAnyRole("ADMIN","FARMACEUTICO")
                 .requestMatchers("/h2-console","/auth/qr-code/**","/auth/verify-2fa").permitAll()
                 .anyRequest().authenticated());
 
