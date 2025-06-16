@@ -26,6 +26,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class VentaService {
+
     private final VentaRepo ventaRepo;
     private final ProductoRepo productoRepo;
     private final CarritoService service;
@@ -184,6 +185,22 @@ public class VentaService {
     public List<Venta> obtenerHistorialCompras(Cliente cliente) {
         return ventaRepo.findByClienteAndEstadoTrue(cliente);
     }
+    @Transactional
+    public List<Venta> obtenerTodasLasVentas() {
+        return ventaRepo.findAll();
+    }
+    
+    @Transactional
+    public List<VentasPorDiaDto> ventasPorDiaDelMes(int mes, int anio) {
+    return ventaRepo.ventasPorDiaDelMes(mes, anio)
+            .stream()
+            .map(obj -> new VentasPorDiaDto((int)obj[0], ((Long)obj[1]).intValue()))
+            .toList();
+}
+
+// DTO para la gráfica:
+public record VentasPorDiaDto(int dia, int totalVentas) {}
 
 }
+
 

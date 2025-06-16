@@ -10,27 +10,24 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Builder
 public record VentaDto (
      UUID id,
      LocalDateTime fechaCreacion,
      boolean estado,
      double importeTotal,
-        //usar esto
      List<LineaVentaDto> lineasVenta
-    ){
+){
     public static VentaDto of(Venta venta) {
-        return VentaDto.builder()
-                .id(venta.getId())
-                .fechaCreacion(venta.getFechaCreacion())
-                .estado(venta.isEstado())
-                .importeTotal(venta.getLineasVenta().stream()
-                        .mapToDouble(lv -> lv.getProducto().getPrecio() * lv.getCantidad())
-                        .sum())
-                .lineasVenta(venta.getLineasVenta().stream()
-                        .map(LineaVentaDto::of).toList()
-                )
-                .build();
+        return new VentaDto(
+            venta.getId(),
+            venta.getFechaCreacion(),
+            venta.isEstado(),
+            venta.getLineasVenta().stream()
+                .mapToDouble(lv -> lv.getProducto().getPrecio() * lv.getCantidad())
+                .sum(),
+            venta.getLineasVenta().stream()
+                .map(LineaVentaDto::of)
+                .toList()
+        );
     }
-
 }

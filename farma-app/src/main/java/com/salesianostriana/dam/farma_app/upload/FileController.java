@@ -4,7 +4,7 @@ package com.salesianostriana.dam.farma_app.upload;
 import com.salesianostriana.dam.farma_app.upload.dtos.FileResponse;
 import com.salesianostriana.dam.farma_app.upload.services.MimeTypeDetector;
 import com.salesianostriana.dam.farma_app.upload.services.StorageService;
-import jakarta.annotation.Resource;
+import org.springframework.core.io.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,7 +70,7 @@ public class FileController {
     }
 
     //obtención de la imagen
-
+/* 
     @GetMapping("/download/{id:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String id) {
         Resource resource = (Resource) storageService.loadAsResource(id);
@@ -82,4 +82,13 @@ public class FileController {
                 .body(resource);
     }
 
+*/
+@GetMapping("/download/{filename:.+}")
+public ResponseEntity<Resource> getFileByName(@PathVariable String filename) {
+    Resource resource = storageService.loadAsResourceByName(filename);
+    String mimeType = mimeTypeDetector.getMimeType(resource);
+    return ResponseEntity.status(HttpStatus.OK)
+            .header("Content-Type", mimeType)
+            .body(resource);
+}
 }

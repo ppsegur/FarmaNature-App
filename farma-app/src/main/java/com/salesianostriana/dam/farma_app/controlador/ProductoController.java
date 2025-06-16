@@ -77,10 +77,10 @@ public class ProductoController {
     public ResponseEntity<GetProductoDto> addProducto(@RequestPart("file") MultipartFile file,
             @RequestPart("producto") @Valid GetProductoDto nuevo) {
         Producto  producto =  productoService.saveproducto(nuevo, file);
-        String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/download")
-                .path(producto.toString())
-                .toUriString();
+   String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
+    .path("/download/")
+    .path(producto.getImagen())
+    .toUriString();
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(GetProductoDto.of(producto,uri));
 
@@ -113,10 +113,10 @@ public class ProductoController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id,asc") String[] sort) {
         Page<Producto> productos = productoService.findAllProductos(page, size, sort);
-        List<String> nombres = productos.getContent().stream()
-                .map(Producto::getNombre)
+        List<GetProductoDto> productosDto = productos.getContent().stream()
+                .map(producto -> GetProductoDto.of(producto, producto.getImagen()))
                 .toList();
-        return ResponseEntity.ok(nombres);
+        return ResponseEntity.ok(productosDto);
     }
     @Operation(summary = "Obtiene un producto por su ID")
     @ApiResponses(value = {
@@ -184,17 +184,17 @@ public class ProductoController {
                     content = @Content
             )
     })
-            @PostAuthorize("hasAnyRole('ADMIN','FARMACEUTICO')")
-            @PutMapping("/producto/{id}")
-            public ResponseEntity<GetProductoDto> editProducto(
-            @PathVariable UUID id,
-            @RequestBody @Valid EditProductDto editProductDto) {
-        Producto productoEditado = productoService.edit(editProductDto, id);
-        String imagenUrl = productoEditado.getImagen();
-        //CAmbios para las imágenes
-        GetProductoDto response = GetProductoDto.of(productoEditado, imagenUrl);
-        return ResponseEntity.ok(response);
-    }
+         @PutMapping("/producto/{id}")
+@PreAuthorize("hasAnyRole('ADMIN','FARMACEUTICO')")
+public ResponseEntity<GetProductoDto> editProducto(
+        @PathVariable UUID id,
+        @RequestPart("producto") @Valid EditProductDto editProductDto,
+        @RequestPart(value = "file", required = false) MultipartFile file) {
+    Producto productoEditado = productoService.edit(editProductDto, id);
+    String imagenUrl = productoEditado.getImagen();
+    GetProductoDto response = GetProductoDto.of(productoEditado, imagenUrl);
+    return ResponseEntity.ok(response);
+}
 
 
     @GetMapping("/buscar/")

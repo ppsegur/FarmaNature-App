@@ -135,4 +135,20 @@ public class FileSystemStorageService implements StorageService {
             throw new StorageException("Could not delete all");
         }
     }
+
+
+   @Override
+public Resource loadAsResourceByName(String filename) {
+    try {
+        Path file = rootLocation.resolve(filename);
+        Resource resource = new UrlResource(file.toUri());
+        if (resource.exists() || resource.isReadable()) {
+            return resource;
+        } else {
+            throw new RuntimeException("No se puede leer el archivo: " + filename);
+        }
+    } catch (MalformedURLException e) {
+        throw new RuntimeException("No se puede leer el archivo: " + filename, e);
+    }
+}
 }
