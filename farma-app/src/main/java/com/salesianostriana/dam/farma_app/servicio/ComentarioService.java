@@ -2,18 +2,23 @@ package com.salesianostriana.dam.farma_app.servicio;
 
 
 import com.salesianostriana.dam.farma_app.dto.CreateComentarioDto;
+import com.salesianostriana.dam.farma_app.dto.ProductoComentarioCountDto;
+import com.salesianostriana.dam.farma_app.dto.user.ClienteComentarioCountDto;
 import com.salesianostriana.dam.farma_app.error.ComentarioDuplicadoException;
 import com.salesianostriana.dam.farma_app.error.ComentarioNotFoundException;
 import com.salesianostriana.dam.farma_app.error.ProductoNotFoundException;
 import com.salesianostriana.dam.farma_app.error.UsuarioNotFoundException;
 import com.salesianostriana.dam.farma_app.modelo.ComentarioKey;
 import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
+import com.salesianostriana.dam.farma_app.modelo.users.Farmaceutico;
 import com.salesianostriana.dam.farma_app.modelo.Comentario;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
 import com.salesianostriana.dam.farma_app.repositorio.users.ClienteRepo;
+import com.salesianostriana.dam.farma_app.repositorio.users.FarmaceuticoRepo;
 import com.salesianostriana.dam.farma_app.repositorio.ComentarioRepo;
 import com.salesianostriana.dam.farma_app.repositorio.ProductoRepo;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,6 +39,7 @@ public class ComentarioService {
     private final ComentarioRepo comentarioRepositorio;
     private final ClienteRepo clienteRepositorio;
     private final ProductoRepo productoRepositorio;
+    private final FarmaceuticoRepo  farmaceuticorepo;
 
     @Transactional
     public Comentario crearComentario(Cliente c, CreateComentarioDto dto) {
@@ -59,6 +66,7 @@ public class ComentarioService {
         return comentarioRepositorio.save(comentario);
     }
 
+   
     // Editar un comentario
     @Transactional
     public Comentario editarComentario(Cliente c, CreateComentarioDto dto) {
@@ -99,9 +107,9 @@ public class ComentarioService {
     }
 
     @Transactional
-    public void eliminarComentario(Cliente cliente, UUID productoId) {
+    public void eliminarComentario(UUID  clienteId, UUID productoId) {
 
-    ComentarioKey id = new ComentarioKey(cliente.getId(), productoId);
+    ComentarioKey id = new ComentarioKey(clienteId, productoId);
 
     Comentario comentario = comentarioRepositorio.findById(id)
             .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
@@ -116,6 +124,24 @@ public class ComentarioService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
         return comentarioRepositorio.findAll(pageable);
     }
+
+    // Función para sacar le producto con más comentarios
+    @Transactional
+public ProductoComentarioCountDto productoConMasComentarios() {
+    var lista = comentarioRepositorio.findProductosConMasComentarios(org.springframework.data.domain.PageRequest.of(0, 1));
+    return lista.isEmpty() ? null : lista.get(0);
+}
+@Transactional
+public ClienteComentarioCountDto clienteQueMasComenta() {
+    var lista = comentarioRepositorio.findClientesQueMasComentan(org.springframework.data.domain.PageRequest.of(0, 1));
+    return lista.isEmpty() ? null : lista.get(0);
+}
+
+@Transactional
+public List<ProductoComentarioCountDto> top3ProductosConMasComentarios() {
+    return comentarioRepositorio.findProductosConMasComentarios(org.springframework.data.domain.PageRequest.of(0, 3));
+}
+
     }
 
 

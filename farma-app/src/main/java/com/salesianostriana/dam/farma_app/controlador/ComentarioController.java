@@ -2,8 +2,11 @@ package com.salesianostriana.dam.farma_app.controlador;
 
 import com.salesianostriana.dam.farma_app.dto.CreateComentarioDto;
 import com.salesianostriana.dam.farma_app.dto.GetComentarioDto;
+import com.salesianostriana.dam.farma_app.dto.ProductoComentarioCountDto;
+import com.salesianostriana.dam.farma_app.dto.user.ClienteComentarioCountDto;
 import com.salesianostriana.dam.farma_app.modelo.Producto;
 import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
+import com.salesianostriana.dam.farma_app.modelo.users.Farmaceutico;
 import com.salesianostriana.dam.farma_app.modelo.Comentario;
 import com.salesianostriana.dam.farma_app.servicio.ComentarioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,6 +50,8 @@ public class ComentarioController {
         return ResponseEntity.status(201).body(comentarioCreado);
     }
 
+
+
     @Operation(summary = "Editar un comentario", description = "Permite a un cliente autenticado editar su comentario.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Comentario editado exitosamente"),
@@ -67,11 +72,11 @@ public class ComentarioController {
             @ApiResponse(responseCode = "403", description = "No autorizado para eliminar este comentario"),
             @ApiResponse(responseCode = "404", description = "Comentario no encontrado")
     })
-    @DeleteMapping("/eliminar/{id}")
+    @DeleteMapping("/eliminar/{clienteId}/{id}")
     public ResponseEntity<?> eliminarComentario(
-            @AuthenticationPrincipal Cliente c,
+            @PathVariable UUID clienteId,
             @PathVariable UUID id) {
-        comentarioService.eliminarComentario(c, id);
+        comentarioService.eliminarComentario(clienteId, id);
         return ResponseEntity.noContent().build();
     }
 
@@ -122,15 +127,55 @@ public class ComentarioController {
             )
     })
     @GetMapping("/all")
-    public ResponseEntity<?> getAllProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id,asc") String[] sort) {
-        Page<Comentario> productos = comentarioService.findAllComentarios(page, size, sort);
-        List<String> nombres = productos.getContent().stream()
-                .map(Comentario::getComentarios)
-                .toList();
-        return ResponseEntity.ok(nombres);
-    }
+public ResponseEntity<?> getAllComentarios(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "id,asc") String[] sort) {
+    Page<Comentario> comentarios = comentarioService.findAllComentarios(page, size, sort);
+    List<GetComentarioDto> resultado = comentarios.getContent().stream()
+            .map(GetComentarioDto::of)
+            .toList();
+    return ResponseEntity.ok(resultado);
+}
 
+
+        //EndPoint que devuelve el producto con mas cmentarios 
+        @Operation(summary = "Obtener el producto con más comentarios")
+        @ApiResponses(value = {
+                @ApiResponse(responseCode = "200", description = "Producto con más comentarios encontrado"),
+                @ApiResponse(responseCode = "404", description = "No se encontraron comentarios")
+        })
+        @GetMapping("/producto-con-mas-comentarios")
+        public ResponseEntity<ProductoComentarioCountDto> productoConMasComentarios() {
+            ProductoComentarioCountDto producto = comentarioService.productoConMasComentarios();
+            if (producto == null) {
+                return ResponseEntity.status(404).build();
+            }
+            return ResponseEntity.ok(producto);
+        }
+
+        @Operation(summary = "Obtener el cliente que más comentarios ha hecho")
+        @ApiResponses(value = {
+                @ApiResponse(responseCode = "200", description = "Cliente con más comentarios encontrado"),
+                @ApiResponse(responseCode = "404", description = "No se encontraron comentarios")
+        })
+        @GetMapping("/cliente-que-mas-comenta")
+        public ResponseEntity<?> usuarioQueMasComenta() {
+            ClienteComentarioCountDto cliente = comentarioService.clienteQueMasComenta();
+            if (cliente == null) {
+                return ResponseEntity.status(404).build();
+            }
+            return ResponseEntity.ok(cliente);
+        }
+
+
+        @GetMapping("/top3-productos-mas-comentados")
+                public ResponseEntity<?> getTop3ProductosConMasComentarios() {
+                List<ProductoComentarioCountDto> top3 = comentarioService.top3ProductosConMasComentarios();
+                return ResponseEntity.ok(top3);
+                
+        }
+
+        
+        
 }

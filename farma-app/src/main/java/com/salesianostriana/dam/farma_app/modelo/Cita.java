@@ -5,6 +5,7 @@ import com.salesianostriana.dam.farma_app.modelo.users.Farmaceutico;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 public class Cita {
 
@@ -31,13 +33,14 @@ public class Cita {
     private Cliente cliente;
 
     private String titulo;
-
-    @Column(name = "fechaInicio",insertable = false, updatable = false)
-    private LocalDateTime fechaInicio;
-
-    private LocalDateTime fecha_fin;
+  //  @Column(name = "fecha_inicio")
+   // private LocalDateTime fechaInicio;
+    @Column(name = "fecha_fin")
+    private LocalDateTime fechaFin;
     private double precioCita;
     private boolean especial;
+
+    
 
     // Métodos para gestionar relaciones
     public void addToFarmaceutico(Farmaceutico farmaceutico) {

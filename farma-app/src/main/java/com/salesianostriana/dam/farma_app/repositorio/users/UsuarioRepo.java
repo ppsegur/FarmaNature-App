@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public interface UsuarioRepo extends JpaRepository<Usuario, UUID> , PagingAndSor
 
     Optional<Usuario> findByActivationToken(String activationToken);
 
-    Page<Usuario> findAll(Pageable pageable);
+    List<Usuario> findAll( );
 
     Page<Usuario> findByNombre(String nombre, Pageable pageable);
 
@@ -25,4 +26,6 @@ public interface UsuarioRepo extends JpaRepository<Usuario, UUID> , PagingAndSor
 
     boolean existsByUsername(String username);
 
+
+    Optional<Usuario> findByUsername(String username);
 }

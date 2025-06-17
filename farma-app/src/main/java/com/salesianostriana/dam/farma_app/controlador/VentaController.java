@@ -7,6 +7,8 @@ import com.salesianostriana.dam.farma_app.modelo.LineaDeVenta;
 import com.salesianostriana.dam.farma_app.modelo.Venta;
 import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
 import com.salesianostriana.dam.farma_app.servicio.VentaService;
+import com.salesianostriana.dam.farma_app.servicio.VentaService.VentasPorDiaDto;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -109,5 +111,21 @@ public class VentaController {
         return historialDto;
     }
 
+@Operation(summary = "Obtener todas las ventas realizadas")
+@GetMapping("/all")
+public List<VentaDto> obtenerTodasLasVentas() {
+    return ventaService.obtenerTodasLasVentas()
+            .stream()
+            .map(VentaDto::of)
+            .toList();
+}
 
+@Operation(summary = "Obtener ventas por día de un mes")
+@GetMapping("/ventas-por-dia")
+public List<VentasPorDiaDto> ventasPorDiaDelMes(
+        @RequestParam int mes,
+        @RequestParam int anio
+) {
+    return ventaService.ventasPorDiaDelMes(mes, anio);
+}
 }

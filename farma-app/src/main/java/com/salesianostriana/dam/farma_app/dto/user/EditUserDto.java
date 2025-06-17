@@ -2,9 +2,11 @@ package com.salesianostriana.dam.farma_app.dto.user;
 
 import com.salesianostriana.dam.farma_app.modelo.users.UserRole;
 import com.salesianostriana.dam.farma_app.validation.FieldsValueMatch;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 
 @FieldsValueMatch(
         field = "password",
@@ -24,7 +26,7 @@ public record EditUserDto(
                           @Size(max = 255, message = "{createUserRequest.email.size}")
                           String email,
 
-                          @NotBlank(message = "{editUserDto.role.notblank}")
+                          @NotNull(message = "{editUserDto.role.notnull}")
                           UserRole role) {
 
 

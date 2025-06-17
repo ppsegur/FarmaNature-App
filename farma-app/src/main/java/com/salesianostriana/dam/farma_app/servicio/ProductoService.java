@@ -155,6 +155,30 @@ public Page<Producto> findAllProductos(int page, int size, String[] sort) {
                 .collect(Collectors.toList());
     }
 
+    //Función para obtener el producto mas vendido 
+    
+ public Optional<Producto> getProductoMasVendido() {
+        // Solo el primero de la lista (más vendido)
+        return repo.findProductosMasVendidos(PageRequest.of(0, 1))
+                .stream().findFirst();
+    }
+//   Función para obtener la categoría mas vendida
+    public Optional<String> getCategoriaMasVendida() {
+    // Solo la primera (más vendida)
+    return repo.findCategoriasMasVendidas(PageRequest.of(0, 1))
+            .stream()
+            .findFirst()
+            .map(arr -> (String) arr[0]);
+}
+//   Función para obtener el producto estrella por categoría
+public List<GetProductoDto> getProductoEstrellaPorCategoria() {
+    return repo.findProductoEstrellaPorCategoria().stream()
+            .map(arr -> {
+                Producto producto = (Producto) arr[1];
+                return GetProductoDto.of(producto, producto.getImagen());
+            })
+            .collect(Collectors.toList());
+}
 }
 
 
