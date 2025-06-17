@@ -7,6 +7,7 @@ import com.salesianostriana.dam.farma_app.modelo.Cita;
 import com.salesianostriana.dam.farma_app.modelo.CitaPk;
 import com.salesianostriana.dam.farma_app.modelo.users.Cliente;
 import com.salesianostriana.dam.farma_app.modelo.users.Farmaceutico;
+import com.salesianostriana.dam.farma_app.modelo.users.Usuario;
 import com.salesianostriana.dam.farma_app.servicio.CitaService;
 import com.salesianostriana.dam.farma_app.servicio.users.UsuarioService;
 import com.salesianostriana.dam.farma_app.util.MailService;
@@ -46,6 +47,7 @@ public class CitasController {
 
     private final CitaService citaService;
     private final UsuarioService usuarioService;
+    private final MailService mailService;
 
     @PostAuthorize("hasRole('CLIENTE')")
     @PostMapping("/")
@@ -143,8 +145,26 @@ public class CitasController {
     }
 
 
+    @PostMapping("/solicitar")
+    public ResponseEntity<?> solicitarCitaPorEmail(@RequestBody @Valid CreateCitaDto dto, @AuthenticationPrincipal Cliente cliente) {
 
-    
+        String emailCliente = cliente.getEmail();
+        String nombreCliente = cliente.getNombre() + " " + cliente.getApellidos();
+        Usuario farmaceutico = usuarioService.findByUsername(dto.usernameFarma().username()).orElseThrow(() -> new EntityNotFoundException("Farmacéutico no encontrado"));
+        String emailFarmaceutico = farmaceutico.getEmail(); // Asegúrate de que el DTO tenga el email o cámbialo por una búsqueda
+        if (emailFarmaceutico == null || emailFarmaceutico.isEmpty()) {
+            return ResponseEntity.badRequest().body("No se ha proporcionado email de farmacéutico destinatario");
+        }
+        String asunto = "Solicitud de cita de " + nombreCliente;
+        String cuerpo = "El cliente " + nombreCliente + " (" + emailCliente + ") solicita una cita.\n" +
+                "Título: " + dto.titulo() + "\n" +
+                "Fecha deseada de fin: " + dto.fecha_fin() + "\n" +
+                "¿Oferta?: " + (dto.oferta() ? "Sí" : "No") + "\n" +
+                "Mensaje automático generado por FarmaNature.";
+        mailService.sendMail(emailFarmaceutico, asunto, cuerpo,null);
+        return ResponseEntity.ok("Solicitud de cita enviada por email correctamente");
+    }
+
 
 
 }
