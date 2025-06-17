@@ -155,8 +155,7 @@ public class VentaService {
 
     @Transactional
     public void actualizarCantidad(Cliente cliente, UUID productoDto, int cantidad) {
-
-      //EL actualizar no funciona
+        
         if (cantidad <= 0) {
             eliminarProducto(cliente, productoDto);
         }
@@ -182,12 +181,13 @@ public class VentaService {
     }
     }
 
-    public List<Venta> obtenerHistorialCompras(Cliente cliente) {
-        return ventaRepo.findByClienteAndEstadoTrue(cliente);
-    }
+@Transactional
+public List<Venta> obtenerHistorialCompras(Cliente cliente) {
+    return ventaRepo.findByClienteAndEstadoTrueWithLineas(cliente);
+}
     @Transactional
     public List<Venta> obtenerTodasLasVentas() {
-        return ventaRepo.findAll();
+        return ventaRepo.findAllWithLineas();
     }
     
     @Transactional

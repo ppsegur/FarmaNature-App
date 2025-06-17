@@ -173,7 +173,7 @@ INSERT INTO farmaceutico_turno (usuario_id, turno) VALUES
 ('750e8400-e29b-41d4-a716-446655440010', 0),
 ('750e8400-e29b-41d4-a716-446655440011', 1);
 
-
+-- Inserta 5 ventas de ejemplo
 INSERT INTO venta (id, fecha_creacion, estado, cliente_id, importe_total) VALUES
 ('850e8400-e29b-41d4-a716-446655440001', '2025-06-01 10:00:00', true, '650e8400-e29b-41d4-a716-446655440001', 25.98),
 ('850e8400-e29b-41d4-a716-446655440002', '2025-06-02 11:30:00', true, '650e8400-e29b-41d4-a716-446655440002', 12.99),
@@ -181,7 +181,7 @@ INSERT INTO venta (id, fecha_creacion, estado, cliente_id, importe_total) VALUES
 ('850e8400-e29b-41d4-a716-446655440004', '2025-06-04 13:15:00', true, '650e8400-e29b-41d4-a716-446655440004', 8.99),
 ('850e8400-e29b-41d4-a716-446655440005', '2025-06-05 14:20:00', true, '650e8400-e29b-41d4-a716-446655440005', 15.99);
 
-
+-- Inserta 5 comentarios adicionales
 INSERT INTO comentario (cliente_id, producto_id, comentarios) VALUES
 ('650e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440100', 'Muy útil para el dolor de muñeca.'),
 ('650e8400-e29b-41d4-a716-446655440005', '550e8400-e29b-41d4-a716-446655440101', 'Los pañales son de buena calidad.'),
@@ -189,31 +189,17 @@ INSERT INTO comentario (cliente_id, producto_id, comentarios) VALUES
 ('650e8400-e29b-41d4-a716-446655440007', '550e8400-e29b-41d4-a716-446655440103', 'El té verde tiene buen sabor.'),
 ('650e8400-e29b-41d4-a716-446655440008', '550e8400-e29b-41d4-a716-446655440104', 'Mi gato ya no tiene pulgas.');
 
-
+-- Inserta 5 citas adicionales
 INSERT INTO cita (id_cliente, id_farmaceutico, fecha_inicio, fecha_fin, precio_cita, especial, titulo) VALUES
 ('650e8400-e29b-41d4-a716-446655440004', '750e8400-e29b-41d4-a716-446655440007', '2025-06-20 09:00:00', '2025-06-20 09:30:00', 20.00, false, 'Consulta ortopédica'),
 ('650e8400-e29b-41d4-a716-446655440005', '750e8400-e29b-41d4-a716-446655440008', '2025-06-21 10:00:00', '2025-06-21 10:30:00', 22.00, true, 'Revisión infantil'),
 ('650e8400-e29b-41d4-a716-446655440006', '750e8400-e29b-41d4-a716-446655440009', '2025-06-22 11:00:00', '2025-06-22 11:30:00', 18.00, false, 'Consejo dietético'),
 ('650e8400-e29b-41d4-a716-446655440007', '750e8400-e29b-41d4-a716-446655440010', '2025-06-23 12:00:00', '2025-06-23 12:30:00', 25.00, true, 'Consulta herbolario'),
 ('650e8400-e29b-41d4-a716-446655440008', '750e8400-e29b-41d4-a716-446655440011', '2025-06-24 13:00:00', '2025-06-24 13:30:00', 30.00, false, 'Consulta veterinaria');
-
--- Líneas de venta asociadas a las ventas de ejemplo
-
+-- Inserta lineas de venta para las ventas de ejemplo
 INSERT INTO linea_de_venta (id, venta_id, producto_id, cantidad, precio_venta) VALUES
--- Venta 1
-(1, '850e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440005', 2, 5.99),
-(2, '850e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440008', 1, 3.49),
-
--- Venta 2
-(3, '850e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440006', 1, 6.99),
-(4, '850e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440014', 2, 2.99),
-
--- Venta 3
-(5, '850e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440007', 1, 12.99),
-(6, '850e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440011', 1, 8.99),
-
--- Venta 4
-(7, '850e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440009', 1, 12.99),
-
--- Venta 5
-(8, '850e8400-e29b-41d4-a716-446655440005', '550e8400-e29b-41d4-a716-446655440100', 1, 15.99);
+(1, '850e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440005', 2, 12.99), -- Paracetamol x2
+(2, '850e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440007', 1, 12.99), -- Amoxicilina x1
+(3, '850e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440012', 1, 19.99), -- Colágeno en Polvo x1
+(4, '850e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440013', 1, 8.99), -- Gel Desinfectante x1
+(5, '850e8400-e29b-41d4-a716-446655440005', '550e8400-e29b-41d4-a716-446655440100', 1, 15.99); -- Muñequera x1
